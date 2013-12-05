@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "MasterServer", "MasterServer\MasterServer.njsproj", "{75EE9AC9-FC41-4F7A-B2BC-4B02E548B157}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaCentreServer", "MediaCentreServer\MediaCentreServer.csproj", "{3B37D1CF-523F-40DA-8FDC-80A2582F1273}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{75EE9AC9-FC41-4F7A-B2BC-4B02E548B157}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{75EE9AC9-FC41-4F7A-B2BC-4B02E548B157}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{75EE9AC9-FC41-4F7A-B2BC-4B02E548B157}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{75EE9AC9-FC41-4F7A-B2BC-4B02E548B157}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B37D1CF-523F-40DA-8FDC-80A2582F1273}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B37D1CF-523F-40DA-8FDC-80A2582F1273}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B37D1CF-523F-40DA-8FDC-80A2582F1273}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B37D1CF-523F-40DA-8FDC-80A2582F1273}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
