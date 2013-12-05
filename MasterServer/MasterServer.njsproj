@@ -30,6 +30,7 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="public\javascripts\main.js" />
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="public\index.html" />
@@ -45,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
+    <Folder Include="public\javascripts\" />
     <Folder Include="public\themes\" />
     <Folder Include="public\themes\images\" />
   </ItemGroup>
