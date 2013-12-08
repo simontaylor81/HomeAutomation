@@ -2,37 +2,62 @@
 <html>
 <head>
     <title>Home Automation</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="stylesheet" href="themes/status-theme.min.css" />
-    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.2/jquery.mobile.structure-1.3.2.min.css" />
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.min.js"></script>
-    <!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
-    <!--<script src="http://code.jquery.com/mobile/1.3.2/jquery.mobile-1.3.2.js"></script>-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css" />
+    <!--<link rel="stylesheet" href="bootstrap/css/bootstrap-theme.css" />-->
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="stylesheets/homeautomation.css" />
+
+    <!-- Scripts -->
+    <script src="jquery/jquery-1.10.2.min.js"></script>
+    <script src="bootstrap/js/bootstrap.js"></script>
     <script src="javascripts/main.js"></script>
-
-    <style>
-        .ui-icon-power {
-            background-image: url("themes/images/powericon.png");
-        }
-    </style>
 </head>
 <body>
 
-<div data-role="page" id="index">
+<div class="navbar navbar-default navbar-static-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Home Automation</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Home</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a>Login</a></li>
+                <li><a>Customise</a></li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+</div>
 
-    <div data-role="header" id="header">
-        <h1><span id="serverName"></span></h1>
+<div class="container">
+
+    <div class="panel ha-panel" id="power-panel">
+        <div class="panel-heading"><h3 class="panel-title">Alfred: <span class="ha-status-text"></span></h3></div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-lg btn-default ha-btn-power ha-on">
+                <span class="fa fa-power-off"></span> <span class="ha-button-text"></span>
+            </button>
+        </div>
     </div>
 
-    <div data-role="content">
-        <button data-role="button" id="powerButton" data-icon="power"></button>
-        <button data-role="button" id="xbmcButton" data-icon="power"></button>
-        <!--<button data-role="button" data-theme="b" data-icon="refresh" onclick="updateXbmcStatus()">Check Media Centre</button>-->
-        <div id="log">
+    <div class="panel ha-panel" id="xbmc-panel">
+        <div class="panel-heading"><h3 class="panel-title">XBMC: <span class="ha-status-text"></span></h3></div>
+        <div class="panel-body">
+            <button type="button" class="btn btn-lg btn-default ha-btn-power ha-on">
+                <span class="fa fa-power-off"></span> <span class="ha-button-text"></span>
+            </button>
         </div>
-
     </div>
 
 </div>

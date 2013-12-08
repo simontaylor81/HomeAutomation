@@ -30,10 +30,24 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="public\bootstrap\js\bootstrap.js" />
+    <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\main.js" />
+    <Compile Include="public\jquery\jquery-1.10.2.js" />
+    <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="server.js" />
     <Content Include="package.json" />
+    <Content Include="public\bootstrap\css\bootstrap-theme.css" />
+    <Content Include="public\bootstrap\css\bootstrap-theme.min.css" />
+    <Content Include="public\bootstrap\css\bootstrap.css" />
+    <Content Include="public\bootstrap\css\bootstrap.min.css" />
+    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="public\index.html" />
+    <Content Include="public\jquery\jquery-1.10.2.min.map" />
+    <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\themes\images\ajax-loader.gif" />
     <Content Include="public\themes\images\icons-18-black.png" />
     <Content Include="public\themes\images\icons-18-white.png" />
@@ -46,7 +60,13 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="public\" />
+    <Folder Include="public\bootstrap\" />
+    <Folder Include="public\bootstrap\css\" />
+    <Folder Include="public\bootstrap\fonts\" />
+    <Folder Include="public\bootstrap\js\" />
     <Folder Include="public\javascripts\" />
+    <Folder Include="public\jquery\" />
+    <Folder Include="public\stylesheets\" />
     <Folder Include="public\themes\" />
     <Folder Include="public\themes\images\" />
   </ItemGroup>

@@ -1,0 +1,69 @@
+﻿/* Custom styles for Home Automation website. */
+
+.ha-panel {
+    background-color: #efefef;
+}
+.ha-panel >.panel-heading {
+    color: white;
+    background-image: none;
+    border-bottom: none;
+}
+
+/* The 'everything is ok' style. */
+.ha-green > .panel-heading {
+    background-color: #7cad12;
+}
+.ha-green.panel {
+    border-color: #7cad12;
+}
+
+/* The 'everything is bad' style. */
+.ha-red > .panel-heading {
+    background-color: #ad1212;
+}
+.ha-red.panel {
+    border-color: #ad1212;
+}
+
+/* The 'somewhere in between' style. */
+.ha-amber > .panel-heading {
+    background-color: #d07300;
+}
+.ha-amber.panel {
+    border-color: #d07300;
+}
+
+/* A power button (i.e. on or off). */
+.ha-btn-power {
+    background-color: #454545;
+    background-image: none;
+    color: white;
+    width: 121px;
+    text-align: left;
+}
+.ha-btn-power:hover,
+.ha-btn-power:focus,
+.ha-btn-power:active {
+    background-color: #5e5e5e;
+    color: white;
+}
+.ha-btn-power[disabled] {
+    background-color: #5a5a5a;
+    background-image: none;
+    color: #d0d0d0;
+}
+
+/* Effect to apply to show that something is on. */
+.ha-on {
+    -webkit-text-shadow: 0 0 10px aqua;
+    text-shadow: 0 0 10px aqua;
+}
+
+.ha-status-text {
+    font-weight: bold;
+}
+
+/* Hack for everything being too small on WP8. */
+@-ms-viewport {
+  width: auto!important;
+}
