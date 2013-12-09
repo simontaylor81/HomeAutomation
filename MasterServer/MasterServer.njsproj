@@ -32,7 +32,11 @@
   <ItemGroup>
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
+    <Compile Include="public\javascripts\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\main.js" />
+    <Compile Include="public\javascripts\power.js" />
+    <Compile Include="public\javascripts\status-common.js" />
+    <Compile Include="public\javascripts\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="server.js" />
@@ -48,14 +52,8 @@
     <Content Include="public\index.html" />
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
-    <Content Include="public\themes\images\ajax-loader.gif" />
-    <Content Include="public\themes\images\icons-18-black.png" />
-    <Content Include="public\themes\images\icons-18-white.png" />
-    <Content Include="public\themes\images\icons-36-black.png" />
-    <Content Include="public\themes\images\icons-36-white.png" />
-    <Content Include="public\themes\images\powericon.png" />
-    <Content Include="public\themes\status-theme.css" />
-    <Content Include="public\themes\status-theme.min.css" />
+    <Content Include="public\test\controllist.json" />
+    <Content Include="public\test\controltemplate.html" />
     <Content Include="README.md" />
   </ItemGroup>
   <ItemGroup>
@@ -66,9 +64,8 @@
     <Folder Include="public\bootstrap\js\" />
     <Folder Include="public\javascripts\" />
     <Folder Include="public\jquery\" />
+    <Folder Include="public\test\" />
     <Folder Include="public\stylesheets\" />
-    <Folder Include="public\themes\" />
-    <Folder Include="public\themes\images\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>

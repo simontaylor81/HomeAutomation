@@ -13,7 +13,13 @@
     <!-- Scripts -->
     <script src="jquery/jquery-1.10.2.min.js"></script>
     <script src="bootstrap/js/bootstrap.js"></script>
+    <script src="javascripts/handlebars-v1.1.2.js"></script>
+
+    <!-- TODO: require.js -->
+    <script src="javascripts/status-common.js"></script>
     <script src="javascripts/main.js"></script>
+    <script src="javascripts/power.js"></script>
+    <script src="javascripts/xbmc.js"></script>
 </head>
 <body>
 
@@ -42,23 +48,7 @@
 
 <div class="container">
 
-    <div class="panel ha-panel" id="power-panel">
-        <div class="panel-heading"><h3 class="panel-title">Alfred: <span class="ha-status-text"></span></h3></div>
-        <div class="panel-body">
-            <button type="button" class="btn btn-lg btn-default ha-btn-power ha-on">
-                <span class="fa fa-power-off"></span> <span class="ha-button-text"></span>
-            </button>
-        </div>
-    </div>
-
-    <div class="panel ha-panel" id="xbmc-panel">
-        <div class="panel-heading"><h3 class="panel-title">XBMC: <span class="ha-status-text"></span></h3></div>
-        <div class="panel-body">
-            <button type="button" class="btn btn-lg btn-default ha-btn-power ha-on">
-                <span class="fa fa-power-off"></span> <span class="ha-button-text"></span>
-            </button>
-        </div>
-    </div>
+    <div id="control-placeholder"></div>
 
 </div>
 
