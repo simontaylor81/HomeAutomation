@@ -30,9 +30,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="gruntfile.js" />
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\handlebars-v1.1.2.js" />
+    <Compile Include="public\javascripts\handlebars.runtime-v1.1.2.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\power.js" />
     <Compile Include="public\javascripts\status-common.js" />
@@ -53,10 +55,11 @@
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
-    <Content Include="public\test\controltemplate.html" />
     <Content Include="README.md" />
+    <Content Include="views\widgets\controltemplate.hbs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="views\" />
     <Folder Include="public\" />
     <Folder Include="public\bootstrap\" />
     <Folder Include="public\bootstrap\css\" />
@@ -66,6 +69,7 @@
     <Folder Include="public\jquery\" />
     <Folder Include="public\test\" />
     <Folder Include="public\stylesheets\" />
+    <Folder Include="views\widgets\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />
   <ProjectExtensions>

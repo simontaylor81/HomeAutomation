@@ -23,32 +23,46 @@ function loadControls() {
                 // Load content.
                 loadControl(data[index], div)
             }
-        },
-        error: function() {
-            addControl().html('ERROR getting control list');
         }
+    })
+    .fail(function(jqxhr, settings, exception) {
+        addControl().html('ERROR getting control list: ' + exception);
     });
 }
 
 function loadControl(data, div) {
-    // Load template.
-    $.ajax({
-        url: data.templateUrl,
-        cache: true,
-        success: function(templateSource) {
-            // Run through handlebars.
-            var template = Handlebars.compile(templateSource);
-            var html = template(data.templateContext);
-            div.html(html);
+    var fullname = 'views/widgets/' + data.template;
+   
+    // Check if we already have the template.
+    if (Handlebars.templates && Handlebars.templates[fullname]) {
+        initControl(data, div);
+    } else {
+        // Load template.
+        console.log('Getting template ' + fullname);
+        $.ajax({
+            url: '/' + fullname + '.js',
+            cache: true,
+            dataType: 'script'
+        })
+        .done(function(templateSource) {
+            initControl(data, div);
+        })
+        .fail(function(jqxhr, settings, exception) {
+            div.html('ERROR getting template: ' + exception);
+        });
+    }
+}
 
-            // Run init script.
-            if (controlInitFunctions[data.initFunc])
-                controlInitFunctions[data.initFunc](data.params, div);
-        },
-        error: function() {
-            div.html('ERROR getting template');
-        }
-    });
+function initControl(data, div) {
+    // Run through handlebars.
+    var fullname = 'views/widgets/' + data.template;
+    var template = Handlebars.templates[fullname];
+    var html = template(data.templateContext);
+    div.html(html);
+
+    // Run init script.
+    if (controlInitFunctions[data.initFunc])
+        controlInitFunctions[data.initFunc](data.params, div);
 }
 
 function addControl() {

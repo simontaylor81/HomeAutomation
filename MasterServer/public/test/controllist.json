@@ -1,6 +1,6 @@
 ﻿[
 	{
-		"templateUrl": "test/controltemplate.html",
+		"template": "controltemplate",
 		"initFunc": "power",
 		"templateContext": {
 			"caption": "Alfred"
@@ -11,7 +11,7 @@
 		}
 	},
 	{
-		"templateUrl": "test/controltemplate.html",
+		"template": "controltemplate",
 		"initFunc": "xbmc",
 		"templateContext": {
 			"caption": "XBMC"
