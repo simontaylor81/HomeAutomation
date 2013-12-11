@@ -5,9 +5,8 @@ module.exports = function(grunt) {
     grunt.initConfig({
         handlebars: {
             options: {
-                namespace: 'Handlebars.templates',
-                // Strip extension from name.
-                processName: function(path) { return path.substr(0, path.lastIndexOf('.')); }
+                amd: true,          // wrap in amd/requirejs module
+                namespace: false,   // no template -- just return the function as the amd module
             },
             compile: {
                 files: [

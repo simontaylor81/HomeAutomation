@@ -33,14 +33,16 @@
     <Compile Include="gruntfile.js" />
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
-    <Compile Include="public\javascripts\handlebars-v1.1.2.js" />
-    <Compile Include="public\javascripts\handlebars.runtime-v1.1.2.js" />
+    <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
+    <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
+    <Compile Include="public\javascripts\lib\status-common.js" />
     <Compile Include="public\javascripts\main.js" />
-    <Compile Include="public\javascripts\power.js" />
-    <Compile Include="public\javascripts\status-common.js" />
-    <Compile Include="public\javascripts\xbmc.js" />
+    <Compile Include="public\javascripts\require.js" />
+    <Compile Include="public\javascripts\widgets\power.js" />
+    <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
+    <Compile Include="public\views\widgets\controltemplate.js" />
     <Compile Include="server.js" />
     <Content Include="package.json" />
     <Content Include="public\bootstrap\css\bootstrap-theme.css" />
@@ -59,6 +61,10 @@
     <Content Include="views\widgets\controltemplate.hbs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="public\javascripts\lib\" />
+    <Folder Include="public\javascripts\widgets\" />
+    <Folder Include="public\views\" />
+    <Folder Include="public\views\widgets\" />
     <Folder Include="views\" />
     <Folder Include="public\" />
     <Folder Include="public\bootstrap\" />

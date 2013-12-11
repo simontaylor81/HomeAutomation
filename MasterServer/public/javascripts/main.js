@@ -1,70 +1,72 @@
-var controlInitFunctions = {};
+// Main entry point.
 
-$(document).ready(function(){
-    loadControls();
+// requirejs config.
+requirejs.config({
+    baseUrl: 'javascripts',
+    paths: {
+        views: '../views',
+        handlebars: 'lib/handlebars.runtime-v1.1.2'
+    },
+    shim: {
+        'handlebars': {
+            exports: 'Handlebars'
+        }
+    }
 });
 
-// Add a log message.
-function appendLog(str) {
-    $('#log').append(str + '<br>');
-}
+// Require necessary modules.
+require(['handlebars', 'widgets/power', 'widgets/xbmc'], function (handlebars, power, xbmc) {
 
-function loadControls() {
-    // Load list of controls.
-    $.ajax({
-        url: 'test/controllist.json',
-        cache: true,
-        success: function(data) {
-            var index;
-            for (index = 0; index < data.length; index++) {
-                // Create a div for the control. Done here so order is deterministic.
-                var div = addControl().attr('id', 'control' + index);
+    var widgets = {
+        power: power,
+        xbmc: xbmc
+    };
 
-                // Load content.
-                loadControl(data[index], div)
-            }
-        }
-    })
-    .fail(function(jqxhr, settings, exception) {
-        addControl().html('ERROR getting control list: ' + exception);
+    $(document).ready(function(){
+        loadControls();
     });
-}
 
-function loadControl(data, div) {
-    var fullname = 'views/widgets/' + data.template;
-   
-    // Check if we already have the template.
-    if (Handlebars.templates && Handlebars.templates[fullname]) {
-        initControl(data, div);
-    } else {
-        // Load template.
-        console.log('Getting template ' + fullname);
+    // Add a log message.
+    function appendLog(str) {
+        $('#log').append(str + '<br>');
+    }
+
+    function loadControls() {
+        // Load list of controls.
         $.ajax({
-            url: '/' + fullname + '.js',
+            url: 'test/controllist.json',
             cache: true,
-            dataType: 'script'
-        })
-        .done(function(templateSource) {
-            initControl(data, div);
+            success: function(data) {
+                var index;
+                for (index = 0; index < data.length; index++) {
+                    // Create a div for the control. Done here so order is deterministic.
+                    var div = addControl().attr('id', 'control' + index);
+
+                    // Load content.
+                    loadControl(data[index], div)
+                }
+            }
         })
         .fail(function(jqxhr, settings, exception) {
-            div.html('ERROR getting template: ' + exception);
+            addControl().html('ERROR getting control list: ' + exception);
         });
     }
-}
 
-function initControl(data, div) {
-    // Run through handlebars.
-    var fullname = 'views/widgets/' + data.template;
-    var template = Handlebars.templates[fullname];
-    var html = template(data.templateContext);
-    div.html(html);
+    function loadControl(data, div) {
+        var fullname = 'views/widgets/' + data.template;
+   
+        // Load the template using requirejs.
+        require([fullname], function (template) {
+            // Process the template.
+            var html = template(data.templateContext);
+            div.html(html);
 
-    // Run init script.
-    if (controlInitFunctions[data.initFunc])
-        controlInitFunctions[data.initFunc](data.params, div);
-}
+            // Run init script.
+            widgets[data.initFunc].init(data.params, div);
+        });
+    }
 
-function addControl() {
-    return $('<div>').appendTo($('#control-placeholder'));
-}
+    function addControl() {
+        return $('<div>').appendTo($('#control-placeholder'));
+    }
+});
