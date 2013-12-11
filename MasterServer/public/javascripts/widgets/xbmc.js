@@ -82,4 +82,3 @@ define(['lib/status-common'], function (statusCommon) {
         }
     };
 });
-

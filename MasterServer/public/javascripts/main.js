@@ -15,7 +15,7 @@ requirejs.config({
 });
 
 // Require necessary modules.
-require(['handlebars', 'widgets/power', 'widgets/xbmc'], function (handlebars, power, xbmc) {
+require(['widgets/power', 'widgets/xbmc'], function (power, xbmc) {
 
     var widgets = {
         power: power,
