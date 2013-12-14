@@ -53,16 +53,17 @@ require(['widgets/power', 'widgets/xbmc'], function (power, xbmc) {
     }
 
     function loadControl(data, div) {
-        var fullname = 'views/widgets/' + data.template;
+        var widget = widgets[data.widget];
+        var templatePath = 'views/widgets/' + widget.template;
    
         // Load the template using requirejs.
-        require([fullname], function (template) {
+        require([templatePath], function (template) {
             // Process the template.
-            var html = template(data.templateContext);
+            var html = template(data.params);
             div.html(html);
 
             // Run init script.
-            widgets[data.initFunc].init(data.params, div);
+            widget.init(data.params, div);
         });
     }
 

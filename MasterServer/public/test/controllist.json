@@ -1,22 +1,16 @@
 ﻿[
 	{
-		"template": "controltemplate",
-		"initFunc": "power",
-		"templateContext": {
-			"caption": "Alfred"
-		},
+		"widget": "power",
 		"params": {
+			"caption": "Alfred",
 			"url": "http://192.168.0.150:55343",
 			"mac": "00-23-AE-03-EE-55"
 		}
 	},
 	{
-		"template": "controltemplate",
-		"initFunc": "xbmc",
-		"templateContext": {
-			"caption": "XBMC"
-		},
+		"widget": "xbmc",
 		"params": {
+			"caption": "XBMC",
 			"url": "http://192.168.0.150:55343",
 			"xbmcPath": "C:\\Program Files (x86)\\XBMC\\XBMC.exe"
 		}

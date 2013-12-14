@@ -71,6 +71,8 @@ define(['lib/status-common'], function (statusCommon) {
 
     // Return widget object.
     return {
+        template: "controltemplate",
+
         // Widget initialisation function
         init: function (params, div) {
             // Save container element in the params object to save passing two things everywhere.
