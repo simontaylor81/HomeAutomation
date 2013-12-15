@@ -34,20 +34,20 @@
 }
 
 /* A power button (i.e. on or off). */
-.ha-btn-power {
+.ha-btn {
     background-color: #454545;
     background-image: none;
     color: white;
     width: 121px;
     text-align: left;
 }
-.ha-btn-power:hover,
-.ha-btn-power:focus,
-.ha-btn-power:active {
+.ha-btn:hover,
+.ha-btn:focus,
+.ha-btn:active {
     background-color: #5e5e5e;
     color: white;
 }
-.ha-btn-power[disabled] {
+.ha-btn[disabled] {
     background-color: #5a5a5a;
     background-image: none;
     color: #d0d0d0;

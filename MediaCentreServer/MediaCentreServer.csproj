@@ -109,6 +109,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\IsAliveController.cs" />
+    <Compile Include="Controllers\KillProcessController.cs" />
     <Compile Include="Controllers\RunController.cs" />
     <Compile Include="Controllers\SleepController.cs" />
     <Compile Include="Controllers\XbmcJsonrpcController.cs" />

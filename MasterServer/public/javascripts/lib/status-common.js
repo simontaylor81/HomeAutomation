@@ -18,7 +18,7 @@ define({
         panel.find('.ha-status-text').html(status);
 
         // Set state of buttons in the panel.
-        var buttons = panel.find('button');
+        var buttons = panel.find('.ha-btn-power');
         if (status === 'On') {
             buttons.addClass('ha-on');
         } else {

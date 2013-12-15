@@ -4,7 +4,14 @@
 		"params": {
 			"caption": "Alfred",
 			"url": "http://192.168.0.150:55343",
-			"mac": "00-23-AE-03-EE-55"
+			"mac": "00-23-AE-03-EE-55",
+			"buttons": [
+				{
+					"type": "mcPower",
+					"caption": "Power",
+					"power": true
+				}
+			]
 		}
 	},
 	{
@@ -12,7 +19,18 @@
 		"params": {
 			"caption": "XBMC",
 			"url": "http://192.168.0.150:55343",
-			"xbmcPath": "C:\\Program Files (x86)\\XBMC\\XBMC.exe"
+			"xbmcPath": "C:\\Program Files (x86)\\XBMC\\XBMC.exe",
+			"buttons": [
+				{
+					"type": "xbmcPower",
+					"caption": "XBMC",
+					"power": true
+				},
+				{
+					"type": "killProcess",
+					"caption": "Kill"
+				}
+			]
 		}
 	}
 ]

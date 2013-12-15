@@ -69,6 +69,21 @@ define(['lib/status-common'], function (statusCommon) {
         });
     }
 
+    function killXbmc(params) {
+        // This is a fairly drastic step, so prompt in case it was hit accidentally.
+        if (confirm('This will kill all running XBMC processes. Are you sure?'))
+        {
+            $.ajax({
+                url: params.url + '/api/killprocess?name=xbmc',
+                type: 'POST'
+            })
+            .success(function (data) { alert(data); })
+            .fail(function (jqxhr, settings, exception) {
+                alert('Failed to kill XMBC: ' + exception);
+            });
+        }
+    }
+
     // Return widget object.
     return {
         template: "controltemplate",
@@ -81,6 +96,9 @@ define(['lib/status-common'], function (statusCommon) {
             setXbmcStatus(params, 'Pending');
             updateXbmcStatus(params);
             setInterval(function(){ updateXbmcStatus(params); }, 2000);
+
+            // Register kill button handler.
+            div.find('.ha-btn-killProcess').on('click', function () { killXbmc(params); });
         }
     };
 });
