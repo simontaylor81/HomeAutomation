@@ -31,6 +31,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="gruntfile.js" />
+    <Compile Include="lib\MemoryAccountProvider.js" />
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
@@ -43,7 +44,10 @@
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="public\views\widgets\controltemplate.js" />
+    <Compile Include="routes\user.js" />
+    <Compile Include="routes\wol.js" />
     <Compile Include="server.js" />
+    <Content Include="config.json" />
     <Content Include="package.json" />
     <Content Include="public\bootstrap\css\bootstrap-theme.css" />
     <Content Include="public\bootstrap\css\bootstrap-theme.min.css" />
@@ -61,6 +65,8 @@
     <Content Include="views\widgets\controltemplate.hbs" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="lib\" />
+    <Folder Include="routes\" />
     <Folder Include="public\javascripts\lib\" />
     <Folder Include="public\javascripts\widgets\" />
     <Folder Include="public\views\" />
