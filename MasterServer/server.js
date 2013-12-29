@@ -6,8 +6,8 @@
 var express = require('express');
 var http = require('http');
 var path = require('path');
-var wol = require('wake_on_lan');
 var nconf = require('nconf');
+var MongoStore = require('connect-mongo')(express);
 
 var wol = require('./routes/wol.js');
 var userRoutes = require('./routes/user.js');
@@ -16,6 +16,7 @@ var userRoutes = require('./routes/user.js');
 nconf.argv()
      .env()
      .file('./config.json');
+var dbOpts = nconf.get('database');
 //console.log(nconf.get('database:port'));
 
 var app = express();
@@ -28,8 +29,16 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
-app.use(express.cookieParser('v1qgWb6G33MtwoXv'));
-app.use(express.session());
+app.use(express.cookieParser(nconf.get('cookieSecret')));
+app.use(express.session({
+        secret: nconf.get('cookieSecret'),
+        store: new MongoStore({
+            db: dbOpts.db,
+            host: dbOpts.host,
+            port: dbOpts.port
+        })
+    }));
+app.use(userRoutes.userSession);
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -43,6 +52,7 @@ app.post('/api/wol/:mac', wol.post);
 
 // User stuff.
 app.post('/user/login', userRoutes.postLogin);
+app.post('/user/logout', userRoutes.postLogout);
 app.get('/user/widgets', userRoutes.getWidgets);
 
 app.listen(app.get('port'), function () {

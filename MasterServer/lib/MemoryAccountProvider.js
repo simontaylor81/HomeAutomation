@@ -61,3 +61,12 @@ MemoryAccountProvider.prototype.newAccount = function (username, password) {
     this.users.push(newUser);
     return q(newUser);
 }
+
+// Simple account accessor, assuming already authenticated.
+MemoryAccountProvider.prototype.getAccount = function (username) {
+    var user = this.users.find(makeUserMatcher(username));
+    if (user) {
+        return q(user);
+    }
+    return q.reject('User not found.');
+}

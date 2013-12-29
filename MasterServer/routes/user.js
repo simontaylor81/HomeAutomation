@@ -6,7 +6,29 @@ var MemoryAccountProvider = require('../lib/MemoryAccountProvider').MemoryAccoun
 var accountProvider = new MemoryAccountProvider();
 
 // Add a dummy account.
-accountProvider.newAccount('simon', 'pass');
+accountProvider.newAccount('simon', 'pass')
+.then(function (user) {
+    // Give the dummy account some dummy widgets.
+    user.widgets = require('../public/test/controllist.json');
+});
+
+
+// Middleware for handling user sessions.
+exports.userSession = function (req, res, next) {
+    if (req.session.username) {
+        accountProvider.getAccount(req.session.username)
+        .then(function (user) {
+            req.user = user;
+            next();
+        }, function (reason) {
+            // Could not find account -- deleted?
+            req.session.destroy();
+        });
+    } else {
+        next();
+    }
+};
+
 
 // POST /user/login
 exports.postLogin = function (req, res) {
@@ -18,8 +40,8 @@ exports.postLogin = function (req, res) {
     accountProvider.login(req.body.username, req.body.password)
     .then(
         function (user) {
-            // Save user in session.
-            req.session.user = user;
+            // Save username in session.
+            req.session.username = user.username;
             res.send(204);
         },
         function (reason) {
@@ -28,13 +50,22 @@ exports.postLogin = function (req, res) {
         });
 }
 
+// POST /user/logout
+// Clears user session data.
+exports.postLogout = function (req, res) {
+    // Clear session.
+    req.session.destroy();
+    res.send(204);
+}
+
 // GET /user/widgets
 exports.getWidgets = function (req, res) {
-    var data = "First time";
-    if (req.session.beenHere === 'yes') {
-        data = "Been here before";
+    // Are we logged in?
+    if (req.user) {
+        // Send the user's widget list.
+        res.send(req.user.widgets || []);
     } else {
-        req.session.beenHere = 'yes';
+        // Not logged in -- client should show login screen.
+        res.send(403);
     }
-    res.send({key1: 'value1', key2: 'value2', session: data});
 };

@@ -1,4 +1,6 @@
-﻿// Wake-on-lan handler.
+﻿var wol = require('wake_on_lan');
+
+// Wake-on-lan handler.
 exports.post = function (req, res) {
     console.log('wol: ' + req.params.mac);
     try {

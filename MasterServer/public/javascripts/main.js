@@ -23,7 +23,7 @@ require(['widgets/power', 'widgets/xbmc'], function (power, xbmc) {
     };
 
     $(document).ready(function(){
-        loadControls();
+        loadWidgets();
     });
 
     // Add a log message.
@@ -31,24 +31,31 @@ require(['widgets/power', 'widgets/xbmc'], function (power, xbmc) {
         $('#log').append(str + '<br>');
     }
 
-    function loadControls() {
-        // Load list of controls.
-        $.ajax({
-            url: 'test/controllist.json',
-            cache: true,
-            success: function(data) {
-                var index;
-                for (index = 0; index < data.length; index++) {
-                    // Create a div for the control. Done here so order is deterministic.
-                    var div = addControl().attr('id', 'control' + index);
+    function loadWidgets() {
+        // Clear any existing page content.
+        $('#page-content').html('');
 
-                    // Load content.
-                    loadControl(data[index], div)
-                }
+        // Load list of widgets.
+        $.ajax({
+            url: 'user/widgets',
+            cache: true
+        })
+        .success(function (data) {
+            var index;
+            for (index = 0; index < data.length; index++) {
+                // Create a div for the control. Done here so order is deterministic.
+                var div = addControl().attr('id', 'control' + index);
+
+                // Load content.
+                loadControl(data[index], div)
             }
         })
-        .fail(function(jqxhr, settings, exception) {
-            addControl().html('ERROR getting control list: ' + exception);
+        .fail(function (jqxhr, textError, errorThrown) {
+            if (jqxhr.status === 403) {
+                showLogin();
+            } else {
+                addControl().html('ERROR getting control list: ' + exception);
+            }
         });
     }
 
@@ -68,6 +75,11 @@ require(['widgets/power', 'widgets/xbmc'], function (power, xbmc) {
     }
 
     function addControl() {
-        return $('<div>').appendTo($('#control-placeholder'));
+        return $('<div>').appendTo($('#page-content'));
+    }
+
+    // Show the login screen.
+    function showLogin() {
+        $('#page-content').html('This is the login page. Honest.');
     }
 });
