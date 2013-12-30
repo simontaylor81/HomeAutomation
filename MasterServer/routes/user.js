@@ -23,7 +23,24 @@ exports.userSession = function (req, res, next) {
         }, function (reason) {
             // Could not find account -- deleted?
             req.session.destroy();
+            next();
         });
+    } else if (req.signedCookies.login) {
+        // Attempt automatic login.
+        accountProvider.login(req.signedCookies.login.username, req.signedCookies.login.password)
+        .then(
+            function (user) {
+                // Auto login successful.
+                req.user = user;
+                req.session.username = user.username;
+                next();
+            },
+            function (reason) {
+                // Auto login failed.
+                res.clearCookie('login');
+                req.session.destroy();
+                next();
+            });
     } else {
         next();
     }
@@ -42,6 +59,18 @@ exports.postLogin = function (req, res) {
         function (user) {
             // Save username in session.
             req.session.username = user.username;
+
+            // If the user want's to, store credentials in a cookie.
+            if (req.body.rememberMe) {
+                res.cookie(
+                    'login',
+                    {username: req.body.username, password: req.body.password},
+                    {
+                        maxAge: 60000 * 60 * 24 * 60,       // 2 month lifetime
+                        signed: true
+                    });
+            }
+
             res.send(204);
         },
         function (reason) {

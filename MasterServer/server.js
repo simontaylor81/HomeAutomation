@@ -32,10 +32,12 @@ app.use(express.methodOverride());
 app.use(express.cookieParser(nconf.get('cookieSecret')));
 app.use(express.session({
         secret: nconf.get('cookieSecret'),
+        cookie: { maxAge: 60000 * 60 * 24 },    // 24 hour session timeout
         store: new MongoStore({
             db: dbOpts.db,
             host: dbOpts.host,
-            port: dbOpts.port
+            port: dbOpts.port,
+            stringify: false    // Not stringifying makes things easier to debug in the mongo shell
         })
     }));
 app.use(userRoutes.userSession);
