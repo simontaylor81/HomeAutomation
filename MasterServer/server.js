@@ -13,7 +13,6 @@ var MongoStore = require('connect-mongo')(express);
 nconf.argv()
      .env()
      .file('./config.json');
-var dbOpts = nconf.get('database');
 
 var wol = require('./routes/wol.js');
 var userRoutes = require('./routes/user.js');
@@ -33,9 +32,7 @@ app.use(express.session({
         secret: nconf.get('cookieSecret'),
         cookie: { maxAge: 60000 * 60 * 24 },    // 24 hour session timeout
         store: new MongoStore({
-            db: dbOpts.db,
-            host: dbOpts.host,
-            port: dbOpts.port,
+            url: nconf.get('databaseUrl'),
             stringify: false    // Not stringifying makes things easier to debug in the mongo shell
         })
     }));
