@@ -17,7 +17,6 @@ nconf.argv()
      .env()
      .file('./config.json');
 var dbOpts = nconf.get('database');
-//console.log(nconf.get('database:port'));
 
 var app = express();
 
@@ -40,7 +39,6 @@ app.use(express.session({
             stringify: false    // Not stringifying makes things easier to debug in the mongo shell
         })
     }));
-app.use(userRoutes.userSession);
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -53,9 +51,7 @@ if ('development' === app.get('env')) {
 app.post('/api/wol/:mac', wol.post);
 
 // User stuff.
-app.post('/user/login', userRoutes.postLogin);
-app.post('/user/logout', userRoutes.postLogout);
-app.get('/user/widgets', userRoutes.getWidgets);
+userRoutes.addRoutes(app);
 
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));

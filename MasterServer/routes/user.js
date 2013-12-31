@@ -14,8 +14,9 @@ accountProvider.newAccount('simon', 'pass')
 
 
 // Middleware for handling user sessions.
-exports.userSession = function (req, res, next) {
+function userSession(req, res, next) {
     if (req.session.username) {
+        //console.log('Getting account');
         accountProvider.getAccount(req.session.username)
         .then(function (user) {
             req.user = user;
@@ -27,6 +28,7 @@ exports.userSession = function (req, res, next) {
         });
     } else if (req.signedCookies.login) {
         // Attempt automatic login.
+        //console.log('Logging in (auto)');
         accountProvider.login(req.signedCookies.login.username, req.signedCookies.login.password)
         .then(
             function (user) {
@@ -48,7 +50,7 @@ exports.userSession = function (req, res, next) {
 
 
 // POST /user/login
-exports.postLogin = function (req, res) {
+function postLogin(req, res) {
     if (!req.body.username || !req.body.password) {
         res.send(400);
     }
@@ -81,20 +83,37 @@ exports.postLogin = function (req, res) {
 
 // POST /user/logout
 // Clears user session data.
-exports.postLogout = function (req, res) {
+function postLogout(req, res) {
     // Clear session.
     req.session.destroy();
+
+    // Clear auto login cookie.
+    res.clearCookie('login');
+
     res.send(204);
 }
 
-// GET /user/widgets
-exports.getWidgets = function (req, res) {
-    // Are we logged in?
-    if (req.user) {
-        // Send the user's widget list.
-        res.send(req.user.widgets || []);
-    } else {
+// Require that a user is logged in. Sends 403 if not.
+// Must have already called userSession.
+function requireLogin(req, res, next) {
+    if (!req.user) {
         // Not logged in -- client should show login screen.
         res.send(403);
+    } else {
+        next();
     }
+}
+
+// GET /user/widgets
+function getWidgets(req, res) {
+    // Send the user's widget list.
+    res.send(req.user.widgets || []);
 };
+
+
+// Add user-related routes to the app.
+exports.addRoutes = function (app) {
+    app.post('/user/login', postLogin);
+    app.post('/user/logout', postLogout);
+    app.get('/user/widgets', userSession, requireLogin, getWidgets);
+}
