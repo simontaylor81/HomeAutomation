@@ -49,7 +49,7 @@ function userSession(req, res, next) {
     } else {
         next();
     }
-};
+}
 
 
 // POST /user/login
@@ -133,10 +133,23 @@ function requireLogin(req, res, next) {
 }
 
 // GET /user/widgets
+// Get the user's widget config.
 function getWidgets(req, res) {
     // Send the user's widget list.
     res.send(req.user.widgets || []);
-};
+}
+
+// POST /user/widgets
+// Save the user's widget config.
+function postWidgets(req, res) {
+    if (!(req.body instanceof Array)) {
+        res.send(400, 'Expected: widget list');
+    }
+
+    req.user.widgets = req.body;
+    accountProvider.saveAccount(req.user)
+    .done(function () { res.send(204); });
+}
 
 
 // Add user-related routes to the app.
@@ -144,5 +157,7 @@ exports.addRoutes = function (app) {
     app.post('/user/login', postLogin);
     app.post('/user/logout', postLogout);
     app.post('/user/createAccount', postCreateAccount);
+
     app.get('/user/widgets', userSession, requireLogin, getWidgets);
+    app.post('/user/widgets', userSession, requireLogin, postWidgets);
 }

@@ -60,6 +60,12 @@ MongoAccountProvider.prototype.getAccount = function (id) {
     return q.ninvoke(this.collection, 'findOne', {_id: id});
 }
 
+// Save a user's account details back to the database.
+MongoAccountProvider.prototype.saveAccount = function (user) {
+    return q.ninvoke(this.collection, 'save', user);
+};
+
+
 
 // Check a user's password.
 function authenticate(user, password) {

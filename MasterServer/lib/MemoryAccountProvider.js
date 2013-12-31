@@ -61,6 +61,11 @@ MemoryAccountProvider.prototype.getAccount = function (id) {
     return q(findUser(this.users, id) || null);
 }
 
+// Save the account. Nothing to do since we just pass a reference to the raw object.
+MemoryAccountProvider.prototype.saveAccount = function (user) {
+    return q();
+};
+
 // Helper for searching finding a user with the given id. Returns undefined if not found.
 function findUser(users, id) {
     return users.find(function (user) { return user._id == id; });
