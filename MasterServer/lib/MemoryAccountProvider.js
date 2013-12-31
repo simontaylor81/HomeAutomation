@@ -26,20 +26,10 @@ if (Array.prototype.find === undefined) {
     }
 }
 
-// Return a function for matching account usernames.
-function makeUserMatcher(username) {
-    // Usernames are case-insensitive.
-    var usernameLower = username.toLowerCase();
-
-    return function (user) {
-        return user.username.toLowerCase() == usernameLower;
-    }
-}
-
-// Login an existing number and return the user object.
+// Login an existing user and return the user object.
 MemoryAccountProvider.prototype.login = function (username, password) {
-    // Find user with this username.
-    var user = this.users.find(makeUserMatcher(username));
+    // Find user with this username. ID is lower-case username
+    var user = findUser(this.users, username.toLowerCase());
 
     // Check the password matches.
     if (user && user.password === password) {
@@ -52,21 +42,26 @@ MemoryAccountProvider.prototype.login = function (username, password) {
 // Create a new account.
 MemoryAccountProvider.prototype.newAccount = function (username, password) {
     // Check that we don't already have a user with that name.
-    if (this.users.find(makeUserMatcher(username))) {
+    if (findUser(this.users, username.toLowerCase())) {
         return q.reject("Username '" + username + "' already exists.");
     }
 
     // Add a new user object to the array.
-    var newUser = {username: username, password: password};
+    var newUser = {
+        _id: username.toLowerCase(),
+        username: username,
+        password: password
+    };
     this.users.push(newUser);
     return q(newUser);
 }
 
 // Simple account accessor, assuming already authenticated.
-MemoryAccountProvider.prototype.getAccount = function (username) {
-    var user = this.users.find(makeUserMatcher(username));
-    if (user) {
-        return q(user);
-    }
-    return q.reject('User not found.');
+MemoryAccountProvider.prototype.getAccount = function (id) {
+    return q(findUser(this.users, id) || null);
+}
+
+// Helper for searching finding a user with the given id. Returns undefined if not found.
+function findUser(users, id) {
+    return users.find(function (user) { return user._id == id; });
 }

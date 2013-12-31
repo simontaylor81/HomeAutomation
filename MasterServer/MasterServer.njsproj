@@ -32,6 +32,7 @@
   <ItemGroup>
     <Compile Include="gruntfile.js" />
     <Compile Include="lib\MemoryAccountProvider.js" />
+    <Compile Include="lib\MongoAccountProvider.js" />
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />

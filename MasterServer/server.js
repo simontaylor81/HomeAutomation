@@ -9,14 +9,14 @@ var path = require('path');
 var nconf = require('nconf');
 var MongoStore = require('connect-mongo')(express);
 
-var wol = require('./routes/wol.js');
-var userRoutes = require('./routes/user.js');
-
-// Set up config.
+// Set up config *before* loading sub-modules, so they can user it.
 nconf.argv()
      .env()
      .file('./config.json');
 var dbOpts = nconf.get('database');
+
+var wol = require('./routes/wol.js');
+var userRoutes = require('./routes/user.js');
 
 var app = express();
 
