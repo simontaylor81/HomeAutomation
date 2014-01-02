@@ -4,6 +4,7 @@ var mongodb = require('mongodb');
 var MongoClient = require('mongodb').MongoClient;
 var q = require('q');
 var nconf = require('nconf');
+var pwd = require('pwd');
 
 var MongoAccountProvider = exports.MongoAccountProvider = function () {
     var self = this;
@@ -18,15 +19,19 @@ var MongoAccountProvider = exports.MongoAccountProvider = function () {
 MongoAccountProvider.prototype.login = function (username, password) {
     // ID is lower-case username.
     return q.ninvoke(this.collection, 'findOne', {_id: username.toLowerCase()})
-    .then(
-    function (user) {
+    .then(function (user) {
         if (!user) {
             throw new Error('Unknown user');
-        } else if (!authenticate(user, password)) {
-            throw new Error('Incorrect password');
-        } else {
-            return user;
         }
+
+        // Authenticate password hash.
+        return q.nfcall(pwd.hash, password, user.passwordSalt)
+        .then(function (hash) {
+            if (hash !== user.passwordHash) {
+                throw new Error('Incorrect password');
+            }
+            return user;
+        });
     });
 }
 
@@ -34,11 +39,18 @@ MongoAccountProvider.prototype.login = function (username, password) {
 MongoAccountProvider.prototype.newAccount = function (username, password) {
     var self = this;
 
-    // Add the new user.
-    return q.ninvoke(self.collection, 'insert', {
-        _id: username.toLowerCase(),
-        username: username,
-        password: hashPassword(password)
+    // Generate password hash and salt for the user.
+    return q.nfcall(pwd.hash, password)
+    .then(function (result) {
+        var user = {
+            _id: username.toLowerCase(),
+            username: username,
+            passwordSalt: result[0],
+            passwordHash: result[1]
+        };
+
+        // Add the new user to the database.
+        return q.ninvoke(self.collection, 'insert', user);
     })
     .then(
         function (documents) {
@@ -52,7 +64,6 @@ MongoAccountProvider.prototype.newAccount = function (username, password) {
             }
             throw reason;
         });
-        //});
 }
 
 // Simple account accessor, assuming already authenticated.
@@ -64,17 +75,3 @@ MongoAccountProvider.prototype.getAccount = function (id) {
 MongoAccountProvider.prototype.saveAccount = function (user) {
     return q.ninvoke(this.collection, 'save', user);
 };
-
-
-
-// Check a user's password.
-function authenticate(user, password) {
-    // TODO: Hash
-    return user.password === password;
-}
-
-// Hash a password for storage.
-function hashPassword(password) {
-    // TODO:
-    return password;
-}
