@@ -37,6 +37,7 @@
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
+    <Compile Include="public\javascripts\lib\page.js" />
     <Compile Include="public\javascripts\lib\status-common.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />
@@ -44,6 +45,8 @@
     <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
+    <Compile Include="public\views\default.js" />
+    <Compile Include="public\views\login.js" />
     <Compile Include="public\views\widgets\controltemplate.js" />
     <Compile Include="routes\user.js" />
     <Compile Include="routes\wol.js" />
