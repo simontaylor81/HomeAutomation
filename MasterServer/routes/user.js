@@ -57,6 +57,7 @@ function postLogin(req, res) {
     // Need a username and a password.
     if (!req.body.username || !req.body.password) {
         res.send(400);
+        return;
     }
 
     // Attempt login.

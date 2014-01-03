@@ -19,6 +19,9 @@ define(function () {
             throw new Error('Cannot go to a page before the DOM is ready.');
         }
 
+        // Clear any existing content.
+        pageContent.html('');
+
         // Load the pages script.
         require(['views/' + newPage], function (view) {
             // Initialise it.

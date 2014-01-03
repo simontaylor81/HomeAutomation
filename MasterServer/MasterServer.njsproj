@@ -41,6 +41,7 @@
     <Compile Include="public\javascripts\lib\status-common.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />
+    <Compile Include="public\javascripts\text.js" />
     <Compile Include="public\javascripts\widgets\power.js" />
     <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
@@ -65,6 +66,7 @@
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
+    <Content Include="public\views\login.html" />
     <Content Include="README.md" />
     <Content Include="views\widgets\controltemplate.hbs" />
   </ItemGroup>
