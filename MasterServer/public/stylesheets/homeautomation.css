@@ -109,8 +109,10 @@
     padding: 5px;
     margin: 20px -26px -26px;
 }
-.form-signin-error.ha-hidden {
-    display: none;
+
+/* Add this class to hide an element completely. */
+.ha-hidden {
+    display: none !important;
 }
 
 /* Hack for everything being too small on WP8. */

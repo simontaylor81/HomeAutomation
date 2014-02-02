@@ -35,6 +35,9 @@ define(['lib/page', 'widgets/power', 'widgets/xbmc'], function (page, power, xbm
             cache: false
         })
         .success(function (data) {
+            // Set logged in state (shows logout and customise buttons).
+            page.setLoggedIn(true);
+
             var index;
             for (index = 0; index < data.length; index++) {
                 // Create a div for the widget. Done here so order is deterministic.

@@ -17,8 +17,32 @@ requirejs.config({
 // Require necessary modules.
 require(['lib/page'], function (page) {
 
-    $(document).ready(function(){
+    $(document).ready(function () {
+        // Navbar links
+        $("#id-navbar-logout").click(onClick(logout));
+        $("#id-navbar-customise").click(onClick(function(){}));
+
         // Start at the index page. Will auto-redirect to login if not already logged in.
         page('default');
     });
+
+    function onClick(handler) {
+        return function (event) {
+            // Don't actually follow the link.
+            event.preventDefault();
+            handler(event);
+        }
+    }
+
+    function logout() {
+        // POST logout
+        $.ajax({
+            type: 'POST',
+            url: '/user/logout'
+        })
+        .always(function () {
+            // Redirect to login page.
+            page('login');
+        });
+    }
 });

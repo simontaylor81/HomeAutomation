@@ -4,6 +4,9 @@ define(['lib/page', 'text!views/login.html'], function (page, html) {
         // Set page content to the loaded html.
         pageContent.html(html);
 
+        // Clear logged in state (hides logout and customise buttons).
+        page.setLoggedIn(false);
+
         // Hook up submit event.
         $('.form-signin').submit(function (event) {
             // Don't do the regular submit, as it refreshes the page.

@@ -13,7 +13,7 @@ define(function () {
     });
 
     // The goto function
-    return function (newPage) {
+    function goto(newPage) {
         // DOM must be ready.
         if (!pageContent) {
             throw new Error('Cannot go to a page before the DOM is ready.');
@@ -28,4 +28,16 @@ define(function () {
             view(pageContent);
         });
     }
+
+    // Module object is the goto function.
+    var module = goto;
+
+    // Set the logged-in state.
+    module.setLoggedIn = function (loggedIn) {
+        // Show/hide navbar elements based on page params.
+        $('.ha-hide-loggedin').toggleClass('ha-hidden', !!loggedIn);
+        $('.ha-hide-notloggedin').toggleClass('ha-hidden', !loggedIn);
+    }
+
+    return goto;
 });
