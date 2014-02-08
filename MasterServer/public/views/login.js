@@ -28,5 +28,11 @@ define(['lib/page', 'text!views/login.html'], function (page, html) {
                     .removeClass('ha-hidden');
             });
         });
+
+        // Hook up create account link.
+        $('#login-createaccountlink').click(function (event) {
+            event.preventDefault();
+            page('createaccount');
+        });
     };
 });

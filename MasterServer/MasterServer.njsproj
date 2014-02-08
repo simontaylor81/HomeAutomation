@@ -46,6 +46,7 @@
     <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
+    <Compile Include="public\views\createaccount.js" />
     <Compile Include="public\views\default.js" />
     <Compile Include="public\views\login.js" />
     <Compile Include="public\views\widgets\controltemplate.js" />
@@ -66,6 +67,7 @@
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
+    <Content Include="public\views\createaccount.html" />
     <Content Include="public\views\login.html" />
     <Content Include="README.md" />
     <Content Include="views\widgets\controltemplate.hbs" />

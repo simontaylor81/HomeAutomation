@@ -93,12 +93,16 @@
 .form-signin .form-control:focus {
     z-index: 2;
 }
-.form-signin input[type="text"] {
+.form-signin .text-top {
     margin-bottom: -1px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
-.form-signin input[type="password"] {
+.form-signin .text-middle {
+    margin-bottom: -1px;
+    border-radius: 0;
+}
+.form-signin .text-bottom {
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
@@ -108,6 +112,31 @@
     color: white;
     padding: 5px;
     margin: 20px -26px -26px;
+}
+.form-signin-bottomlink {
+    margin-top: 10px;
+}
+
+/* Form validity colouring. */
+.form-signin .form-control:invalid {
+    border-color: #a94442;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.form-signin .form-control:focus:invalid {
+    border-color: #843534;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+}
+.form-signin .form-control:required:valid {
+    border-color: #3c763d;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+.form-signin .form-control:required:focus:valid {
+    border-color: #2b542c;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+            box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
 }
 
 /* Add this class to hide an element completely. */
