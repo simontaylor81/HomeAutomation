@@ -104,8 +104,27 @@ function postLogout(req, res) {
 // POST /user/createaccount
 function postCreateAccount(req, res) {
     // Need a username and a password.
-    if (!req.body.username || !req.body.password) {
+    if (!req.body.username || !req.body.password || !req.body.passwordRpt) {
         res.send(400);
+        return;
+    }
+
+    // Validate the data.
+    if (req.body.username.length < 3) {
+        res.send(400, 'Username must be at least 3 letters long');
+        return;
+    }
+    if (!/^\w{3,}$/.test(req.body.username)) {
+        res.send(400, 'Username can contain only letters, number and underscores');
+        return;
+    }
+    if (req.body.password.length < 4) {
+        res.send(400, 'Password must be at least 4 characters long');
+        return;
+    }
+    if (req.body.password !== req.body.passwordRpt) {
+        res.send(400, 'Passwords do not match');
+        return;
     }
 
     accountProvider.newAccount(req.body.username, req.body.password)
