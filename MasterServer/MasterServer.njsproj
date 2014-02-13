@@ -35,6 +35,8 @@
     <Compile Include="lib\MongoAccountProvider.js" />
     <Compile Include="public\bootstrap\js\bootstrap.js" />
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
+    <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
+    <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\page.js" />
@@ -52,9 +54,7 @@
     <Compile Include="public\views\login.js" />
     <Compile Include="public\views\renderwidgets.js" />
     <Compile Include="public\views\widgetstemplate.js" />
-    <Compile Include="public\views\widgets\button.js" />
     <Compile Include="public\views\widgets\controltemplate.js" />
-    <Compile Include="public\views\widgets\group.js" />
     <Compile Include="routes\user.js" />
     <Compile Include="routes\wol.js" />
     <Compile Include="server.js" />
@@ -76,12 +76,14 @@
     <Content Include="public\views\login.html" />
     <Content Include="README.md" />
     <Content Include="views\widgetstemplate.hbs" />
-    <Content Include="views\widgets\button.hbs" />
+    <Content Include="views\widgets\buttonView.hbs" />
     <Content Include="views\widgets\controltemplate.hbs" />
-    <Content Include="views\widgets\group.hbs" />
+    <Content Include="views\widgets\groupView.hbs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />
+    <Folder Include="public\javascripts\Controllers\" />
+    <Folder Include="public\javascripts\Controllers\Widgets\" />
     <Folder Include="routes\" />
     <Folder Include="public\javascripts\lib\" />
     <Folder Include="public\javascripts\widgets\" />

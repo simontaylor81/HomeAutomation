@@ -45,18 +45,26 @@ define(['lib/status-common'], function (statusCommon) {
     // Return widget object.
     return {
         // Widget initialisation function
-        init: function (name, params, widgetNodes) {
-            // Find the panels and buttons that refer to this device.
-            var panels = statusCommon.findStatusPanels(widgetNodes);
-            var buttons = statusCommon.findPowerButtons(widgetNodes);
+        init: function (name, params, widgets) {
 
             function setStatus(status) {
-                statusCommon.setPanelStatus(status, panels);
-                statusCommon.setPowerButtonStatus(status, buttons, {
-                    On: function() { powerOff(params); },
-                    Off: function() { powerOn(params); }
+                widgets.forEach(function (w) {
+                    if (w.setStatus) { w.setStatus(status); }
                 });
             }
+    
+            function doPowerAction(actionParams) {
+                if (actionParams === 'On') {
+                    powerOn(params);
+                } else if (actionParams === 'Off') {
+                    powerOff(params);
+                }
+            }
+
+            // Register for power actions.
+            widgets.forEach(function (w) {
+                w.on('power', doPowerAction);
+            });
 
             // Start with pending status.
             setStatus('Pending');

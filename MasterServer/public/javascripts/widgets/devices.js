@@ -7,12 +7,13 @@ define(['./power', './xbmc'], function (mcs, xbmc) {
     };
 
     // Module is a function that initialise all the given devices.
-    return function (devices, parentNode) {
+    return function (devices, allWidgets) {
         for (var deviceName in devices) {
             var deviceParams = devices[deviceName];
             if (deviceParams.type && deviceTypes[deviceParams.type]) {
                 // Find all widget for this device.
-                var widgets = parentNode.find('[data-ha-device=' + deviceName + ']');
+                //var widgets = parentNode.find('[data-ha-device=' + deviceName + ']');
+                var widgets = allWidgets.filter(function (w) { return w.device === deviceName; });
 
                 // Initialise the device.
                 deviceTypes[deviceParams.type].init(deviceName, deviceParams, widgets);

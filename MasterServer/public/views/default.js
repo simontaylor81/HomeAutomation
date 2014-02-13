@@ -14,8 +14,16 @@ define(['lib/page', './renderwidgets', 'widgets/devices'], function (page, rende
             // Set logged in state (shows logout and customise buttons).
             page.setLoggedIn(true);
 
-            pageContent.html(renderwidgets(data));
-            devices(data.devices, pageContent);
+            widgets = renderwidgets(data);
+            pageContent.html(widgets.html);
+
+            // Initialise widgets.
+            for (var i = 0; i < widgets.controllers.length; i++) {
+                var node = pageContent.find('#ha-widget-' + i);
+                widgets.controllers[i].init(node);
+            }
+
+            devices(data.devices, widgets.controllers);
         })
         .fail(function (jqxhr, textError, errorThrown) {
             if (jqxhr.status === 403) {

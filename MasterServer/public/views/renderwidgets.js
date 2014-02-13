@@ -1,19 +1,24 @@
 ﻿// Module for handling the rendering and initialisation of the different widget types.
-define(['handlebars', './widgets/group', './widgets/button', 'widgets/power', 'widgets/xbmc', './widgetstemplate.js'],
-function (Handlebars, groupPartial, buttonPartial, power, xbmc, widgetstemplate) {
-    // Widget partial templates.
-    var widgetPartials = {
-        button: buttonPartial,
-        group: groupPartial
-    };
+define([
+    'handlebars',
+    './widgets/groupview',
+    'controllers/widgets/groupcontroller',
+    './widgets/buttonview',
+    'controllers/widgets/buttoncontroller',
+    './widgetstemplate.js'],
+function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonController, widgetstemplate) {
 
-    // Simple helper for inserting common widget data attributes.
-    //Handlebars.registerHelper('widgetAttributes', function() {
-    //    var result = 'data-ha-widget-id="' + this.widgetId + '"';
-    //    if (this.device)
-    //        result += 'data-ha-device="' + this.device + '"';
-    //    return new Handlebars.SafeString(result);
-    //});
+    // Widget templates and controllers.
+    var widgetTypes = {
+        button: {
+            template: buttonPartial,
+            Controller: ButtonController
+        },
+        group: {
+            template: groupPartial,
+            Controller: GroupController
+        }
+    };
 
     // Create container element with widget attributes.
     function createWidgetContainer(id, device, innerHtml) {
@@ -28,16 +33,19 @@ function (Handlebars, groupPartial, buttonPartial, power, xbmc, widgetstemplate)
     // Template helper for rendering a widget using the appropriate partial.
     Handlebars.registerHelper('widget', function(options) {
         // Check the type is valid.
-        if (widgetPartials[this.type]) {
+        if (widgetTypes[this.type]) {
             // Assign a new widget id.
-            var id = options.data.widgetData.widgetCount++;
+            var id = options.data.widgetData.nextId++;
 
             // Augment context object with the id so the partial can access it.
             var newFrame = Handlebars.createFrame(this);
             newFrame.widgetId = id;
 
+            // Create controller and add to the list.
+            options.data.widgetData.controllers.push(new widgetTypes[this.type].Controller(this));
+
             // Run widget partial for this object, as defined by the type member.
-            var widgetHtml = widgetPartials[this.type](newFrame, options);
+            var widgetHtml = widgetTypes[this.type].template(newFrame, options);
 
             // Wrap in container element with identifying attributes.
             return new Handlebars.SafeString(createWidgetContainer(id, this.device, widgetHtml));
@@ -50,13 +58,17 @@ function (Handlebars, groupPartial, buttonPartial, power, xbmc, widgetstemplate)
         // Pass in object to collect generated widgets.
         var options = {
             data: {
-                widgetData: { widgetCount: 0 }
+                // Must wrap in sub-object to ensure we actually modify the original not a copy.
+                widgetData: {
+                    nextId: 0,
+                    controllers: []
+                }
             }
         };
 
+        // Render the template, collecting controllers as we go.
         html = widgetstemplate(data, options);
-        alert(options.data.widgetData.widgetCount + " widgets created");
 
-        return html;
+        return { html: html, controllers: options.data.widgetData.controllers };
     };
 });
