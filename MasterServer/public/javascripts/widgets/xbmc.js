@@ -1,5 +1,5 @@
 ﻿// Code for handling the XMBC status control.
-define(['lib/status-common'], function (statusCommon) {
+define(function () {
 
     // Return widget object.
     return {

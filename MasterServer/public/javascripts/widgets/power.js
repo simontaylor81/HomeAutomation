@@ -1,5 +1,5 @@
 ﻿// Controller for the media centre power on/off widget.
-define(['lib/status-common'], function (statusCommon) {
+define(function () {
 
     function powerOn(params) {
         // Send WOL request to the server.
