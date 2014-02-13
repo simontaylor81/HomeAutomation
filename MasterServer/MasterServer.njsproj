@@ -42,6 +42,7 @@
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />
     <Compile Include="public\javascripts\text.js" />
+    <Compile Include="public\javascripts\widgets\devices.js" />
     <Compile Include="public\javascripts\widgets\power.js" />
     <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
@@ -49,7 +50,11 @@
     <Compile Include="public\views\createaccount.js" />
     <Compile Include="public\views\default.js" />
     <Compile Include="public\views\login.js" />
+    <Compile Include="public\views\renderwidgets.js" />
+    <Compile Include="public\views\widgetstemplate.js" />
+    <Compile Include="public\views\widgets\button.js" />
     <Compile Include="public\views\widgets\controltemplate.js" />
+    <Compile Include="public\views\widgets\group.js" />
     <Compile Include="routes\user.js" />
     <Compile Include="routes\wol.js" />
     <Compile Include="server.js" />
@@ -70,7 +75,10 @@
     <Content Include="public\views\createaccount.html" />
     <Content Include="public\views\login.html" />
     <Content Include="README.md" />
+    <Content Include="views\widgetstemplate.hbs" />
+    <Content Include="views\widgets\button.hbs" />
     <Content Include="views\widgets\controltemplate.hbs" />
+    <Content Include="views\widgets\group.hbs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />

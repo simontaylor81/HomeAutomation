@@ -1,13 +1,6 @@
 ﻿// Code for handling the XMBC status control.
 define(['lib/status-common'], function (statusCommon) {
 
-    function setXbmcStatus(params, status) {
-        statusCommon.setStatus(status, params.container, {
-            On: function() { closeXbmc(params); },
-            Off: function() { startXbmc(params); }
-        });
-    }
-
     function xbmcRpc(params, method, success, failure) {
         var rpcid = 'HomeAutomationXBMC';
 
@@ -42,19 +35,16 @@ define(['lib/status-common'], function (statusCommon) {
         // Send JSONRPC ping request.
         xbmcRpc(params, 'JSONRPC.Ping',
             function (result) {
-                //appendLog(JSON.stringify(result));
                 callback(true);
             },
             function (error) {
-                //error && appendLog(JSON.stringify(error));
                 callback(false);
             });
     }
 
-    function updateXbmcStatus(params) {
+    function updateXbmcStatus(params, setStatus) {
         isXmbcAlive(params, function (isAlive) {
-            //appendLog(isAlive ? "XBMC Alive" : "XBMC Dead");
-            setXbmcStatus(params, isAlive ? 'On' : 'Off');
+            setStatus(isAlive ? 'On' : 'Off');
         });
     }
 
@@ -86,19 +76,30 @@ define(['lib/status-common'], function (statusCommon) {
 
     // Return widget object.
     return {
-        template: "controltemplate",
-
         // Widget initialisation function
-        init: function (params, div) {
-            // Save container element in the params object to save passing two things everywhere.
-            params.container = div;
+        init: function (name, params, widgets) {
+            // Find the panels and buttons that refer to this device.
+            var panels = statusCommon.findStatusPanels(widgets);
+            var buttons = statusCommon.findPowerButtons(widgets);
 
-            setXbmcStatus(params, 'Pending');
-            updateXbmcStatus(params);
-            setInterval(function(){ updateXbmcStatus(params); }, 2000);
+            function setStatus(status) {
+                statusCommon.setPanelStatus(status, panels);
+                statusCommon.setPowerButtonStatus(status, buttons, {
+                    On: function() { closeXbmc(params); },
+                    Off: function() { startXbmc(params); }
+                });
+            }
+
+            // Start with pending status.
+            setStatus('Pending');
+
+            // Update status immediately, and every second.
+            updateXbmcStatus(params, setStatus);
+            setInterval(function(){ updateXbmcStatus(params, setStatus); }, 1000);
 
             // Register kill button handler.
-            div.find('.ha-btn-killProcess').on('click', function () { killXbmc(params); });
+            // TODO
+            //widgetsNode.find('.ha-btn-killProcess').on('click', function () { killXbmc(params); });
         }
     };
 });

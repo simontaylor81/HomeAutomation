@@ -1,36 +1,52 @@
-﻿[
-	{
-		"widget": "power",
-		"params": {
-			"caption": "Alfred",
+﻿{
+	"devices": {
+		"alfred": {
+			"type": "mcs",
 			"url": "http://192.168.0.150:55343",
-			"mac": "00-23-AE-03-EE-55",
-			"buttons": [
+			"mac": "00-23-AE-03-EE-55"
+		},
+		"alfredXbmc": {
+			"type": "xbmc",
+			"url": "http://192.168.0.150:55343",
+			"xbmcPath": "C:\\Program Files (x86)\\XBMC\\XBMC.exe"
+		}
+	},
+	"widgets": [
+		{
+			"type": "group",
+			"caption": "Alfred",
+			"device": "alfred",
+			"status": true,
+			"children": [
 				{
-					"type": "mcPower",
+					"type": "button",
+					"device": "alfred",
 					"caption": "Power",
+					"action": "power",
 					"power": true
 				}
 			]
-		}
-	},
-	{
-		"widget": "xbmc",
-		"params": {
+		},
+		{
+			"type": "group",
+			"device":  "alfredXbmc",
+			"status":  true,
 			"caption": "XBMC",
-			"url": "http://192.168.0.150:55343",
-			"xbmcPath": "C:\\Program Files (x86)\\XBMC\\XBMC.exe",
-			"buttons": [
+			"children": [
 				{
-					"type": "xbmcPower",
+					"type": "button",
+					"device": "alfredXbmc",
 					"caption": "XBMC",
+					"action": "power",
 					"power": true
 				},
 				{
-					"type": "killProcess",
-					"caption": "Kill"
+					"type": "button",
+					"device": "alfredXbmc",
+					"caption": "Kill",
+					"action": "killXbmc"
 				}
 			]
 		}
-	}
-]
+	]
+}

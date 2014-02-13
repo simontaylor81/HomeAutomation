@@ -1,21 +1,11 @@
 ﻿// Controller for the media centre power on/off widget.
 define(['lib/status-common'], function (statusCommon) {
 
-    function setPowerStatus(params, status) {
-        statusCommon.setStatus(status, params.container, {
-            On: function() { powerOff(params); },
-            Off: function() { powerOn(params); }
-        });
-    }
-
     function powerOn(params) {
         // Send WOL request to the server.
         $.ajax({
             url: '/api/wol/' + params.mac,
             type: 'POST',
-            success: function (data) {
-                //appendLog('WOL sent: ' + data);
-            },
             error: function (xhr, status, error) {
                 alert('Failed to send WOL request: ' + status);
             }
@@ -26,9 +16,6 @@ define(['lib/status-common'], function (statusCommon) {
         $.ajax({
             url: params.url + '/api/sleep',
             type: 'POST',
-            success: function () {
-                //appendLog('Sleep request sent');
-            },
             error: function (xhr, status, error) {
                 alert('Failed to send sleep request: ' + status);
             }
@@ -44,32 +31,39 @@ define(['lib/status-common'], function (statusCommon) {
                 callback(true);
             },
             error: function (xhr, status, error) {
-                //alert('status: ' + status + '\n' + 'error: ' + error);
                 callback(false);
             }
         });
     }
 
-    function updateMediaCentreStatus(params) {
-        //appendLog('Checking status...');
+    function updateMediaCentreStatus(params, setStatus) {
         isMediaCentreAlive(params, function (isAlive) {
-            //appendLog(isAlive ? "Alive" : "Dead");
-            setPowerStatus(params, isAlive ? 'On' : 'Off');
+            setStatus(isAlive ? 'On' : 'Off');
         });
     }
 
     // Return widget object.
     return {
-        template: "controltemplate",
-
         // Widget initialisation function
-        init: function (params, div) {
-            // Save container element in the params object to save passing two things everywhere.
-            params.container = div;
+        init: function (name, params, widgetNodes) {
+            // Find the panels and buttons that refer to this device.
+            var panels = statusCommon.findStatusPanels(widgetNodes);
+            var buttons = statusCommon.findPowerButtons(widgetNodes);
 
-            setPowerStatus(params, 'Pending');
-            updateMediaCentreStatus(params);
-            setInterval(function(){ updateMediaCentreStatus(params); }, 1000);
+            function setStatus(status) {
+                statusCommon.setPanelStatus(status, panels);
+                statusCommon.setPowerButtonStatus(status, buttons, {
+                    On: function() { powerOff(params); },
+                    Off: function() { powerOn(params); }
+                });
+            }
+
+            // Start with pending status.
+            setStatus('Pending');
+
+            // Update status immediately, and every second.
+            updateMediaCentreStatus(params, setStatus);
+            setInterval(function(){ updateMediaCentreStatus(params, setStatus); }, 1000);
         }
     };
 });
