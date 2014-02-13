@@ -40,7 +40,6 @@
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\page.js" />
-    <Compile Include="public\javascripts\lib\status-common.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />
     <Compile Include="public\javascripts\text.js" />
