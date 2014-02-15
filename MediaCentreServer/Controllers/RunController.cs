@@ -12,11 +12,18 @@ namespace MediaCentreServer.Controllers
 	public class RunController : ApiController
 	{
 		// POST /api/run?path=...
-		public void Post(string path)
+		public HttpResponseMessage Post(string path)
 		{
 			var startInfo = new ProcessStartInfo(path);
-			startInfo.UseShellExecute = false;
-			Process.Start(startInfo);
+			try
+			{
+				Process.Start(startInfo);
+				return Request.CreateResponse(HttpStatusCode.NoContent);
+			}
+			catch (Exception)
+			{
+				return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Failed to launch process");
+			}
 		}
 	}
 }
