@@ -1,51 +1,51 @@
 ﻿// Controller for the media centre power on/off widget.
 define(function () {
 
-    function powerOn(params) {
-        // Send WOL request to the server.
-        $.ajax({
-            url: '/api/wol/' + params.mac,
-            type: 'POST',
-            error: function (xhr, status, error) {
-                alert('Failed to send WOL request: ' + status);
-            }
-        });
-    }
-    function powerOff(params) {
-        // Post request to media centre to go to sleep.
-        $.ajax({
-            url: params.url + '/api/sleep',
-            type: 'POST',
-            error: function (xhr, status, error) {
-                alert('Failed to send sleep request: ' + status);
-            }
-        });
-    }
-
-    function isMediaCentreAlive(params, callback) {
-        $.ajax({
-            url: params.url + '/api/isalive',
-            timeout: 1000,      // Short one second timeout -- it's a local network.
-            cache: false,       // No caching
-            success: function (data) {
-                callback(true);
-            },
-            error: function (xhr, status, error) {
-                callback(false);
-            }
-        });
-    }
-
-    function updateMediaCentreStatus(params, setStatus) {
-        isMediaCentreAlive(params, function (isAlive) {
-            setStatus(isAlive ? 'On' : 'Off');
-        });
-    }
-
-    // Return widget object.
+    // Return module object.
     return {
-        // Widget initialisation function
+        // Device initialisation function
         init: function (name, params, widgets) {
+
+            function powerOn() {
+                // Send WOL request to the server.
+                $.ajax({
+                    url: '/api/wol/' + params.mac,
+                    type: 'POST',
+                    error: function (xhr, status, error) {
+                        alert('Failed to send WOL request: ' + status);
+                    }
+                });
+            }
+            function powerOff() {
+                // Post request to media centre to go to sleep.
+                $.ajax({
+                    url: params.url + '/api/sleep',
+                    type: 'POST',
+                    error: function (xhr, status, error) {
+                        alert('Failed to send sleep request: ' + status);
+                    }
+                });
+            }
+
+            function isMediaCentreAlive(callback) {
+                $.ajax({
+                    url: params.url + '/api/isalive',
+                    timeout: 1000,      // Short one second timeout -- it's a local network.
+                    cache: false,       // No caching
+                    success: function (data) {
+                        callback(true);
+                    },
+                    error: function (xhr, status, error) {
+                        callback(false);
+                    }
+                });
+            }
+
+            function updateMediaCentreStatus(setStatus) {
+                isMediaCentreAlive(function (isAlive) {
+                    setStatus(isAlive ? 'On' : 'Off');
+                });
+            }
 
             function setStatus(status) {
                 widgets.forEach(function (w) {
@@ -55,9 +55,9 @@ define(function () {
     
             function doPowerAction(actionParams) {
                 if (actionParams === 'On') {
-                    powerOn(params);
+                    powerOn();
                 } else if (actionParams === 'Off') {
-                    powerOff(params);
+                    powerOff();
                 }
             }
 
@@ -81,8 +81,8 @@ define(function () {
             setStatus('Pending');
 
             // Update status immediately, and every second.
-            updateMediaCentreStatus(params, setStatus);
-            setInterval(function(){ updateMediaCentreStatus(params, setStatus); }, 1000);
+            updateMediaCentreStatus(setStatus);
+            setInterval(function(){ updateMediaCentreStatus(setStatus); }, 1000);
         }
     };
 });
