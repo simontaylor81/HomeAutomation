@@ -1,6 +1,8 @@
 ﻿// Controller for the media centre power on/off widget.
 define(function () {
 
+    var intervalHandle;
+
     // Return module object.
     return {
         // Device initialisation function
@@ -82,7 +84,12 @@ define(function () {
 
             // Update status immediately, and every second.
             updateMediaCentreStatus(setStatus);
-            setInterval(function(){ updateMediaCentreStatus(setStatus); }, 1000);
+            intervalHandle = setInterval(function(){ updateMediaCentreStatus(setStatus); }, 1000);
+        },
+        dispose: function () {
+            if (intervalHandle !== undefined) {
+                clearInterval(intervalHandle);
+            }
         }
     };
 });

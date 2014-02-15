@@ -3,11 +3,12 @@
 define(function () {
 
     var pageContent;
+    var currentView;
 
     $(document).ready(function(){
         // Grab references to the appropriate place in the DOM once it's ready.
         pageContent = $('#page-content');
-        if (!pageContent) {
+        if (pageContent.length === 0) {
             throw new Error("Couldn't find page-content element in DOM.");
         }
     });
@@ -19,13 +20,17 @@ define(function () {
             throw new Error('Cannot go to a page before the DOM is ready.');
         }
 
+        // Notify preview page we're leaving it.
+        if (currentView) {currentView.exit(); }
+
         // Clear any existing content.
         pageContent.html('');
 
         // Load the pages script.
         require(['views/' + newPage], function (view) {
             // Initialise it.
-            view(pageContent);
+            view.enter(pageContent);
+            currentView = view;
         });
     }
 

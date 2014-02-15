@@ -20,7 +20,7 @@ require(['lib/page'], function (page) {
     $(document).ready(function () {
         // Navbar links
         $("#id-navbar-logout").click(onClick(logout));
-        $("#id-navbar-customise").click(onClick(function(){}));
+        $("#id-navbar-customise").click(onClick(function () { page('customise'); }));
 
         // Start at the index page. Will auto-redirect to login if not already logged in.
         page('default');

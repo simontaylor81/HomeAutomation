@@ -1,6 +1,8 @@
 ﻿// Code for handling the XMBC status control.
 define(function () {
 
+    var intervalHandle;
+
     // Return widget object.
     return {
         // Widget initialisation function
@@ -108,7 +110,12 @@ define(function () {
 
             // Update status immediately, and every second.
             updateXbmcStatus(setStatus);
-            setInterval(function(){ updateXbmcStatus(setStatus); }, 1000);
+            intervalHandle = setInterval(function(){ updateXbmcStatus(setStatus); }, 1000);
+        },
+        dispose: function () {
+            if (intervalHandle !== undefined) {
+                clearInterval(intervalHandle);
+            }
         }
     };
 });

@@ -1,5 +1,5 @@
-﻿// The main view that shows the user's widgets.
-define(['lib/page', './renderwidgets', 'widgets/devices'], function (page, renderwidgets, devices) {
+﻿// View that allows the user to customise their widgets.
+define(['lib/page', 'text!views/customise.html', './renderwidgets'], function (page, html, renderwidgets) {
 
     // Module object
     return {
@@ -15,16 +15,12 @@ define(['lib/page', './renderwidgets', 'widgets/devices'], function (page, rende
                 // Set logged in state (shows logout and customise buttons).
                 page.setLoggedIn(true);
 
+                // Set page content to the loaded html.
+                pageContent.html(html);
+
+                // Render initial widgets and add to page.
                 var widgets = renderwidgets(data);
-                pageContent.html(widgets.html);
-
-                // Initialise widgets.
-                for (var i = 0; i < widgets.controllers.length; i++) {
-                    var node = pageContent.find('#ha-widget-' + i);
-                    widgets.controllers[i].init(node);
-                }
-
-                devices.init(data.devices, widgets.controllers);
+                $('#widget-preview', pageContent).html(widgets.html);
             })
             .fail(function (jqxhr, textError, errorThrown) {
                 if (jqxhr.status === 403) {
@@ -35,9 +31,6 @@ define(['lib/page', './renderwidgets', 'widgets/devices'], function (page, rende
                 }
             });
         },
-        exit: function() {
-            // Clean up devices.
-            devices.dispose();
-        }
+        exit: function () {}
     };
 });

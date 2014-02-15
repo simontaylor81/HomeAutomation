@@ -6,18 +6,26 @@ define(['./power', './xbmc'], function (mcs, xbmc) {
         xbmc: xbmc
     };
 
-    // Module is a function that initialise all the given devices.
-    return function (devices, allWidgets) {
-        for (var deviceName in devices) {
-            var deviceParams = devices[deviceName];
-            if (deviceParams.type && deviceTypes[deviceParams.type]) {
-                // Find all widget for this device.
-                //var widgets = parentNode.find('[data-ha-device=' + deviceName + ']');
-                var widgets = allWidgets.filter(function (w) { return w.device === deviceName; });
+    // Module object.
+    return {
+        // Initialise all the given devices.
+        init: function (devices, allWidgets) {
+            for (var deviceName in devices) {
+                var deviceParams = devices[deviceName];
+                if (deviceParams.type && deviceTypes[deviceParams.type]) {
+                    // Find all widget for this device.
+                    var widgets = allWidgets.filter(function (w) { return w.device === deviceName; });
 
-                // Initialise the device.
-                deviceTypes[deviceParams.type].init(deviceName, deviceParams, widgets);
+                    // Initialise the device.
+                    deviceTypes[deviceParams.type].init(deviceName, deviceParams, widgets);
+                }
             }
+        },
+        dispose: function () {
+            // Allow all devices to clean up after themselves.
+            for (var dt in deviceTypes) {
+                deviceTypes[dt].dispose();
+            };
         }
     };
 });
