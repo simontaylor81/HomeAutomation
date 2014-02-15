@@ -7,24 +7,17 @@ helpers = this.merge(helpers, Handlebars.helpers); data = data || {};
 
 function program1(depth0,data) {
   
-  
-  return " ha-btn-power";
+  var buffer = "", stack1;
+  buffer += "<span class=\"fa fa-";
+  if (stack1 = helpers.icon) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = (depth0 && depth0.icon); stack1 = typeof stack1 === functionType ? stack1.call(depth0, {hash:{},data:data}) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\"></span>";
+  return buffer;
   }
 
-function program3(depth0,data) {
-  
-  
-  return "<span class=\"fa fa-power-off\"></span>";
-  }
-
-  buffer += "<button type=\"button\" class=\"btn btn-lg ha-btn ha-btn-";
-  if (stack1 = helpers.type) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
-  else { stack1 = (depth0 && depth0.type); stack1 = typeof stack1 === functionType ? stack1.call(depth0, {hash:{},data:data}) : stack1; }
-  buffer += escapeExpression(stack1);
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.power), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
-  if(stack1 || stack1 === 0) { buffer += stack1; }
-  buffer += "\">\r\n    ";
-  stack1 = helpers['if'].call(depth0, (depth0 && depth0.power), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  buffer += "<button type=\"button\" class=\"btn btn-lg ha-btn\">\r\n    ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.icon), {hash:{},inverse:self.noop,fn:self.program(1, program1, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n    ";
   if (stack1 = helpers.caption) { stack1 = stack1.call(depth0, {hash:{},data:data}); }

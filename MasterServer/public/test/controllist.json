@@ -23,7 +23,7 @@
 					"device": "alfred",
 					"caption": "Power",
 					"action": "power",
-					"power": true
+					"icon": "power-off"
 				}
 			]
 		},
@@ -38,7 +38,7 @@
 					"device": "alfredXbmc",
 					"caption": "XBMC",
 					"action": "power",
-					"power": true
+					"icon": "power-off"
 				},
 				{
 					"type": "button",
