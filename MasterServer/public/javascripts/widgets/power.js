@@ -61,9 +61,20 @@ define(function () {
                 }
             }
 
-            // Register for power actions.
+            function doLaunchAction(path) {
+                alert(path);
+                $.ajax({
+                    url: params.url + '/api/run?path=' + path,
+                    type: 'POST'
+                });
+            }
+
             widgets.forEach(function (w) {
+                // Register for power actions.
                 w.on('power', doPowerAction);
+
+                // Register for launch actions.
+                w.on('launch', doLaunchAction);
             });
 
             // Start with pending status.

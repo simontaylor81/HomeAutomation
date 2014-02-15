@@ -24,6 +24,13 @@
 					"caption": "Power",
 					"action": "power",
 					"icon": "power-off"
+				},
+				{
+					"type": "button",
+					"device": "alfred",
+					"caption": "BBC Sport",
+					"action": "launch",
+					"param": "http://www.bbc.co.uk/sport/"
 				}
 			]
 		},

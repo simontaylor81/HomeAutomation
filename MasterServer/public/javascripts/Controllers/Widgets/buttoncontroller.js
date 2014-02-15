@@ -18,7 +18,7 @@ define(function () {
             var self = this;
             this.buttonNode.on('click', function () {
                 // No params.
-                self.fireEvent(self.data.action);
+                self.fireEvent(self.data.action, self.data.param);
             });
         }
     };
