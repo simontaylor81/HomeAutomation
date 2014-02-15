@@ -5,9 +5,9 @@ define(['lib/page', './renderwidgets', 'widgets/devices'], function (page, rende
     return function (pageContent) {
         // Load list of widgets.
         $.ajax({
-            //url: 'user/widgets',
+            url: 'user/widgets',
             // TEMP!
-            url: 'test/controllist.json',
+            //url: 'test/controllist.json',
             cache: false
         })
         .success(function (data) {
