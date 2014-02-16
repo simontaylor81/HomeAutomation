@@ -26,11 +26,26 @@ define(function () {
         // Clear any existing content.
         pageContent.html('');
 
+        // The default and login pages are just the base URL, so don't set the hash for them.
+        if (newPage !== 'default' && newPage !=='login') {
+            window.location.hash = "#" + newPage;
+        } else {
+            window.location.hash = "";
+        }
+
         // Load the pages script.
         require(['views/' + newPage], function (view) {
             // Initialise it.
             view.enter(pageContent);
             currentView = view;
+        }, function (err) {
+            // Error callback
+            // The error has a list of modules that failed
+            var failedId = err.requireModules && err.requireModules[0];
+            if (failedId === 'views/' + newPage) {
+                // Could not find page, so redirect to default.
+                goto('default');
+            }
         });
     }
 
@@ -42,7 +57,7 @@ define(function () {
         // Show/hide navbar elements based on page params.
         $('.ha-hide-loggedin').toggleClass('ha-hidden', !!loggedIn);
         $('.ha-hide-notloggedin').toggleClass('ha-hidden', !loggedIn);
-    }
+    };
 
     return goto;
 });
