@@ -15,17 +15,17 @@ requirejs.config({
 });
 
 // Require necessary modules.
-require(['lib/page'], function (page) {
+require(['lib/page', 'lib/util'], function (page, util) {
 
     $(document).ready(function () {
         // Navbar links
-        $("#id-navbar-logout").click(onClick(logout));
+        $("#id-navbar-logout").click(util.preventDefaultEvent(logout));
 
         $('a').filter(function () {
             var href = $(this).attr('href');
             return href.indexOf('#') === 0 && href.length > 1;
         })
-        .click(onClick(function () {
+        .click(util.preventDefaultEvent(function () {
             page($(this).attr('href').slice(1));
         }));
 
@@ -38,14 +38,6 @@ require(['lib/page'], function (page) {
             page('default');
         }
     });
-
-    function onClick(handler) {
-        return function (event) {
-            // Don't actually follow the link.
-            event.preventDefault();
-            handler.call(this, event);
-        }
-    }
 
     function logout() {
         // POST logout

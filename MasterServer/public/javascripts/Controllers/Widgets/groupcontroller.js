@@ -9,7 +9,7 @@ define(function () {
     // Initialise the widget.
     GroupController.prototype.init = function (node) {
         this.node = node;
-        this.panelNode = node.children('.ha-panel-status');
+        this.panelNode = node.children('.ha-panel');
     };
 
     // Register for events.
@@ -31,6 +31,22 @@ define(function () {
         // Set status text.
         this.node.find('.ha-status-text').html(status);
     };
+
+    // Get the customisable settings for this widget type.
+    GroupController.prototype.getCustomisableProperties = function () {
+        return [
+            {
+                property: 'caption',
+                type: 'text',
+                friendly: 'Caption'
+            },
+            {
+                property: 'status',
+                type: 'bool',
+                friendly: 'Show Status'
+            }
+        ];
+    }
 
     // Module object is the contructor function.
     return GroupController;

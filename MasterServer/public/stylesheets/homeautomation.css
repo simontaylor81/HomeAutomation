@@ -9,11 +9,14 @@
     border-bottom: none;
 }
 
-/* The 'everything is ok' style. */
-.ha-green > .panel-heading {
+/* The 'everything is ok' style.
+    Use this for previewing as well. */
+.ha-green > .panel-heading,
+.ha-widget-preview .panel-heading {
     background-color: #7cad12;
 }
-.ha-green.panel {
+.ha-green.panel,
+.ha-widget-preview .ha-panel {
     border-color: #7cad12;
 }
 

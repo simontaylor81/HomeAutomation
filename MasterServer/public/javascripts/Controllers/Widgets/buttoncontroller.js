@@ -68,6 +68,22 @@ define(function () {
         }
     };
 
+    // Get the customisable settings for this widget type.
+    ButtonController.prototype.getCustomisableProperties = function () {
+        return [
+            {
+                property: 'caption',
+                type: 'text',
+                friendly: 'Caption'
+            },
+            {
+                property: 'icon',
+                type: 'text',
+                friendly: 'Icon'
+            }
+        ];
+    }
+
     // Module object is the contructor function.
     return ButtonController;
 });

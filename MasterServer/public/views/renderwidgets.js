@@ -23,7 +23,7 @@ function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonContro
     // Create container element with widget attributes.
     function createWidgetContainer(id, device, innerHtml) {
         // Use span not div as div creates a block.
-        var result = '<span id="ha-widget-' + id + '"';
+        var result = '<span id="ha-widget-' + id + '" class="ha-widget-container"';
         if (device)
             result += ' data-ha-device="' + device + '"';
         result += '>' + innerHtml + '</span>';

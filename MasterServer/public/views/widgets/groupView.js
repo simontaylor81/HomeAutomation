@@ -13,6 +13,12 @@ function program1(depth0,data) {
 
 function program3(depth0,data) {
   
+  
+  return ": <span class=\"ha-status-text\">";
+  }
+
+function program5(depth0,data) {
+  
   var stack1;
   if (stack1 = helpers.widget) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = (depth0 && depth0.widget); stack1 = typeof stack1 === functionType ? stack1.call(depth0, {hash:{},data:data}) : stack1; }
@@ -26,8 +32,11 @@ function program3(depth0,data) {
   if (stack1 = helpers.caption) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = (depth0 && depth0.caption); stack1 = typeof stack1 === functionType ? stack1.call(depth0, {hash:{},data:data}) : stack1; }
   buffer += escapeExpression(stack1)
-    + ": <span class=\"ha-status-text\"></span>\r\n		</h3>\r\n	</div>\r\n	<div class=\"panel-body\">\r\n		";
-  stack1 = helpers.each.call(depth0, (depth0 && depth0.children), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+    + " ";
+  stack1 = helpers['if'].call(depth0, (depth0 && depth0.status), {hash:{},inverse:self.noop,fn:self.program(3, program3, data),data:data});
+  if(stack1 || stack1 === 0) { buffer += stack1; }
+  buffer += "</span>\r\n		</h3>\r\n	</div>\r\n	<div class=\"panel-body\">\r\n		";
+  stack1 = helpers.each.call(depth0, (depth0 && depth0.children), {hash:{},inverse:self.noop,fn:self.program(5, program5, data),data:data});
   if(stack1 || stack1 === 0) { buffer += stack1; }
   buffer += "\r\n	</div>\r\n</div>\r\n";
   return buffer;
