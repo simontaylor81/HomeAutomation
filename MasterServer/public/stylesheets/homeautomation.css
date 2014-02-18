@@ -66,6 +66,11 @@
     font-weight: bold;
 }
 
+/* Highlight selected widgets. */
+.ha-selected-widget > * {
+    outline: 2px solid red !important;
+}
+
 /* Login form stuff taken from http://getbootstrap.com/examples/signin/ */
 .form-signin {
     background: #f8f8f8;

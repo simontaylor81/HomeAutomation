@@ -14,17 +14,23 @@ define(['lib/page', 'lib/util', 'text!views/customise.html', './renderwidgets'],
             var widgetId = $(this).attr('id').slice(10);
             var controller = renderedWidgets.controllers[widgetId];
 
-            setSelected(controller);
+            setSelected(controller, $(this));
 
             // Don't propagate up the tree -- only want to select the top-most widget.
             event.stopPropagation();
         }));
     }
 
-    function setSelected(controller) {
+    function setSelected(controller, node) {
         var panel = $('#selected-widget-panel', parentNode);
 
+        // Clear any existing selected class.
+        $('.ha-widget-container', parentNode).removeClass('ha-selected-widget');
+
         if (controller) {
+            // Set selected class on this widget.
+            node.addClass('ha-selected-widget');
+
             // Show the details panel.
             panel.show();
 
@@ -39,18 +45,49 @@ define(['lib/page', 'lib/util', 'text!views/customise.html', './renderwidgets'],
                 tableBody
                     .append($('<tr>')
                         .append($('<td>').html(prop.friendly))
-                        .append($('<td>').append(getEditControl(prop.type, controller.data[prop.property])))
+                        .append($('<td>').append(
+                            getEditControl(prop.type).attr('data-bind', prop.property)))
                     );
             });
+
+            // Hook up bound elements.
+            initDataBinding(tableBody, controller.data, updatePreview);
         } else {
             // Hide the details panel.
             panel.hide();
         }
     }
 
-    function getEditControl(type, value) {
-        // TEMP
-        return value;
+    function getEditControl(type) {
+        if (type === 'text') {
+            // Text input
+            return $('<input type="text" class="form-control">');
+        } else if (type === 'bool') {
+            // Checkbox for bools.
+            return $('<input type="checkbox">');
+        }
+    }
+
+    function initDataBinding(parent, context, onChanged) {
+        // Text inputs.
+        parent.find('input[type=text][data-bind]')
+            // Set value to current value in context.
+            .val(function () { return context[$(this).attr('data-bind')]; })
+            // Update context when the value changes.
+            .change(function () {
+                context[$(this).attr('data-bind')] = $(this).val();
+                onChanged();
+            });
+
+        // Checkboxes.
+        parent.find('input[type=checkbox][data-bind]')
+            // Set value to current value in context.
+            .prop('checked', function () { return context[$(this).attr('data-bind')]; })
+            // Update context when the value changes.
+            .change(function () {
+                context[$(this).attr('data-bind')] = $(this).prop('checked');
+                onChanged();
+            });
     }
 
     // Action functions for links on the page.
@@ -83,6 +120,12 @@ define(['lib/page', 'lib/util', 'text!views/customise.html', './renderwidgets'],
                 actions[action]();
             }
         });
+
+        // Clicking somewhere not on a widget clears selection.
+        parentNode.click(function () { setSelected(null); });
+
+        // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
+        $('#edit-pane').click(function (event) { event.stopPropagation(); });
     }
 
     // Module object
