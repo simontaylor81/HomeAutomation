@@ -4,8 +4,8 @@
     <div id="edit-pane" class="col-sm-4">
         <div class="panel panel-default">
             <div class="panel-heading">Actions</div>
-            <div class="panel-body">
-                <a href="#" data-action="addGroup">Add group</a>
+            <div class="panel-body" data-context="actions">
+                {{#each this}}<div><a href="#" data-action="{{action}}">{{label}}</a></div>{{/each}}
             </div>
         </div>
         <div id="selected-widget-panel" class="panel panel-default">

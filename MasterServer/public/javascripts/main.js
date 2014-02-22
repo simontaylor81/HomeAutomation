@@ -5,7 +5,7 @@ requirejs.config({
     baseUrl: 'javascripts',
     paths: {
         views: '../views',
-        handlebars: 'lib/handlebars.runtime-v1.1.2'
+        handlebars: 'lib/handlebars-v1.1.2'
     },
     shim: {
         'handlebars': {
