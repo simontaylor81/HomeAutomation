@@ -4,9 +4,14 @@
     <div id="edit-pane" class="col-sm-4">
         <div class="panel panel-default">
             <div class="panel-heading">Actions</div>
-            <div class="panel-body" data-context="actions">
-                {{#each this}}<div><a href="#" data-action="{{action}}">{{label}}</a></div>{{/each}}
+            <div class="panel-body" data-bind-each="actions">
+                <div><a href="#" data-action="action" data-bind-text="label"></a></div>
             </div>
+            <p>
+                <span data-bind-text="test"></span>
+                <br>
+                <input type="text" data-bind-value="test">
+            </p>
         </div>
         <div id="selected-widget-panel" class="panel panel-default">
             <div class="panel-heading">Selected Widget</div>

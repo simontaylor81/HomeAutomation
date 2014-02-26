@@ -1,6 +1,6 @@
 ﻿// View that allows the user to customise their widgets.
-define(['lib/page', 'lib/util', 'text!views/customise.html', './renderwidgets', 'handlebars'],
-function (page, util, html, renderwidgets, Handlebars) {
+define(['lib/page', 'lib/util', 'lib/databind', 'text!views/customise.html', './renderwidgets', 'handlebars'],
+function (page, util, databind, html, renderwidgets, Handlebars) {
 
     var widgetData;
     var parentNode;
@@ -9,6 +9,9 @@ function (page, util, html, renderwidgets, Handlebars) {
     // Data model, used for binding.
     var model = {
         actions: getActions,
+
+        // TEMP
+        test: "This is a test",
 
         addGroup: function () {
             // Add new group widget.
@@ -89,7 +92,7 @@ function (page, util, html, renderwidgets, Handlebars) {
         }
 
         // Update data binding -- available actions may have changed.
-        updateDataBinding();
+        databind.updateBindings();
     }
 
     function getActions() {
@@ -122,56 +125,6 @@ function (page, util, html, renderwidgets, Handlebars) {
         }
     }
 
-    var bindings = [];
-
-    function initPageDataBinding(parent, rootContext) {
-        // Find elments with a data context.
-        var boundContainers = $('[data-context]', parent);
-        boundContainers.each(function () {
-            // Find context for this container.
-            var contextIdentifier = $(this).attr('data-context');
-
-            // Contents of the container are the handlebars template.
-            var template = Handlebars.compile($(this).html());
-
-            // Add this to the list of bindings that need to be updated.
-            bindings.push({
-                element: this,
-                // Store function to retrieve context rather than context itself in case it changes.
-                getContext: function () { return rootContext[contextIdentifier]; },
-                template: template,
-                rootContext: rootContext
-            });
-        });
-
-        // Update bindings now.
-        updateDataBinding();
-    }
-
-    function updateDataBinding() {
-        bindings.forEach(function (binding) {
-            // Get context object.
-            var context = binding.getContext();
-            if (typeof context === 'function') {
-                context = context();
-            }
-
-            // Re-run template.
-            // Only one-way binding for now.
-            $(binding.element)
-                .html(binding.template(context))
-
-                // Hook up links to actions.
-                .find('a[data-action]')
-                    .click(util.preventDefaultEvent(function (event) {
-                        var action = $(this).attr('data-action');
-                        if (binding.rootContext[action]) {
-                            binding.rootContext[action](event);
-                        }
-                    }));
-        });
-    }
-
     function initDataBinding(parent, context, onChanged) {
         // Text inputs.
         parent.find('input[type=text][data-bind]')
@@ -198,7 +151,7 @@ function (page, util, html, renderwidgets, Handlebars) {
         setSelected(null);
 
         // Set up data binding.
-        initPageDataBinding(parentNode, model);
+        databind.initBinding(parentNode, model);
 
         // Clicking somewhere not on a widget clears selection.
         parentNode.click(function () { setSelected(null); });
