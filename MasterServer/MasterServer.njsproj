@@ -37,9 +37,11 @@
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
+    <Compile Include="public\javascripts\lib\databind.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\page.js" />
+    <Compile Include="public\javascripts\lib\pathval.js" />
     <Compile Include="public\javascripts\lib\util.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />

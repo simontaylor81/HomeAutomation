@@ -8,34 +8,39 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
     // Data model, used for binding.
     var model = {
-        actions: getActions,
+        actions: { get: getActions },
 
         // TEMP
-        test: "This is a test",
-
-        addGroup: function () {
-            // Add new group widget.
-            widgetData.widgets.push({
-                "type": "group",
-                "caption": "New Group",
-                "status": false,
-                "children": []
-            });
-
-            // Refresh preview.
-            updatePreview();
+        test: {
+            val: "This is a test",
+            get: function () { return this.val; },
+            set: function (value) { this.val = value; }
         },
-
-        addButton: function () {
-            selectedWidget.data.children.push({
-                type: "button",
-                caption: "New Button",
-            });
-
-            // Refresh preview.
-            updatePreview();
-        }
+        testBool: true
     };
+
+    function addGroup() {
+        // Add new group widget.
+        widgetData.widgets.push({
+            "type": "group",
+            "caption": "New Group",
+            "status": false,
+            "children": []
+        });
+
+        // Refresh preview.
+        updatePreview();
+    }
+
+    function addButton() {
+        selectedWidget.data.children.push({
+            type: "button",
+            caption: "New Button",
+        });
+
+        // Refresh preview.
+        updatePreview();
+    }
 
     function updatePreview() {
         var renderedWidgets = renderwidgets(widgetData);
@@ -99,7 +104,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         // Actions that are always available.
         var actions = [
             {
-                action: "addGroup",
+                action: addGroup,
                 label: "Add Group"
             }
         ];
@@ -107,7 +112,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         // For groups, we can also add a button to the group.
         if (selectedWidget && selectedWidget.data.type === 'group') {
             actions.push({
-                action: "addButton",
+                action: addButton,
                 label: "Add Button"
             });
         }

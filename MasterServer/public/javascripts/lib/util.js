@@ -5,8 +5,12 @@
             return function (event) {
                 event.preventDefault();
                 handler.call(this, event);
-            }
-        }
+            };
+        },
 
+        // Is a variable undefined?
+        isUndefined: function (obj) {
+            return typeof obj === 'undefined';
+        }
     };
 });

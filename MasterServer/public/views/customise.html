@@ -5,12 +5,15 @@
         <div class="panel panel-default">
             <div class="panel-heading">Actions</div>
             <div class="panel-body" data-bind-each="actions">
-                <div><a href="#" data-action="action" data-bind-text="label"></a></div>
+                <div><a href="#" data-bind-click="action" data-bind-text="label"></a></div>
             </div>
             <p>
                 <span data-bind-text="test"></span>
                 <br>
                 <input type="text" data-bind-value="test">
+            </p>
+            <p>
+                <input type="checkbox" data-bind-checked="testBool"><span data-bind-text="testBool">Binding failed</span>
             </p>
         </div>
         <div id="selected-widget-panel" class="panel panel-default">
