@@ -46,7 +46,7 @@ define(function () {
                 friendly: 'Show Status'
             }
         ];
-    }
+    };
 
     // Module object is the contructor function.
     return GroupController;

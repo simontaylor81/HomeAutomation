@@ -34,7 +34,7 @@ define(function () {
 
     ButtonController.prototype.fireEvent = function (event, params) {
         if (this.eventCallbacks[event]) {
-            this.eventCallbacks[event].forEach(function (c) { c(params) });
+            this.eventCallbacks[event].forEach(function (c) { c(params); });
         }
     };
 
@@ -56,8 +56,8 @@ define(function () {
             var self = this;
             var clickAction =
             {
-                On: function () { self.fireEvent('power', 'Off') },
-                Off: function () { self.fireEvent('power', 'On') },
+                On: function () { self.fireEvent('power', 'Off'); },
+                Off: function () { self.fireEvent('power', 'On'); },
             }[status];
 
             // Set click function to appropriate action.
@@ -82,7 +82,7 @@ define(function () {
                 friendly: 'Icon'
             }
         ];
-    }
+    };
 
     // Module object is the contructor function.
     return ButtonController;
