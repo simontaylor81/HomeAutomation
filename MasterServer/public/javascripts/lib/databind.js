@@ -97,7 +97,6 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
             console.log('Could not bind value: ' + this.path);
         }
 
-        // Only update if actually changed to avoid losing caret position when typing.
         if (this.element.prop('checked') !== newVal) {
             this.element.prop('checked', newVal);
         }
@@ -125,9 +124,27 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         this.children = [];
         appendBindings(element.children(), context, this.children);
     }
+    ClickBinding.prototype.update = function () {
+        // Nothing to update ourselves, just recurse to children.
+        this.children.forEach(function (child) { child.update(); });
+    };
 
-    // Nothing to update.
-    ClickBinding.prototype.update = function () {};
+    function VisibilityBinding(element, context) {
+        this.element = element;
+        this.context = context;
+        this.path = element.attr('data-bind-visibility');
+
+        // Look for children.
+        this.children = [];
+        appendBindings(element.children(), context, this.children);
+    }
+    VisibilityBinding.prototype.update = function () {
+        var visibility = getModelProp(this.context, this.path);
+        this.element.toggle(Boolean(visibility));
+
+        // Recurse to children.
+        this.children.forEach(function (child) { child.update(); });
+    };
 
     // A binding that generates its contents once for each item in an array.
     function EachBinding(element, context) {
@@ -198,6 +215,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
                 if (element.hasAttr('data-bind-click')) {
                     bindings.push(new ClickBinding(element, context));
+                }
+                if (element.hasAttr('data-bind-visibility')) {
+                    bindings.push(new VisibilityBinding(element, context));
                 }
             }
 
