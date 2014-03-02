@@ -225,37 +225,6 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         });
     }
 
-    // Set up event handlers to update the model based on user input.
-//    function initReverseBinding(binding) {
-//        var currentContext = getCurrentContext(binding);
-//        var element = $(binding.element);
-
-//        // Text inputs.
-//        element.find('input[type=text][data-bind]')
-//            // Set value to current value in context.
-//            .val(function () { return currentContext[$(this).attr('data-bind')]; })
-//            // Update context when the value changes.
-//            .on('input', function (event) {
-//                setInModel(binding, $(this).attr('data-bind'), $(this).val());
-
-//                // When the value changes, we need to re-compute bindings,
-//                // as other stuff may depend on the value.
-//                // TODO: update just this binding?
-//                updateBindings();
-//                //onChanged();
-//            });
-
-//        // Checkboxes.
-////        parent.find('input[type=checkbox][data-bind]')
-////            // Set value to current value in context.
-////            .prop('checked', function () { return context[$(this).attr('data-bind')]; })
-////            // Update context when the value changes.
-////            .change(function () {
-////                context[$(this).attr('data-bind')] = $(this).prop('checked');
-////                onChanged();
-////            });
-//    }
-
     // Module object.
     return {
         initBinding: initBinding,
