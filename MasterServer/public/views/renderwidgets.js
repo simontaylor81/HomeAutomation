@@ -42,7 +42,11 @@ function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonContro
             newFrame.widgetId = id;
 
             // Create controller and add to the list.
-            options.data.widgetData.controllers.push(new widgetTypes[this.type].Controller(this));
+            var newController = new widgetTypes[this.type].Controller(this);
+            options.data.widgetData.controllers.push(newController);
+
+            // Set id for convenience.
+            newController.id = id;
 
             // Run widget partial for this object, as defined by the type member.
             var widgetHtml = widgetTypes[this.type].template(newFrame, options);

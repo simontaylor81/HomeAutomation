@@ -4,11 +4,15 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
     var widgetData;
     var parentNode;
-    var selectedWidget = null;
 
     // Data model, used for binding.
     var model = {
         actions: { get: getActions },
+        selectedWidget: {
+            val: null,
+            get: function () { return this.val; },
+            set: setSelected
+        },
 
         // TEMP
         test: {
@@ -33,7 +37,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
     }
 
     function addButton() {
-        selectedWidget.data.children.push({
+        model.selectedWidget.get().data.children.push({
             type: "button",
             caption: "New Button",
         });
@@ -52,34 +56,32 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             var widgetId = $(this).attr('id').slice(10);
             var controller = renderedWidgets.controllers[widgetId];
 
-            setSelected(controller, $(this));
+            model.selectedWidget.set(controller);
 
             // Don't propagate up the tree -- only want to select the top-most widget.
             event.stopPropagation();
         }));
     }
 
-    function setSelected(controller, node) {
-        selectedWidget = controller;
+    function setSelected(controller) {
+        this.val = controller;
         var panel = $('#selected-widget-panel', parentNode);
 
         // Clear any existing selected class.
         $('.ha-widget-container', parentNode).removeClass('ha-selected-widget');
 
-        if (selectedWidget) {
+        if (controller) {
             // Set selected class on this widget.
-            node.addClass('ha-selected-widget');
-
-            // Show the details panel.
-            panel.show();
+            $('#ha-widget-' + controller.id).addClass('ha-selected-widget');
 
             var tableBody = $('tbody', panel)
 
             // Add type row (handled specially as it is read-only, and common to all widgets).
-            tableBody.html('<tr><td>Type</td><td>' + selectedWidget.data.type + '</td></tr>');
+            //tableBody.html('<tr><td>Type</td><td>' + controller.data.type + '</td></tr>');
+            tableBody.html('');
 
             // Get the customisable properties for this widget.
-            var props = selectedWidget.getCustomisableProperties();
+            var props = controller.getCustomisableProperties();
             props.forEach(function (prop) {
                 tableBody
                     .append($('<tr>')
@@ -90,10 +92,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             });
 
             // Hook up bound elements.
-            initDataBinding(tableBody, selectedWidget.data, updatePreview);
-        } else {
-            // Hide the details panel.
-            panel.hide();
+            initDataBinding(tableBody, controller.data, updatePreview);
         }
 
         // Update data binding -- available actions may have changed.
@@ -110,7 +109,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         ];
 
         // For groups, we can also add a button to the group.
-        if (selectedWidget && selectedWidget.data.type === 'group') {
+        if (model.selectedWidget.get() && model.selectedWidget.get().data.type === 'group') {
             actions.push({
                 action: addButton,
                 label: "Add Button"
@@ -153,13 +152,11 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
     }
 
     function initPage() {
-        setSelected(null);
-
         // Set up data binding.
         databind.initBinding(parentNode, model);
 
         // Clicking somewhere not on a widget clears selection.
-        parentNode.click(function () { setSelected(null); });
+        parentNode.click(function () { model.selectedWidget.set(null); });
 
         // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
         $('#edit-pane').click(function (event) { event.stopPropagation(); });

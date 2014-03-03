@@ -22,13 +22,16 @@ TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR TH
 /*
 
 Source: https://github.com/chaijs/pathval
-Modified by Simon Taylor: Converted to AMD module convention to allow use in browser using require.js
+Modified by Simon Taylor:
+ * Converted to AMD module convention to allow use in browser using require.js
+ * Adapted to all for get() and set() accessors.
+ * Added ability to call (parameterless) functions.
 
 */
 
 define(function () {
 
-    var exports = {};
+var exports = {};
 
 
 /**
@@ -125,12 +128,17 @@ exports.parse = function(path) {
   var str = (path || '').replace(/\[/g, '.[');
   var parts = str.match(/(\\\.|[^.]+?)+/g);
   var re = /\[(\d+)\]$/;
+  var fnRe = /(.*)\(\)$/
   var ret = [];
   var mArr = null;
+  var mFn = null;
 
   for (var i = 0, len = parts.length; i < len; i++) {
     mArr = re.exec(parts[i]);
-    ret.push(mArr ? { i: parseFloat(mArr[1]) } : { p: parts[i] });
+    mFn = fnRe.exec(parts[i]);
+    if (mArr) ret.push({ i: parseFloat(mArr[1]) });
+    else if (mFn) ret.push({ f: mFn[1] });
+    else ret.push({ p: parts[i] });
   }
 
   return ret;
@@ -156,6 +164,19 @@ function getPathValue(parsed, obj) {
     if (tmp) {
       if (defined(part.p)) tmp = tmp[part.p];
       else if (defined(part.i)) tmp = tmp[part.i];
+      else if (defined(part.f)) {
+        if (typeof tmp[part.f] === 'function') {
+          tmp = tmp[part.f]();
+        } else {
+          tmp = undefined;
+        }
+      }
+
+      // Allow property objects with get() accessors.
+      if (typeof tmp === 'object' && typeof tmp.get === 'function') {
+        tmp = tmp.get();
+      }
+
       if (i == (l - 1)) res = tmp;
     } else {
       res = undefined;
@@ -194,6 +215,8 @@ function setPathValue(parsed, val, obj) {
         tmp = tmp[part.p];
       } else if (defined(part.i) && tmp[part.i]) {
         tmp = tmp[part.i];
+      } else if (defined(part.f) && typeof tmp[part.f] === 'function') {
+        tmp = tmp[part.f]();
       } else {
         var next = parsed[i + 1];
         var x = defined(part.p) ? part.p : part.i;
@@ -222,5 +245,5 @@ function defined(val) {
 }
 
 
-    return exports;
+return exports;
 });
