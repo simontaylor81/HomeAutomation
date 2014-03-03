@@ -96,7 +96,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         }
 
         // Update data binding -- available actions may have changed.
-        databind.updateBindings();
+        databind.updateBindings(model);
     }
 
     function getActions() {

@@ -23,13 +23,13 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
     }
 
     // A binding that sets the text content of an element.
-    function TextBinding(element, context) {
+    function TextBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-text');
     }
-    TextBinding.prototype.update = function () {
-        var newText = getModelProp(this.context, this.path);
+    TextBinding.prototype.update = function (context) {
+        var newText = getModelProp(context, this.path);
         if (newText === undefined) {
             console.log('Could not bind text: ' + this.path);
             return;
@@ -38,9 +38,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
     };
 
     // A two-way binding for the value of an input element.
-    function ValueBinding(element, context) {
+    function ValueBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-value');
 
         var self = this;
@@ -51,12 +51,14 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
             // When the value changes, we need to re-compute bindings,
             // as other stuff may depend on the value.
-            // TODO: update just bindings for this context.
-            updateBindings();
+            updateBindings(self.model);
         });
     }
-    ValueBinding.prototype.update = function () {
-        var newVal = getModelProp(this.context, this.path);
+    ValueBinding.prototype.update = function (context) {
+        // Save context for change handler.
+        this.context = context;
+
+        var newVal = getModelProp(context, this.path);
         if (newVal === undefined) {
             console.log('Could not bind value: ' + this.path);
             return;
@@ -69,9 +71,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
     };
 
     // A two-way binding for the checked property of a checkbox input element.
-    function CheckedBinding(element, context) {
+    function CheckedBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-checked');
 
         var self = this;
@@ -82,12 +84,14 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
             // When the value changes, we need to re-compute bindings,
             // as other stuff may depend on the value.
-            // TODO: update just bindings for this context.
-            updateBindings();
+            updateBindings(self.model);
         });
     }
-    CheckedBinding.prototype.update = function () {
-        var newVal = getModelProp(this.context, this.path);
+    CheckedBinding.prototype.update = function (context) {
+        // Save context for change handler.
+        this.context = context;
+
+        var newVal = getModelProp(context, this.path);
         if (newVal === undefined) {
             console.log('Could not bind value: ' + this.path);
             return;
@@ -98,9 +102,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         }
     };
 
-    function ClickBinding(element, context) {
+    function ClickBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-click');
 
         var self = this;
@@ -116,32 +120,39 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
             action(event);
         }));
     }
-    ClickBinding.prototype.update = function () {}; // Nothing to udpate.
-
-    function VisibilityBinding(element, context) {
-        this.element = element;
+    ClickBinding.prototype.update = function (context) {
+        // Save context for change handler.
         this.context = context;
+    };
+
+    function VisibilityBinding(element, model) {
+        this.element = element;
+        this.model = model;
         this.path = element.attr('data-bind-visibility');
     }
-    VisibilityBinding.prototype.update = function () {
-        var visibility = getModelProp(this.context, this.path);
+    VisibilityBinding.prototype.update = function (context) {
+        var visibility = getModelProp(context, this.path);
         this.element.toggle(Boolean(visibility));
     };
 
     // A binding that generates its contents once for each item in an array.
-    function EachBinding(element, context) {
+    function EachBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-each');
         this.template = element.children().clone();
-        this.currSize = -1;         // Force regeneration on first update.
+        this.currSize = 1;          // Start with a single child.
+
+        // Init bindings for initial single child.
+        this.children = [];     // Array of arrays of child bindings.
+        this.children[0] = [];
+        appendBindings(element.children(), this.model, this.children[0]);
     }
-    EachBinding.prototype.update = function () {
-        var childElements;
-        var self = this;
+    EachBinding.prototype.update = function (context) {
+        var childElements, i;
 
         // Bound object must be array-like.
-        var array = getModelProp(this.context, this.path);
+        var array = getModelProp(context, this.path);
         if (array === undefined) {
             console.log('Could not bind each: ' + this.path);
             return;
@@ -151,40 +162,45 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
             return;
         }
 
-        // TODO: Detect changes that don't alter size.
+        // TODO: Don't completely regenerate from scratch
         if (array.length !== this.currSize) {
             // TODO: Clean up previous bindings.
+
             // Array has changed, so re-generate contents.
-            this.element.html('');
+            this.element.empty();
             this.children = [];
 
-            array.forEach(function (childContext) {
+            //array.forEach(function (childContext) {
+            for (i = 0; i < array.length; i++) {
                 // Create a new copy of the template and add it to ourselves.
-                childElements = self.template.clone().appendTo(self.element);
+                childElements = this.template.clone().appendTo(this.element);
 
                 // Init bindings for the new copy.
-                appendBindings(childElements, childContext, self.children);
-            });
+                this.children[i] = [];
+                appendBindings(childElements, this.model, this.children[i]);
+            }
             this.currSize = array.length;
         }
 
         // Update all children.
-        this.children.forEach(function (child) { child.update(); });
+        for (i = 0; i < array.length; i++) {
+            this.children[i].forEach(function (child) { child.update(array[i]); });
+        }
     };
 
     // A binding that generates child items only if the binding expression is true.
-    function IfBinding(element, context) {
+    function IfBinding(element, model) {
         this.element = element;
-        this.context = context;
+        this.model = model;
         this.path = element.attr('data-bind-if');
         this.attached = true;
 
         // Manage our own children.
         this.childBindings = [];
-        appendBindings(element.children(), context, this.childBindings);
+        appendBindings(element.children(), model, this.childBindings);
     }
-    IfBinding.prototype.update = function () {
-        var condition = getModelProp(this.context, this.path);
+    IfBinding.prototype.update = function (context) {
+        var condition = getModelProp(context, this.path);
         if (condition) {
             if (!this.attached) {
                 this.element.append(this.childElements);
@@ -199,7 +215,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
         if (this.attached) {
             // Update all children.
-            this.childBindings.forEach(function (child) { child.update(); });
+            this.childBindings.forEach(function (child) { child.update(context); });
         }
     };
 
@@ -211,7 +227,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         return attrs.some(function (attr) { return this.hasAttr(attr); }, this);
     };
 
-    function appendBindings(elements, context, bindings) {
+    function appendBindings(elements, model, bindings) {
         elements.each(function () {
             var element = $(this);
             var prevNumBindings = bindings.length;
@@ -219,55 +235,92 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
             // Mutually exclusive bindings.
             if (element.hasAttr('data-bind-each')) {
-                bindings.push(new EachBinding(element, context));
+                bindings.push(new EachBinding(element, model));
 
                 // Don't recurse to children -- they require special handling.
                 bRecurseToChildren = false;
             } else if (element.hasAttr('data-bind-if')) {
-                bindings.push(new IfBinding(element, context));
+                bindings.push(new IfBinding(element, model));
 
                 // Don't recurse to children -- they're handled by the binding.
                 bRecurseToChildren = false;
             } else if (element.hasAttr('data-bind-text')) {
-                bindings.push(new TextBinding(element, context));
+                bindings.push(new TextBinding(element, model));
 
                 // Don't recurse to children -- we're going to replace the contents with the bound text.
                 bRecurseToChildren = false;
             } else if (element.hasAttr('data-bind-value')) {
-                bindings.push(new ValueBinding(element, context));
+                bindings.push(new ValueBinding(element, model));
             } else if (element.hasAttr('data-bind-checked')) {
-                bindings.push(new CheckedBinding(element, context));
+                bindings.push(new CheckedBinding(element, model));
             }
 
             // Bindings that any node can have.
             if (element.hasAttr('data-bind-click')) {
-                bindings.push(new ClickBinding(element, context));
+                bindings.push(new ClickBinding(element, model));
             }
             if (element.hasAttr('data-bind-visibility')) {
-                bindings.push(new VisibilityBinding(element, context));
+                bindings.push(new VisibilityBinding(element, model));
             }
 
             // Only recurse to children if they're not already handled/disallowed by a binding.
             if (bRecurseToChildren) {
-                appendBindings(element.children(), context, bindings);
+                appendBindings(element.children(), model, bindings);
             }
         });
     }
 
     var allBindings = [];
 
-    function initBinding(parent, rootContext) {
-
-        appendBindings(parent, rootContext, allBindings);
-
-        // Update bindings now.
-        updateBindings();
+    function findBindings(modelOrElement) {
+        if (modelOrElement instanceof jQuery) {
+            // Look for bindings for this element
+            return allBindings.find(function (b) { return b.rootElement === modelOrElement; });
+        } else {
+            // Look for bindings for this model
+            return allBindings.find(function (b) { return b.model === modelOrElement; });
+        }
     }
 
-    function updateBindings() {
-        allBindings.forEach(function (binding) {
-            binding.update();
+    function initBinding(rootElement, model) {
+
+        // Check we haven't already got bindings for either this element or model.
+        if (findBindings(rootElement)) {
+            console.log('Bindings already initialised for element');
+            return;
+        }
+        if (findBindings(model)) {
+            console.log('Bindings already initialised for model');
+            return;
+        }
+
+        // Create new bindings container and create the actual bindings for it.
+        var newBindings = {
+            rootElement: rootElement,
+            model: model,
+            bindings: []
+        };
+        appendBindings(rootElement, model, newBindings.bindings);
+
+        // Add to list of all managed bindings.
+        allBindings.push(newBindings);
+
+        // Update bindings now.
+        newBindings.bindings.forEach(function (binding) {
+            binding.update(model);
         });
+    }
+
+    function updateBindings(modelOrElement) {
+        var bindings = findBindings(modelOrElement);
+        if (bindings) {
+            // Update each binding.
+            bindings.bindings.forEach(function (binding) {
+                binding.update(bindings.model);
+            });
+        } else {
+            console.log('Could not find bindings to update');
+        }
     }
 
     // Module object.
