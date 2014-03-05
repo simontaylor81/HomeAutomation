@@ -41,15 +41,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             },
 
             _controller: null
-        },
-
-        // TEMP
-        test: {
-            val: "This is a test",
-            get: function () { return this.val; },
-            set: function (value) { this.val = value; }
-        },
-        testBool: true
+        }
     };
 
     function addGroup() {
@@ -96,35 +88,12 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
         model.selected.controller = controller;
 
-        //this.val = controller;
-        //var panel = $('#selected-widget-panel', parentNode);
-
         // Clear any existing selected class.
         $('.ha-widget-container', parentNode).removeClass('ha-selected-widget');
 
         if (controller) {
             // Set selected class on this widget.
             $('#ha-widget-' + controller.id).addClass('ha-selected-widget');
-
-            //var tableBody = $('tbody', panel)
-
-            // Add type row (handled specially as it is read-only, and common to all widgets).
-            //tableBody.html('<tr><td>Type</td><td>' + controller.data.type + '</td></tr>');
-            //tableBody.html('');
-
-            // Get the customisable properties for this widget.
-            //var props = controller.getCustomisableProperties();
-            //props.forEach(function (prop) {
-            //    tableBody
-            //        .append($('<tr>')
-            //            .append($('<td>').html(prop.friendly))
-            //            .append($('<td>').append(
-            //                getEditControl(prop.type).attr('data-bind', prop.property)))
-            //        );
-            //});
-
-            // Hook up bound elements.
-            //initDataBinding(tableBody, controller.data, updatePreview);
         }
 
         // Update data binding -- available actions may have changed.
@@ -149,38 +118,6 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         }
 
         return actions;
-    }
-
-    function getEditControl(type) {
-        if (type === 'text') {
-            // Text input
-            return $('<input type="text" class="form-control">');
-        } else if (type === 'bool') {
-            // Checkbox for bools.
-            return $('<input type="checkbox">');
-        }
-    }
-
-    function initDataBinding(parent, context, onChanged) {
-        // Text inputs.
-        parent.find('input[type=text][data-bind]')
-            // Set value to current value in context.
-            .val(function () { return context[$(this).attr('data-bind')]; })
-            // Update context when the value changes.
-            .change(function () {
-                context[$(this).attr('data-bind')] = $(this).val();
-                onChanged();
-            });
-
-        // Checkboxes.
-        parent.find('input[type=checkbox][data-bind]')
-            // Set value to current value in context.
-            .prop('checked', function () { return context[$(this).attr('data-bind')]; })
-            // Update context when the value changes.
-            .change(function () {
-                context[$(this).attr('data-bind')] = $(this).prop('checked');
-                onChanged();
-            });
     }
 
     function initPage() {
