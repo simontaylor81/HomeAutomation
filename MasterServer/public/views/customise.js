@@ -38,6 +38,10 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
                 } else {
                     this.props = [];
                 }
+
+                // Update selection highlight and data bindings.
+                setSelectionHighlight(newController);
+                databind.updateBindings(model);
             },
 
             _controller: null
@@ -77,27 +81,24 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             var widgetId = $(this).attr('id').slice(10);
             var controller = renderedWidgets.controllers[widgetId];
 
-            setSelected(controller);
+            model.selected.controller = controller;
 
             // Don't propagate up the tree -- only want to select the top-most widget.
             event.stopPropagation();
         }));
+
+        // Re-apply selection highlight.
+        setSelectionHighlight(model.selected.controller);
     }
 
-    function setSelected(controller) {
-
-        model.selected.controller = controller;
-
+    function setSelectionHighlight(controller) {
         // Clear any existing selected class.
         $('.ha-widget-container', parentNode).removeClass('ha-selected-widget');
 
         if (controller) {
             // Set selected class on this widget.
-            $('#ha-widget-' + controller.id).addClass('ha-selected-widget');
+            $('#ha-widget-' + controller.id, parentNode).addClass('ha-selected-widget');
         }
-
-        // Update data binding -- available actions may have changed.
-        databind.updateBindings(model);
     }
 
     function getActions() {
@@ -125,7 +126,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         databind.initBinding(parentNode, model);
 
         // Clicking somewhere not on a widget clears selection.
-        parentNode.click(function () { setSelected(null); });
+        parentNode.click(function () { model.selected.controller = null; });
 
         // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
         $('#edit-pane').click(function (event) { event.stopPropagation(); });
