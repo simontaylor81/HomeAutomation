@@ -58,13 +58,8 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         // Save context for change handler.
         this.context = context;
 
-        var newVal = getModelProp(context, this.path);
-        if (newVal === undefined) {
-            console.log('Could not bind value: ' + this.path);
-            return;
-        }
-
         // Only update if actually changed to avoid losing caret position when typing.
+        var newVal = getModelProp(context, this.path);
         if (this.element.val() !== newVal) {
             this.element.val(newVal);
         }

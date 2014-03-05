@@ -16,7 +16,7 @@
                 <input type="checkbox" data-bind-checked="testBool"><span data-bind-text="testBool">Binding failed</span>
             </p>
         </div>
-        <div data-bind-if="selectedWidget">
+        <div data-bind-if="selected.valid">
             <div id="selected-widget-panel" class="panel panel-default">
                 <div class="panel-heading">Selected Widget</div>
                 <table class="table">
@@ -28,10 +28,16 @@
                         <!-- Put this is the header so it doesn't get affected by the binding. -->
                         <tr>
                             <td>Type</td>
-                            <td data-bind-text="selectedWidget.data.type"></td>
+                            <td data-bind-text="selected.type"></td>
                         </tr>
                     </thead>
-                    <tbody data-bind-each="selectedWidget.getCustomisableProperties()">
+                    <tbody data-bind-each="selected.props">
+                        <tr>
+                            <td data-bind-text="name"></td>
+                            <td>
+                                <input type="text" data-bind-value="value">
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
