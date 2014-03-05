@@ -23,15 +23,17 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
                 // Contruct props list.
                 if (newController) {
                     this.props = newController.getCustomisableProperties().map(function (prop) {
-                        return {
+                        var result = {
                             name: prop.friendly,
-                            type: prop.type,
                             get value() { return newController.data[prop.property]; },
                             set value(x) {
                                 newController.data[prop.property] = x;
                                 updatePreview();
                             },
                         };
+
+                        result['is' + prop.type] = true;
+                        return result;
                     });
                 } else {
                     this.props = [];

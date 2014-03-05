@@ -12,9 +12,9 @@
                 <br>
                 <input type="text" data-bind-value="test">
             </p>
-            <p>
+            <!--<p>
                 <input type="checkbox" data-bind-checked="testBool"><span data-bind-text="testBool">Binding failed</span>
-            </p>
+            </p>-->
         </div>
         <div data-bind-if="selected.valid">
             <div id="selected-widget-panel" class="panel panel-default">
@@ -35,7 +35,12 @@
                         <tr>
                             <td data-bind-text="name"></td>
                             <td>
-                                <input type="text" data-bind-value="value">
+                                <div data-bind-if="istext">
+                                    <input type="text" class="form-control" data-bind-value="value">
+                                </div>
+                                <div data-bind-if="isbool">
+                                    <input type="checkbox" data-bind-checked="value">
+                                </div>
                             </td>
                         </tr>
                     </tbody>
