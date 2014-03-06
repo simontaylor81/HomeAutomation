@@ -5,7 +5,7 @@
         <div class="panel panel-default">
             <div class="panel-heading">Actions</div>
             <div class="panel-body" data-bind-each="actions">
-                <div><a href="#" data-bind-click="action" data-bind-text="label"></a></div>
+                <div><a href="#" data-bind-click="action" data-bind-text="label" data-bind-visibility="available"></a></div>
             </div>
         </div>
         <div data-bind-if="selected.valid">

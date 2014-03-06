@@ -173,7 +173,7 @@ function getPathValue(parsed, obj) {
       }
 
       // Allow property objects with get() accessors.
-      if (typeof tmp === 'object' && typeof tmp.get === 'function') {
+      if (tmp && typeof tmp === 'object' && typeof tmp.get === 'function') {
         tmp = tmp.get();
       }
 

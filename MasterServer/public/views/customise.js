@@ -7,7 +7,25 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
     // Data model, used for binding.
     var model = {
-        actions: { get: getActions },
+        actions: [
+            {
+                action: addGroup,
+                label: "Add Group",
+                available: true
+            },
+            {
+                action: addButton,
+                label: "Add Button",
+                get available() {
+                    return model.selected.valid && model.selected.type === 'group';
+                }
+            },
+            {
+                action: deleteSelected,
+                label: "Delete Selected",
+                get available() { return model.selected.valid; }
+            }
+        ],
 
         selected: {
             get valid() { return Boolean(this._controller) },
@@ -71,6 +89,32 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         updatePreview();
     }
 
+    // Delete the selected widget
+    function deleteSelected() {
+        function deleteRecursive(widgets, toDelete) {
+            for (var i = 0; i < widgets.length; i++) {
+                if (widgets[i] === toDelete) {
+                    // Found it -- remove it from the array.
+                    widgets.splice(i, 1);
+                    return true;
+                }
+
+                // Not this one, so try children, if we have any.
+                if (widgets[i].children && deleteRecursive(widgets[i].children, toDelete)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Recurse through the widget tree looking for the selected one.
+        deleteRecursive(widgetData.widgets, model.selected.controller.data);
+
+        model.selected.controller = null;
+        updatePreview();
+    }
+
     function updatePreview() {
         var renderedWidgets = renderwidgets(widgetData);
         $('#widget-preview', parentNode).html(renderedWidgets.html);
@@ -99,26 +143,6 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             // Set selected class on this widget.
             $('#ha-widget-' + controller.id, parentNode).addClass('ha-selected-widget');
         }
-    }
-
-    function getActions() {
-        // Actions that are always available.
-        var actions = [
-            {
-                action: addGroup,
-                label: "Add Group"
-            }
-        ];
-
-        // For groups, we can also add a button to the group.
-        if (model.selected.controller && model.selected.controller.data.type === 'group') {
-            actions.push({
-                action: addButton,
-                label: "Add Button"
-            });
-        }
-
-        return actions;
     }
 
     function initPage() {
