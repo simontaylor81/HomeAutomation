@@ -152,6 +152,22 @@
     display: none !important;
 }
 
+.alert-footer {
+    position: fixed;
+    bottom: 0px;
+    left: 16.5px;
+    right: 16.5px;
+    pointer-events: none; /*Ignore clicks*/
+}
+
+.opacity-fade-hide {
+    opacity: 0;
+    -moz-transition: opacity 1s linear;
+    -o-transition: opacity 1s linear;
+    -webkit-transition: opacity 1s linear;
+    transition: opacity 1s linear;
+}
+
 /* Hack for everything being too small on WP8. */
 @-ms-viewport {
     width: auto!important;

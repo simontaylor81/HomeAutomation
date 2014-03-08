@@ -130,6 +130,27 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         this.element.toggle(Boolean(visibility));
     };
 
+    // A binding that sets a property of an element.
+    function PropBinding(element, model) {
+        this.element = element;
+        this.model = model;
+
+        // Parse params, format: 'property;path'
+        var params = element.attr('data-bind-prop').split(';');
+        if (params.length === 2) {
+            this.prop = params[0];
+            this.path = params[1];
+        } else {
+            console.log('Invalid prop bind params: ' + element.attr('data-bind-prop'));
+        }
+    }
+    PropBinding.prototype.update = function (context) {
+        if (this.prop && this.path) {
+            var value = getModelProp(context, this.path);
+            this.element.prop(this.prop, value);
+        }
+    };
+
     // A binding that generates its contents once for each item in an array.
     function EachBinding(element, model) {
         this.element = element;
@@ -256,6 +277,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
             }
             if (element.hasAttr('data-bind-visibility')) {
                 bindings.push(new VisibilityBinding(element, model));
+            }
+            if (element.hasAttr('data-bind-prop')) {
+                bindings.push(new PropBinding(element, model));
             }
 
             // Only recurse to children if they're not already handled/disallowed by a binding.

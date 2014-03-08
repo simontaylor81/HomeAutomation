@@ -162,8 +162,9 @@ function getWidgets(req, res) {
 // POST /user/widgets
 // Save the user's widget config.
 function postWidgets(req, res) {
-    if (!(req.body instanceof Array)) {
-        res.send(400, 'Expected: widget list');
+    if (!req.body || typeof req.body !== 'object') {
+        res.send(400, 'Expected: widget definition');
+        return;
     }
 
     req.user.widgets = req.body;

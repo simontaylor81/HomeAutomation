@@ -7,6 +7,12 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
     // Data model, used for binding.
     var model = {
+        save: {
+            text: 'Save',
+            action: saveWidgets,
+            inProgress: false
+        },
+
         actions: [
             {
                 action: addGroup,
@@ -115,6 +121,37 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         updatePreview();
     }
 
+    // Save the widgets back to the user's account.
+    function saveWidgets() {
+        model.save.text = 'Saving...';
+        model.save.inProgress = true;
+        databind.updateBindings(model);
+
+        // POST widgets to the server.
+        $.ajax({
+            url: 'user/widgets',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(widgetData),
+        })
+        .success(function (data) {
+            showSuccessAlert('Widgets saved');
+        })
+        .fail(function (jqxhr, textError, errorThrown) {
+            if (jqxhr.status === 403) {
+                // Handle this somehow?
+                page('login');
+            } else {
+                alert('Failed to save widgets: ' + errorThrown);
+            }
+        })
+        .always(function () {
+            model.save.text = 'Save';
+            model.save.inProgress = false;
+            databind.updateBindings(model);
+        });
+    }
+
     function updatePreview() {
         var renderedWidgets = renderwidgets(widgetData);
         $('#widget-preview', parentNode).html(renderedWidgets.html);
@@ -154,6 +191,20 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
         // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
         $('#edit-pane').click(function (event) { event.stopPropagation(); });
+    }
+
+    function showSuccessAlert(message) {
+        $('#success-alert')
+            // Set message text.
+            .text(message)
+            // Show the alert.
+            //.show()
+            .removeClass('opacity-fade-hide');
+
+        // Start fading out after 1 second.
+        setTimeout(function () {
+            $('#success-alert').addClass('opacity-fade-hide')
+        }, 1000);
     }
 
     // Module object
