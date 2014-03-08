@@ -267,14 +267,19 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
     var allBindings = [];
 
-    function findBindings(modelOrElement) {
+    function findBindingsIndex(modelOrElement) {
         if (modelOrElement instanceof jQuery) {
             // Look for bindings for this element
-            return allBindings.find(function (b) { return b.rootElement === modelOrElement; });
+            return allBindings.findIndex(function (b) { return b.rootElement === modelOrElement; });
         } else {
             // Look for bindings for this model
-            return allBindings.find(function (b) { return b.model === modelOrElement; });
+            return allBindings.findIndex(function (b) { return b.model === modelOrElement; });
         }
+    }
+
+    function findBindings(modelOrElement) {
+        var index = findBindingsIndex(modelOrElement);
+        return (index >= 0) ? allBindings[index] : undefined;
     }
 
     function initBinding(rootElement, model) {
@@ -306,6 +311,13 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         });
     }
 
+    function cleanupBinding(modelOrElement) {
+        var index = findBindingsIndex(modelOrElement);
+        if (index >= 0) {
+            allBindings.splice(index, 1);
+        }
+    }
+
     function updateBindings(modelOrElement) {
         var bindings = findBindings(modelOrElement);
         if (bindings) {
@@ -321,6 +333,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
     // Module object.
     return {
         initBinding: initBinding,
+        cleanupBinding: cleanupBinding,
         updateBindings: updateBindings
     };
 });

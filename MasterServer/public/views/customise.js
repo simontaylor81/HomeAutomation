@@ -190,6 +190,8 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
                 }
             });
         },
-        exit: function () {}
+        exit: function () {
+            databind.cleanupBinding(model);
+        }
     };
 });
