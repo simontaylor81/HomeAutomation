@@ -72,6 +72,11 @@ define(function () {
     ButtonController.prototype.getCustomisableProperties = function () {
         return [
             {
+                property: 'device',
+                type: 'text',
+                friendly: 'Device'
+            },
+            {
                 property: 'caption',
                 type: 'text',
                 friendly: 'Caption'
@@ -80,6 +85,16 @@ define(function () {
                 property: 'icon',
                 type: 'text',
                 friendly: 'Icon'
+            },
+            {
+                property: 'action',
+                type: 'text',
+                friendly: 'Action'
+            },
+            {
+                property: 'param',
+                type: 'text',
+                friendly: 'Parameter'
             }
         ];
     };
