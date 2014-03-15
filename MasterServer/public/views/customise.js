@@ -3,6 +3,7 @@ define(['lib/page', 'lib/util', 'lib/databind', 'text!views/customise.html', './
 function (page, util, databind, html, renderwidgets, Handlebars) {
 
     var widgetData;
+    var widgetControllers;
     var parentNode;
 
     // Data model, used for binding.
@@ -95,8 +96,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         updatePreview();
     }
 
-    // Delete the selected widget
-    function deleteSelected() {
+    function deleteWidget(controller) {
         function deleteRecursive(widgets, toDelete) {
             for (var i = 0; i < widgets.length; i++) {
                 if (widgets[i] === toDelete) {
@@ -114,11 +114,18 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             return false;
         }
 
-        // Recurse through the widget tree looking for the selected one.
-        deleteRecursive(widgetData.widgets, model.selected.controller.data);
+        // Recurse through the widget tree looking for the one to delete.
+        deleteRecursive(widgetData.widgets, controller.data);
 
-        model.selected.controller = null;
+        // Update the widgets
         updatePreview();
+    }
+
+    // Delete the selected widget
+    function deleteSelected() {
+        var toDelete = model.selected.controller;
+        model.selected.controller = null;
+        deleteWidget(toDelete);
     }
 
     // Save the widgets back to the user's account.
@@ -152,21 +159,31 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         });
     }
 
+    function getWidgetFromElementId(id) {
+        var widgetId = id.slice(10);
+        return widgetControllers[widgetId];
+    }
+
     function updatePreview() {
         var renderedWidgets = renderwidgets(widgetData);
         $('#widget-preview', parentNode).html(renderedWidgets.html);
+        widgetControllers = renderedWidgets.controllers;
 
+        $('.ha-widget-container', parentNode)
         // Add click handler to each widget for selecting them.
-        $('.ha-widget-container', parentNode).click(util.preventDefaultEvent(function (event) {
+        .click(util.preventDefaultEvent(function (event) {
             // Find the widget controller for the clicked on node.
-            var widgetId = $(this).attr('id').slice(10);
-            var controller = renderedWidgets.controllers[widgetId];
+            var controller = getWidgetFromElementId(this.id);
 
             model.selected.controller = controller;
 
             // Don't propagate up the tree -- only want to select the top-most widget.
             event.stopPropagation();
-        }));
+        }))
+        // Make widgets draggable.
+        .on('dragstart', onWidgetDragstart)
+        .on('dragend', onWidgetDragend)
+        .children().attr('draggable', 'true');
 
         // Re-apply selection highlight.
         setSelectionHighlight(model.selected.controller);
@@ -191,6 +208,56 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
         // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
         $('#edit-pane').click(function (event) { event.stopPropagation(); });
+
+        // Drag n drop handlers for the trashcan.
+        $('.trashcan', parentNode)
+        .on('dragenter', function () { $(this).addClass('drag-over'); })
+        .on('dragleave', function () { $(this).removeClass('drag-over'); })
+        .on('dragover', onTrashcanDragover)
+        .on('drop', onTrashcanDrop);
+    }
+
+    // Drag and drop handlers.
+    var draggedWidget = null;
+
+    function onWidgetDragstart(event) {
+        // Add drag-in-progress class to parent, so other elements can react to it.
+        parentNode.addClass('drag-inprogress');
+
+        // Add class to dragged element
+        $(this).addClass('dragged');
+
+        event.originalEvent.dataTransfer.effectAllowed = 'move';
+        event.originalEvent.dataTransfer.setData('text', 'widget-drag');
+
+        draggedWidget = getWidgetFromElementId(this.id);
+
+        // Don't propagate to parents.
+        event.stopPropagation();
+    }
+
+    var onWidgetDragend = util.preventDefaultEvent(function (event) {
+        // Remove classes.
+        parentNode.removeClass('drag-inprogress');
+        $(this).removeClass('dragged');
+
+        draggedWidget = null;
+    });
+
+    function onTrashcanDragover(event) {
+        if (draggedWidget) {
+            event.preventDefault();
+        }
+    }
+    function onTrashcanDrop(event) {
+        if (draggedWidget) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            // Defer deletion until the next tick so the drag end events fire properly.
+            var toDelete = draggedWidget;
+            setTimeout(function () { deleteWidget(toDelete); }, 0);
+        }
     }
 
     function showSuccessAlert(message) {
