@@ -3,12 +3,12 @@ define(['lib/util'], function (util) {
 
     var draggedWidget = null;
     var parentNode;
-    var model;
+    var viewmodel;
 
     // Resize the invisible drop target elements to match the actual widgets.
     function resizeDropTargets() {
         $('.ha-widget-container', parentNode).each(function () {
-            $('#ha-widget-droptarget-' + model.getWidgetIdFromElementId(this.id))
+            $('#ha-widget-droptarget-' + viewmodel.getWidgetIdFromElementId(this.id))
             // Slight hack: size based off first child, instead of the <span>,
             // as the span doesn't match the actual size.
             .offset($(this).children().offset())
@@ -19,9 +19,9 @@ define(['lib/util'], function (util) {
     }
 
     // Initial setup, called once at page load.
-    function initPage(inParentNode, inModel) {
+    function initPage(inParentNode, inViewmodel) {
         parentNode = inParentNode;
-        model = inModel;
+        viewmodel = inViewmodel;
 
         // Drag n drop handlers for the trashcan.
         $('.trashcan', parentNode)
@@ -46,7 +46,7 @@ define(['lib/util'], function (util) {
         widgets.each(function () {
             $('<div class="drop-target">')
             .appendTo(previewParent)
-            .attr('id', 'ha-widget-droptarget-' + model.getWidgetIdFromElementId(this.id))
+            .attr('id', 'ha-widget-droptarget-' + viewmodel.getWidgetIdFromElementId(this.id))
             .on('dragenter', onWidgetDragenter)
             .on('dragleave', onWidgetDragleave)
             .on('dragover', onWidgetDragover)
@@ -57,7 +57,7 @@ define(['lib/util'], function (util) {
 
     // Can the currently dragged widget be dropped on the given element?
     function canDropOnWidget(element) {
-        var targetWidget = model.getWidgetFromElementId(element.id);
+        var targetWidget = viewmodel.getWidgetFromElementId(element.id);
         return draggedWidget && draggedWidget !== targetWidget && targetWidget.canHaveChildren;
     }
 
@@ -66,7 +66,7 @@ define(['lib/util'], function (util) {
     // Called when a widget drag is initiated.
     function onWidgetDragstart(event) {
         // Clear any selection.
-        model.selected.controller = null;
+        viewmodel.selected.controller = null;
 
         // Add drag-in-progress class to parent, so other elements can react to it.
         parentNode.addClass('drag-inprogress');
@@ -77,7 +77,7 @@ define(['lib/util'], function (util) {
         event.originalEvent.dataTransfer.effectAllowed = 'move';
         event.originalEvent.dataTransfer.setData('text', 'widget-drag');
 
-        draggedWidget = model.getWidgetFromElementId(this.id);
+        draggedWidget = viewmodel.getWidgetFromElementId(this.id);
 
         // Defer resize to next frame or Chrome breaks.
         setTimeout(resizeDropTargets, 0);
@@ -107,7 +107,7 @@ define(['lib/util'], function (util) {
     // Called when a widget is dropped on another widget (drop-target).
     function onWidgetDrop(event) {
         // Move the widget to the target widget.
-        model.moveWidget(draggedWidget, model.getWidgetFromElementId(this.id));
+        viewmodel.moveWidget(draggedWidget, viewmodel.getWidgetFromElementId(this.id));
         event.preventDefault();
     }
 
@@ -115,14 +115,14 @@ define(['lib/util'], function (util) {
     function onWidgetDragenter() {
         if (canDropOnWidget(this)) {
             // Add class to highlight the target.
-            $('#ha-widget-' + model.getWidgetIdFromElementId(this.id)).addClass('drag-over');
+            $('#ha-widget-' + viewmodel.getWidgetIdFromElementId(this.id)).addClass('drag-over');
         }
     }
     // Called when something leaves a drop-target.
     function onWidgetDragleave() {
         if (canDropOnWidget(this)) {
             // Remove class again.
-            $('#ha-widget-' + model.getWidgetIdFromElementId(this.id)).removeClass('drag-over');
+            $('#ha-widget-' + viewmodel.getWidgetIdFromElementId(this.id)).removeClass('drag-over');
         }
     }
 
@@ -142,7 +142,7 @@ define(['lib/util'], function (util) {
 
             // Defer deletion until the next tick so the drag end events fire properly.
             var toDelete = draggedWidget;
-            util.nextTick(function () { model.deleteWidget(toDelete); });
+            util.nextTick(function () { viewmodel.deleteWidget(toDelete); });
         }
     }
 
