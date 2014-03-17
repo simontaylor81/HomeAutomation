@@ -48,6 +48,9 @@ define(function () {
         ];
     };
 
+    // Can widgets of this type have sub-widgets?
+    GroupController.prototype.canHaveChildren = true;
+
     // Module object is the contructor function.
     return GroupController;
 });

@@ -28,6 +28,10 @@
         });
     }
 
+    function nextTick(fn) {
+        setTimeout(fn, 0);
+    }
+
     return {
         // Wrap an event handler to prevent the default behaviour (e.g. follow link). 
         preventDefaultEvent: function (handler) {
@@ -40,6 +44,29 @@
         // Is a variable undefined?
         isUndefined: function (obj) {
             return typeof obj === 'undefined';
+        },
+
+        // Perform an operation on the next tick.
+        nextTick: nextTick,
+
+        // Return a function that performs an operation on the next tick at most once.
+        deferredOperation: function (operation) {
+            // Do we need to perform the operation?
+            var needsUpdate = false;
+
+            return function () {
+                // Mark update as required
+                needsUpdate = true;
+
+                // Enqueue function to actually do it.
+                nextTick(function () {
+                    // Only do it if another invocation hasn't already done so.
+                    if (needsUpdate) {
+                        needsUpdate = false;
+                        operation();
+                    }
+                });
+            }
         }
     };
 });

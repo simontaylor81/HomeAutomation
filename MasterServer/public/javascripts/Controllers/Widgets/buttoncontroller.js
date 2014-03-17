@@ -99,6 +99,9 @@ define(function () {
         ];
     };
 
+    // Can widgets of this type have sub-widgets?
+    ButtonController.prototype.canHaveChildren = false;
+
     // Module object is the contructor function.
     return ButtonController;
 });

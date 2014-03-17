@@ -35,7 +35,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         ],
 
         selected: {
-            get valid() { return Boolean(this._controller) },
+            get valid() { return Boolean(this._controller); },
             get type() {
                 return this._controller ? this._controller.data.type : '';
             },
@@ -96,6 +96,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         updatePreview();
     }
 
+    // Delete a widget
     function deleteWidget(controller) {
         function deleteRecursive(widgets, toDelete) {
             for (var i = 0; i < widgets.length; i++) {
@@ -118,6 +119,18 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         deleteRecursive(widgetData.widgets, controller.data);
 
         // Update the widgets
+        updatePreview();
+    }
+
+    // Move a widget to make it a child of the target.
+    function moveWidget(controllerToMove, targetController) {
+        // Remove from previous position.
+        deleteWidget(controllerToMove);
+
+        // Insert to new location.
+        targetController.data.children.push(controllerToMove.data);
+
+        // Refresh preview.
         updatePreview();
     }
 
@@ -159,17 +172,23 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         });
     }
 
+    function getWidgetIdFromElementId(id) {
+        return id.slice(id.lastIndexOf('-') + 1);
+    }
     function getWidgetFromElementId(id) {
-        var widgetId = id.slice(10);
-        return widgetControllers[widgetId];
+        return widgetControllers[getWidgetIdFromElementId(id)];
     }
 
-    function updatePreview() {
+    // Defer update to next tick so we can call updatePreview multiple
+    // times in succession without a performance hit.
+    var updatePreview = util.deferredOperation(function () {
+        var previewParent = $('#widget-preview', parentNode);
+
         var renderedWidgets = renderwidgets(widgetData);
-        $('#widget-preview', parentNode).html(renderedWidgets.html);
+        previewParent.html(renderedWidgets.html);
         widgetControllers = renderedWidgets.controllers;
 
-        $('.ha-widget-container', parentNode)
+        $('.ha-widget-container', previewParent)
         // Add click handler to each widget for selecting them.
         .click(util.preventDefaultEvent(function (event) {
             // Find the widget controller for the clicked on node.
@@ -183,10 +202,44 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         // Make widgets draggable.
         .on('dragstart', onWidgetDragstart)
         .on('dragend', onWidgetDragend)
+        //.on('dragover', onWidgetDragover)
+        //.on('drop', onWidgetDrop)
+        //.on('dragenter', onWidgetDragenter)
+        //.on('dragleave', onWidgetDragleave)
         .children().attr('draggable', 'true');
+
+        // Create drop targets (dropping on the actual elements is pretty broken in HTML, apparently).
+        $('.ha-widget-container', previewParent).each(function () {
+            $('<div class="drop-target">')
+            .appendTo(previewParent)
+            .attr('id', 'ha-widget-droptarget-' + getWidgetIdFromElementId(this.id))
+            .on('dragenter', onWidgetDragenter)
+            .on('dragleave', onWidgetDragleave)
+            .on('dragover', onWidgetDragover)
+            .on('drop', onWidgetDrop)
+            ;
+        });
+
+        // TEMP
+        //previewParent
+        //.find('*')
+        //.on('dragenter', function () { $(this).addClass('drag-over'); event.preventDefault(); })
+        //.on('dragleave', function () { $(this).removeClass('drag-over'); event.preventDefault(); })
 
         // Re-apply selection highlight.
         setSelectionHighlight(model.selected.controller);
+    });
+
+    function resizeDropTargets() {
+        $('.ha-widget-container', parentNode).each(function () {
+            $('#ha-widget-droptarget-' + getWidgetIdFromElementId(this.id))
+            // Slight hack: size based off first child, instead of the <span>,
+            // as the span doesn't match the actual size.
+            .offset($(this).children().offset())
+            .width($(this).children().outerWidth())
+            .height($(this).children().outerHeight())
+            ;
+        });
     }
 
     function setSelectionHighlight(controller) {
@@ -220,7 +273,26 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
     // Drag and drop handlers.
     var draggedWidget = null;
 
+    function canDropOnWidget(element) {
+        var targetWidget = getWidgetFromElementId(element.id);
+        return draggedWidget && draggedWidget !== targetWidget && targetWidget.canHaveChildren;
+    }
+
+    function onWidgetDragenter() {
+        if (canDropOnWidget(this)) {
+            $('#ha-widget-' + getWidgetIdFromElementId(this.id)).addClass('drag-over');
+        }
+    }
+    function onWidgetDragleave() {
+        if (canDropOnWidget(this)) {
+            $('#ha-widget-' + getWidgetIdFromElementId(this.id)).removeClass('drag-over');
+        }
+    }
+
     function onWidgetDragstart(event) {
+        // Clear any selection.
+        model.selected.controller = null;
+
         // Add drag-in-progress class to parent, so other elements can react to it.
         parentNode.addClass('drag-inprogress');
 
@@ -232,6 +304,9 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
         draggedWidget = getWidgetFromElementId(this.id);
 
+        // Defer resize to next frame or Chrome breaks.
+        setTimeout(resizeDropTargets, 0);
+
         // Don't propagate to parents.
         event.stopPropagation();
     }
@@ -240,9 +315,21 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         // Remove classes.
         parentNode.removeClass('drag-inprogress');
         $(this).removeClass('dragged');
+        $('.drag-over').removeClass('drag-over');
 
         draggedWidget = null;
     });
+
+    function onWidgetDragover(event) {
+        if (canDropOnWidget(this)) {
+            event.preventDefault();
+        }
+    }
+
+    function onWidgetDrop(event) {
+        moveWidget(draggedWidget, getWidgetFromElementId(this.id));
+        event.preventDefault();
+    }
 
     function onTrashcanDragover(event) {
         if (draggedWidget) {
@@ -265,12 +352,11 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             // Set message text.
             .text(message)
             // Show the alert.
-            //.show()
             .removeClass('opacity-fade-hide');
 
         // Start fading out after 1 second.
         setTimeout(function () {
-            $('#success-alert').addClass('opacity-fade-hide')
+            $('#success-alert').addClass('opacity-fade-hide');
         }, 1000);
     }
 

@@ -168,6 +168,18 @@
     transition: opacity 1s linear;
 }
 
+.drop-target {
+    position: absolute;
+    opacity: 0;     /*Always Invisible*/
+    z-index:99;             /*Above everything else*/
+    display: none;          /*By default, don't render at all*/
+    
+    background-color: rgba(0, 0, 0, 0.25);
+}
+.drag-inprogress .drop-target {
+    display: block;     /*Re-enable rendering during drag, but still invisible*/
+}
+
 .trashcan {
     position: fixed;
     bottom: 20px;
@@ -183,13 +195,22 @@
     opacity: 0.4;
 }
 .drag-inprogress .trashcan.drag-over {
-    opacity: 1.0
+    opacity: 1.0;
+    outline: 3px solid darkblue;
 }
 
 /* Fade dragged widgets */
 .ha-widget-container.dragged {
     opacity: 0.4
 }
+
+/* Highlight dragged-over widgets. */
+.ha-widget-container.drag-over > * {
+    outline: 3px solid darkblue;
+}
+/*.drag-over {
+    outline: 1px solid darkblue;
+}*/
 
 /* Hack for everything being too small on WP8. */
 @-ms-viewport {
