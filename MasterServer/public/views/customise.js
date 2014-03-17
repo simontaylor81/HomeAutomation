@@ -1,13 +1,14 @@
 ﻿// View that allows the user to customise their widgets.
-define(['lib/page', 'lib/util', 'lib/databind', 'text!views/customise.html', './renderwidgets', 'handlebars'],
-function (page, util, databind, html, renderwidgets, Handlebars) {
+define(['lib/page', 'lib/util', 'lib/databind', 'text!views/customise.html', './renderwidgets', './customise-draganddrop'],
+function (page, util, databind, html, renderwidgets, draganddrop) {
 
-    var widgetData;
-    var widgetControllers;
     var parentNode;
 
     // Data model, used for binding.
     var model = {
+        widgetData: {},
+        widgetControllers: [],
+
         save: {
             text: 'Save',
             action: saveWidgets,
@@ -16,19 +17,19 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
 
         actions: [
             {
-                action: addGroup,
+                action: function () { model.addGroup(); },
                 label: "Add Group",
                 available: true
             },
             {
-                action: addButton,
+                action: function () { model.addButton(model.selected.controller); },
                 label: "Add Button",
                 get available() {
                     return model.selected.valid && model.selected.type === 'group';
                 }
             },
             {
-                action: deleteSelected,
+                action: function () { model.deleteSelected(); },
                 label: "Delete Selected",
                 get available() { return model.selected.valid; }
             }
@@ -70,76 +71,83 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             },
 
             _controller: null
-        }
-    };
+        },
 
-    function addGroup() {
-        // Add new group widget.
-        widgetData.widgets.push({
-            "type": "group",
-            "caption": "New Group",
-            "status": false,
-            "children": []
-        });
+        addGroup: function () {
+            // Add new group widget.
+            this.widgetData.widgets.push({
+                "type": "group",
+                "caption": "New Group",
+                "status": false,
+                "children": []
+            });
 
-        // Refresh preview.
-        updatePreview();
-    }
+            // Refresh preview.
+            updatePreview();
+        },
 
-    function addButton() {
-        model.selected.controller.data.children.push({
-            type: "button",
-            caption: "New Button",
-        });
+        addButton: function (parent) {
+            parent.data.children.push({
+                type: "button",
+                caption: "New Button",
+            });
 
-        // Refresh preview.
-        updatePreview();
-    }
+            // Refresh preview.
+            updatePreview();
+        },
 
-    // Delete a widget
-    function deleteWidget(controller) {
-        function deleteRecursive(widgets, toDelete) {
-            for (var i = 0; i < widgets.length; i++) {
-                if (widgets[i] === toDelete) {
-                    // Found it -- remove it from the array.
-                    widgets.splice(i, 1);
-                    return true;
+        // Delete a widget
+        deleteWidget: function (controller) {
+            function deleteRecursive(widgets, toDelete) {
+                for (var i = 0; i < widgets.length; i++) {
+                    if (widgets[i] === toDelete) {
+                        // Found it -- remove it from the array.
+                        widgets.splice(i, 1);
+                        return true;
+                    }
+
+                    // Not this one, so try children, if we have any.
+                    if (widgets[i].children && deleteRecursive(widgets[i].children, toDelete)) {
+                        return true;
+                    }
                 }
 
-                // Not this one, so try children, if we have any.
-                if (widgets[i].children && deleteRecursive(widgets[i].children, toDelete)) {
-                    return true;
-                }
+                return false;
             }
 
-            return false;
+            // Recurse through the widget tree looking for the one to delete.
+            deleteRecursive(this.widgetData.widgets, controller.data);
+
+            // Update the widgets
+            updatePreview();
+        },
+
+        // Delete the selected widget
+        deleteSelected: function () {
+            var toDelete = this.selected.controller;
+            this.selected.controller = null;
+            this.deleteWidget(toDelete);
+        },
+
+        // Move a widget to make it a child of the target.
+        moveWidget: function (controllerToMove, targetController) {
+            // Remove from previous position.
+            this.deleteWidget(controllerToMove);
+
+            // Insert to new location.
+            targetController.data.children.push(controllerToMove.data);
+
+            // Refresh preview.
+            updatePreview();
+        },
+
+        getWidgetIdFromElementId: function (id) {
+            return id.slice(id.lastIndexOf('-') + 1);
+        },
+        getWidgetFromElementId: function (id) {
+            return this.widgetControllers[this.getWidgetIdFromElementId(id)];
         }
-
-        // Recurse through the widget tree looking for the one to delete.
-        deleteRecursive(widgetData.widgets, controller.data);
-
-        // Update the widgets
-        updatePreview();
-    }
-
-    // Move a widget to make it a child of the target.
-    function moveWidget(controllerToMove, targetController) {
-        // Remove from previous position.
-        deleteWidget(controllerToMove);
-
-        // Insert to new location.
-        targetController.data.children.push(controllerToMove.data);
-
-        // Refresh preview.
-        updatePreview();
-    }
-
-    // Delete the selected widget
-    function deleteSelected() {
-        var toDelete = model.selected.controller;
-        model.selected.controller = null;
-        deleteWidget(toDelete);
-    }
+    };
 
     // Save the widgets back to the user's account.
     function saveWidgets() {
@@ -152,7 +160,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
             url: 'user/widgets',
             type: 'POST',
             contentType: 'application/json',
-            data: JSON.stringify(widgetData),
+            data: JSON.stringify(model.widgetData),
         })
         .success(function (data) {
             showSuccessAlert('Widgets saved');
@@ -172,75 +180,33 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         });
     }
 
-    function getWidgetIdFromElementId(id) {
-        return id.slice(id.lastIndexOf('-') + 1);
-    }
-    function getWidgetFromElementId(id) {
-        return widgetControllers[getWidgetIdFromElementId(id)];
-    }
-
     // Defer update to next tick so we can call updatePreview multiple
     // times in succession without a performance hit.
     var updatePreview = util.deferredOperation(function () {
         var previewParent = $('#widget-preview', parentNode);
 
-        var renderedWidgets = renderwidgets(widgetData);
+        var renderedWidgets = renderwidgets(model.widgetData);
         previewParent.html(renderedWidgets.html);
-        widgetControllers = renderedWidgets.controllers;
+        model.widgetControllers = renderedWidgets.controllers;
 
-        $('.ha-widget-container', previewParent)
         // Add click handler to each widget for selecting them.
+        $('.ha-widget-container', previewParent)
         .click(util.preventDefaultEvent(function (event) {
             // Find the widget controller for the clicked on node.
-            var controller = getWidgetFromElementId(this.id);
+            var controller = model.getWidgetFromElementId(this.id);
 
             model.selected.controller = controller;
 
             // Don't propagate up the tree -- only want to select the top-most widget.
             event.stopPropagation();
-        }))
-        // Make widgets draggable.
-        .on('dragstart', onWidgetDragstart)
-        .on('dragend', onWidgetDragend)
-        //.on('dragover', onWidgetDragover)
-        //.on('drop', onWidgetDrop)
-        //.on('dragenter', onWidgetDragenter)
-        //.on('dragleave', onWidgetDragleave)
-        .children().attr('draggable', 'true');
-
-        // Create drop targets (dropping on the actual elements is pretty broken in HTML, apparently).
-        $('.ha-widget-container', previewParent).each(function () {
-            $('<div class="drop-target">')
-            .appendTo(previewParent)
-            .attr('id', 'ha-widget-droptarget-' + getWidgetIdFromElementId(this.id))
-            .on('dragenter', onWidgetDragenter)
-            .on('dragleave', onWidgetDragleave)
-            .on('dragover', onWidgetDragover)
-            .on('drop', onWidgetDrop)
-            ;
-        });
-
-        // TEMP
-        //previewParent
-        //.find('*')
-        //.on('dragenter', function () { $(this).addClass('drag-over'); event.preventDefault(); })
-        //.on('dragleave', function () { $(this).removeClass('drag-over'); event.preventDefault(); })
+        }));
 
         // Re-apply selection highlight.
         setSelectionHighlight(model.selected.controller);
-    });
 
-    function resizeDropTargets() {
-        $('.ha-widget-container', parentNode).each(function () {
-            $('#ha-widget-droptarget-' + getWidgetIdFromElementId(this.id))
-            // Slight hack: size based off first child, instead of the <span>,
-            // as the span doesn't match the actual size.
-            .offset($(this).children().offset())
-            .width($(this).children().outerWidth())
-            .height($(this).children().outerHeight())
-            ;
-        });
-    }
+        // Set up drag and drop stuff.
+        draganddrop.initWidgets();
+    });
 
     function setSelectionHighlight(controller) {
         // Clear any existing selected class.
@@ -262,89 +228,8 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
         // But we don't want to do this for the edit pane, so prevent clicks bubbling up from there.
         $('#edit-pane').click(function (event) { event.stopPropagation(); });
 
-        // Drag n drop handlers for the trashcan.
-        $('.trashcan', parentNode)
-        .on('dragenter', function () { $(this).addClass('drag-over'); })
-        .on('dragleave', function () { $(this).removeClass('drag-over'); })
-        .on('dragover', onTrashcanDragover)
-        .on('drop', onTrashcanDrop);
-    }
-
-    // Drag and drop handlers.
-    var draggedWidget = null;
-
-    function canDropOnWidget(element) {
-        var targetWidget = getWidgetFromElementId(element.id);
-        return draggedWidget && draggedWidget !== targetWidget && targetWidget.canHaveChildren;
-    }
-
-    function onWidgetDragenter() {
-        if (canDropOnWidget(this)) {
-            $('#ha-widget-' + getWidgetIdFromElementId(this.id)).addClass('drag-over');
-        }
-    }
-    function onWidgetDragleave() {
-        if (canDropOnWidget(this)) {
-            $('#ha-widget-' + getWidgetIdFromElementId(this.id)).removeClass('drag-over');
-        }
-    }
-
-    function onWidgetDragstart(event) {
-        // Clear any selection.
-        model.selected.controller = null;
-
-        // Add drag-in-progress class to parent, so other elements can react to it.
-        parentNode.addClass('drag-inprogress');
-
-        // Add class to dragged element
-        $(this).addClass('dragged');
-
-        event.originalEvent.dataTransfer.effectAllowed = 'move';
-        event.originalEvent.dataTransfer.setData('text', 'widget-drag');
-
-        draggedWidget = getWidgetFromElementId(this.id);
-
-        // Defer resize to next frame or Chrome breaks.
-        setTimeout(resizeDropTargets, 0);
-
-        // Don't propagate to parents.
-        event.stopPropagation();
-    }
-
-    var onWidgetDragend = util.preventDefaultEvent(function (event) {
-        // Remove classes.
-        parentNode.removeClass('drag-inprogress');
-        $(this).removeClass('dragged');
-        $('.drag-over').removeClass('drag-over');
-
-        draggedWidget = null;
-    });
-
-    function onWidgetDragover(event) {
-        if (canDropOnWidget(this)) {
-            event.preventDefault();
-        }
-    }
-
-    function onWidgetDrop(event) {
-        moveWidget(draggedWidget, getWidgetFromElementId(this.id));
-        event.preventDefault();
-    }
-
-    function onTrashcanDragover(event) {
-        if (draggedWidget) {
-            event.preventDefault();
-        }
-    }
-    function onTrashcanDrop(event) {
-        if (draggedWidget) {
-            event.preventDefault();
-            event.stopPropagation();
-
-            // Defer deletion until the next tick so the drag end events fire properly.
-            var toDelete = draggedWidget;
-            setTimeout(function () { deleteWidget(toDelete); }, 0);
-        }
+        // Initialise drag and drop.
+        draganddrop.initPage(parentNode, model);
     }
 
     function showSuccessAlert(message) {
@@ -380,7 +265,7 @@ function (page, util, databind, html, renderwidgets, Handlebars) {
                 pageContent.html(html);
                 initPage();
 
-                widgetData = data;
+                model.widgetData = data;
 
                 // Render initial widgets and add to page.
                 updatePreview();

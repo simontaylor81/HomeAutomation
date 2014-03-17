@@ -52,6 +52,7 @@
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="public\views\createaccount.js" />
+    <Compile Include="public\views\customise-draganddrop.js" />
     <Compile Include="public\views\customise.js" />
     <Compile Include="public\views\default.js" />
     <Compile Include="public\views\login.js" />
