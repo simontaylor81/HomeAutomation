@@ -1,6 +1,6 @@
 ﻿define(function () {
 
-    // Add some polyfills.
+    // Add some polyfills & helpers.
     Array.prototype.findIndex = Array.prototype.findIndex || function(callback, thisArg) {
         var i;
         for (i = 0; i < this.length; i++) {
@@ -12,7 +12,7 @@
     };
     Array.prototype.find = Array.prototype.find || function(callback, thisArg) {
         var index = this.findIndex(callback, thisArg);
-        return index >= 0 ? this[i] : undefined;
+        return index >= 0 ? this[index] : undefined;
     };
 
     // From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/startsWith
@@ -27,6 +27,13 @@
             }
         });
     }
+
+    Array.prototype.removeItem = function (item) {
+        var index = this.indexOf(item);
+        if (index >= 0) {
+            this.splice(index, 1);
+        }
+    };
 
     function nextTick(fn) {
         setTimeout(fn, 0);

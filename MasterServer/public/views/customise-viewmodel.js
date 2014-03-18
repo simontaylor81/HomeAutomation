@@ -6,7 +6,21 @@ define(['lib/util', 'lib/event'], function (util, Event) {
         var selfVM = this;
 
         this.widgetData = {};
-        this.widgetControllers = [];
+
+        var _widgetControllers = [];
+        Object.defineProperty(this, 'widgetControllers', {
+            get: function () { return _widgetControllers; },
+            set: function (value) {
+                _widgetControllers = value;
+
+                // New controllers means the selected controller is no longer valid.
+                // So try to find the previously selected widget in the new list.
+                if (this.selected.valid) {
+                    var previousSelectionData = this.selected.controller.data;
+                    this.selected.controller = value.find(function (c) { return c.data === previousSelectionData; });
+                }
+            }
+        });
 
         // Events
         this.saveFired = new Event();
@@ -37,6 +51,16 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                 action: function () { selfVM.deleteSelected(); },
                 label: "Delete Selected",
                 get available() { return selfVM.selected.valid; }
+            },
+            {
+                action: function () { selfVM.moveRelative(selfVM.selected.controller, -1); },
+                label: "Move up",
+                get available() { return selfVM.selected.valid && selfVM.canMoveRelative(selfVM.selected.controller, -1); }
+            },
+            {
+                action: function () { selfVM.moveRelative(selfVM.selected.controller, 1); },
+                label: "Move down",
+                get available() { return selfVM.selected.valid && selfVM.canMoveRelative(selfVM.selected.controller, 1); }
             }
         ];
 
@@ -106,27 +130,12 @@ define(['lib/util', 'lib/event'], function (util, Event) {
 
     // Delete a widget
     ViewModel.prototype.deleteWidget = function (controller) {
-        function deleteRecursive(widgets, toDelete) {
-            for (var i = 0; i < widgets.length; i++) {
-                if (widgets[i] === toDelete) {
-                    // Found it -- remove it from the array.
-                    widgets.splice(i, 1);
-                    return true;
-                }
 
-                // Not this one, so try children, if we have any.
-                if (widgets[i].children && deleteRecursive(widgets[i].children, toDelete)) {
-                    return true;
-                }
-            }
+        // Remove from parent's children array, or the main widget list if we're at the top level.
+        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
+        parentArray.removeItem(controller.data);
 
-            return false;
-        }
-
-        // Recurse through the widget tree looking for the one to delete.
-        deleteRecursive(this.widgetData.widgets, controller.data);
-
-        // Update the widgets
+        // Refresh preview.
         this.widgetsChanged.fire();
     };
 
@@ -147,6 +156,26 @@ define(['lib/util', 'lib/event'], function (util, Event) {
 
         // Refresh preview.
         this.widgetsChanged.fire();
+    };
+
+    // Change the given widget's position in the parent's child ordering.
+    ViewModel.prototype.moveRelative = function (controller, amount) {
+        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
+        var oldIndex = parentArray.indexOf(controller.data);
+
+        // Remove from old position, and re-add in new one.
+        parentArray.splice(oldIndex, 1);
+        parentArray.splice(oldIndex + amount, 0, controller.data);
+
+        // Refresh preview.
+        this.widgetsChanged.fire();
+    };
+
+    // Is a matching call to moveRelative valid (i.e. is there something to move in front of?)
+    ViewModel.prototype.canMoveRelative = function (controller, amount) {
+        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
+        var newIndex = parentArray.indexOf(controller.data) + amount;
+        return newIndex >= 0 && newIndex < parentArray.length;
     };
 
     ViewModel.prototype.getWidgetIdFromElementId = function (id) {

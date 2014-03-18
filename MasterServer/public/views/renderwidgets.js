@@ -45,11 +45,20 @@ function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonContro
             var newController = new widgetTypes[this.type].Controller(this);
             options.data.widgetData.controllers.push(newController);
 
-            // Set id for convenience.
+            // Set id and parent for convenience.
             newController.id = id;
+            newController.parent = options.data.parent;
+
+            // Create new options object for children as we need a different parent object.
+            var childOptions = {
+                data: {
+                    widgetData: options.data.widgetData,
+                    parent: newController
+                }
+            };
 
             // Run widget partial for this object, as defined by the type member.
-            var widgetHtml = widgetTypes[this.type].template(newFrame, options);
+            var widgetHtml = widgetTypes[this.type].template(newFrame, childOptions);
 
             // Wrap in container element with identifying attributes.
             return new Handlebars.SafeString(createWidgetContainer(id, this.device, widgetHtml));
@@ -66,7 +75,8 @@ function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonContro
                 widgetData: {
                     nextId: 0,
                     controllers: []
-                }
+                },
+                parent: null
             }
         };
 
