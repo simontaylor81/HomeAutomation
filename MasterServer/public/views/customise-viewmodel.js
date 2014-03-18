@@ -53,6 +53,11 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                 get available() { return selfVM.selected.valid; }
             },
             {
+                action: function () { selfVM.duplicate(selfVM.selected.controller); },
+                label: "Duplicate",
+                get available() { return selfVM.selected.valid; }
+            },
+            {
                 action: function () { selfVM.moveRelative(selfVM.selected.controller, -1); },
                 label: "Move up",
                 get available() { return selfVM.selected.valid && selfVM.canMoveRelative(selfVM.selected.controller, -1); }
@@ -105,6 +110,20 @@ define(['lib/util', 'lib/event'], function (util, Event) {
         })();
     }
 
+    // Get the array that containers the given widget's data (either
+    // its parent's children array, or the top level widget array).
+    function getContainingArray(controller, viewmodel) {
+        return controller.parent ? controller.parent.data.children : viewmodel.widgetData.widgets
+    }
+
+    // Clone widget data to a new object.
+    function cloneWidget(widget) {
+        // Just convert to JSON and back: this mirrors the process of uploading to the server,
+        // so is definitely correct, and its very simple.
+        return JSON.parse(JSON.stringify(widget));
+    }
+
+
     ViewModel.prototype.addGroup = function () {
         // Add new group widget.
         this.widgetData.widgets.push({
@@ -131,9 +150,8 @@ define(['lib/util', 'lib/event'], function (util, Event) {
     // Delete a widget
     ViewModel.prototype.deleteWidget = function (controller) {
 
-        // Remove from parent's children array, or the main widget list if we're at the top level.
-        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
-        parentArray.removeItem(controller.data);
+        // Remove from containing array.
+        getContainingArray(controller, this).removeItem(controller.data);
 
         // Refresh preview.
         this.widgetsChanged.fire();
@@ -144,6 +162,16 @@ define(['lib/util', 'lib/event'], function (util, Event) {
         var toDelete = this.selected.controller;
         this.selected.controller = null;
         this.deleteWidget(toDelete);
+    };
+
+    // Duplicate the selected widget
+    ViewModel.prototype.duplicate = function (controller) {
+        var parentArray = getContainingArray(controller, this);
+        var oldIndex = parentArray.indexOf(controller.data);
+        parentArray.splice(oldIndex + 1, 0, cloneWidget(controller.data));
+
+        // Refresh preview.
+        this.widgetsChanged.fire();
     };
 
     // Move a widget to make it a child of the target.
@@ -160,7 +188,7 @@ define(['lib/util', 'lib/event'], function (util, Event) {
 
     // Change the given widget's position in the parent's child ordering.
     ViewModel.prototype.moveRelative = function (controller, amount) {
-        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
+        var parentArray = getContainingArray(controller, this);
         var oldIndex = parentArray.indexOf(controller.data);
 
         // Remove from old position, and re-add in new one.
@@ -173,7 +201,7 @@ define(['lib/util', 'lib/event'], function (util, Event) {
 
     // Is a matching call to moveRelative valid (i.e. is there something to move in front of?)
     ViewModel.prototype.canMoveRelative = function (controller, amount) {
-        var parentArray = controller.parent ? controller.parent.data.children : this.widgetData.widgets
+        var parentArray = getContainingArray(controller, this);
         var newIndex = parentArray.indexOf(controller.data) + amount;
         return newIndex >= 0 && newIndex < parentArray.length;
     };
