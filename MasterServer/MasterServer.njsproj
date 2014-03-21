@@ -38,8 +38,10 @@
     <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
     <Compile Include="public\javascripts\lib\databind.js" />
+    <Compile Include="public\javascripts\lib\event.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
+    <Compile Include="public\javascripts\lib\modelprop.js" />
     <Compile Include="public\javascripts\lib\page.js" />
     <Compile Include="public\javascripts\lib\pathval.js" />
     <Compile Include="public\javascripts\lib\util.js" />
@@ -49,11 +51,14 @@
     <Compile Include="public\javascripts\widgets\devices.js" />
     <Compile Include="public\javascripts\widgets\power.js" />
     <Compile Include="public\javascripts\widgets\xbmc.js" />
+    <Compile Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.js" />
+    <Compile Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.min.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="public\views\createaccount.js" />
     <Compile Include="public\views\customise-draganddrop.js" />
     <Compile Include="public\views\customise.js" />
+    <Compile Include="public\views\customise-viewmodel.js" />
     <Compile Include="public\views\default.js" />
     <Compile Include="public\views\login.js" />
     <Compile Include="public\views\renderwidgets.js" />
@@ -72,6 +77,7 @@
     <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="public\index.html" />
+    <Content Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.min.js.map" />
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
@@ -87,6 +93,7 @@
     <Folder Include="lib\" />
     <Folder Include="public\javascripts\Controllers\" />
     <Folder Include="public\javascripts\Controllers\Widgets\" />
+    <Folder Include="public\javascripts\lib\jsep-0.2.8\" />
     <Folder Include="routes\" />
     <Folder Include="public\javascripts\lib\" />
     <Folder Include="public\javascripts\widgets\" />

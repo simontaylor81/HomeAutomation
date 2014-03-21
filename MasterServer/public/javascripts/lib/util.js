@@ -11,7 +11,8 @@
         return -1;
     };
     Array.prototype.find = Array.prototype.find || function(callback, thisArg) {
-        var index = this.findIndex(callback, thisArg);
+        // Don't call directly so this can be called on array-like objects.
+        var index = Array.prototype.findIndex.call(this, callback, thisArg);
         return index >= 0 ? this[index] : undefined;
     };
 
@@ -33,6 +34,18 @@
         if (index >= 0) {
             this.splice(index, 1);
         }
+    };
+
+    String.prototype.contains = function (s) {
+        return this.indexOf(s) >= 0;
+    };
+
+    // Tricks taken from http://stackoverflow.com/questions/646628/how-to-check-if-a-string-startswith-another-string/4579228#4579228
+    String.prototype.startsWith = function (s) {
+        return this.lastIndexOf(s, 0) >= 0;
+    };
+    String.prototype.endsWith = function (s) {
+        return this.indexOf(s, this.length - s.length) >= 0;
     };
 
     function nextTick(fn) {
@@ -74,6 +87,11 @@
                     }
                 });
             }
+        },
+
+        // Convert array-like object to an actual array.
+        toArray: function (o) {
+            return Array.prototype.slice.call(o, 0);
         }
     };
 });

@@ -37,6 +37,14 @@
                                 <div data-bind-if="isbool">
                                     <input type="checkbox" data-bind-checked="value">
                                 </div>
+                                <div data-bind-if="isenum">
+                                    <select data-bind-value="value" data-bind-options="$root.enums[enumType]">
+<!--                                        <option value="volvo">Volvo</option>
+                                        <option value="saab">Saab</option>
+                                        <option value="fiat">Fiat</option>
+                                        <option value="audi">Audi</option>-->
+                                    </select>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

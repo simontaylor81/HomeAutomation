@@ -73,7 +73,8 @@ define(function () {
         return [
             {
                 property: 'device',
-                type: 'text',
+                type: 'enum',
+                enumType: 'device',
                 friendly: 'Device'
             },
             {
@@ -83,7 +84,8 @@ define(function () {
             },
             {
                 property: 'icon',
-                type: 'text',
+                type: 'enum',
+                enumType: 'icon',
                 friendly: 'Icon'
             },
             {

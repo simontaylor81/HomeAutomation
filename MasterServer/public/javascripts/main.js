@@ -5,11 +5,16 @@ requirejs.config({
     baseUrl: 'javascripts',
     paths: {
         views: '../views',
-        handlebars: 'lib/handlebars-v1.1.2'
+        handlebars: 'lib/handlebars-v1.1.2',
+        jsep: 'lib/jsep-0.2.8/jsep'
     },
     shim: {
         'handlebars': {
             exports: 'Handlebars'
+        },
+        'jsep': {
+            exports: 'jsep',
+            init: function () { return this.jsep.noConflict(); }
         }
     }
 });

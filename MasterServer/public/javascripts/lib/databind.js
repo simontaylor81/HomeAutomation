@@ -1,26 +1,33 @@
 ﻿// HTML data binding support.
-define(['lib/util', 'lib/pathval'], function (util, pathval) {
+define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
 
-    function getModelProp(context, path) {
-        // Get property at the given path.
-        return pathval.get(context, path);
-    }
+    // TEMP TEST
+    (function () {
+        var context = { a: 1, b: 2, s:'a', sub: { c: 3 }, fn: function (x) { return x + 1; } };
+        var rootContext = { sub: { a: 'a', b: 'b', array: [10, 11, 12] } };
 
-    function setModelProp(context, path, value) {
-        // Get existing value.
-        var existingVal = pathval.get(context, path);
+        console.log(modelprop.get(context, rootContext, '17') === 17);
+        console.log(modelprop.get(context, rootContext, '"cheese"') === 'cheese');
+        console.log(modelprop.get(context, rootContext, 'a') === 1);
+        console.log(modelprop.get(context, rootContext, 's') === 'a');
+        console.log(modelprop.get(context, rootContext, '$root') === rootContext);
+        console.log(modelprop.get(context, rootContext, 'this') === context);
+        console.log(modelprop.get(context, rootContext, 'sub.c') === 3);
+        console.log(modelprop.get(context, rootContext, '$root.sub.a') === 'a');
+        console.log(modelprop.get(context, rootContext, 'this[$root.sub.a]') === 1);
+        console.log(modelprop.get(context, rootContext, '$root["sub"].array[a]') === 11);
+        console.log(modelprop.get(context, rootContext, '$root["sub"].array[this.b]') === 12);
+        console.log(modelprop.get(context, rootContext, 'fn(sub.c)') === 4);
 
-        // Is it a property wrapper?
-        if (typeof prop === 'object' && prop.set !== undefined) {
-            // Call setter
-            existingVal.set(value);
-        } else {
-            // Check that the value has actually changed.
-            if (existingVal !== value) {
-                pathval.set(context, path, value);
-            }
-        }
-    }
+        modelprop.set(context, rootContext, 'a', 4);
+        console.log(context.a === 4);
+        modelprop.set(context, rootContext, 'sub.c', 5);
+        console.log(context.sub.c === 5);
+        modelprop.set(context, rootContext, '$root.sub.a', 'x');
+        console.log(rootContext.sub.a === 'x');
+        modelprop.set(context, rootContext, '$root.sub.array[fn(1)]', 23);
+        console.log(rootContext.sub.array[2] === 23);
+    })();
 
     // A binding that sets the text content of an element.
     function TextBinding(element, model) {
@@ -29,7 +36,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         this.path = element.attr('data-bind-text');
     }
     TextBinding.prototype.update = function (context) {
-        var newText = getModelProp(context, this.path);
+        var newText = modelprop.get(context, this.model, this.path);
         if (newText === undefined) {
             console.log('Could not bind text: ' + this.path);
             return;
@@ -46,20 +53,25 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         var self = this;
 
         // Change handler.
-        element.on('input', function () {
-            setModelProp(self.context, self.path, $(this).val());
+        function onChange() {
+            modelprop.set(self.context, self.model, self.path, $(this).val());
 
             // When the value changes, we need to re-compute bindings,
             // as other stuff may depend on the value.
             updateBindings(self.model);
-        });
+        }
+
+        // Hook input and change events to support input and select elements.
+        element
+            .on('input', onChange)
+            .on('change', onChange);
     }
     ValueBinding.prototype.update = function (context) {
         // Save context for change handler.
         this.context = context;
 
         // Only update if actually changed to avoid losing caret position when typing.
-        var newVal = getModelProp(context, this.path);
+        var newVal = modelprop.get(context, this.model, this.path);
         if (this.element.val() !== newVal) {
             this.element.val(newVal);
         }
@@ -75,7 +87,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
         // Change handler.
         element.change(function () {
-            setModelProp(self.context, self.path, $(this).prop('checked'));
+            modelprop.set(self.context, self.model, self.path, $(this).prop('checked'));
 
             // When the value changes, we need to re-compute bindings,
             // as other stuff may depend on the value.
@@ -86,7 +98,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         // Save context for change handler.
         this.context = context;
 
-        var newVal = getModelProp(context, this.path);
+        var newVal = modelprop.get(context, this.model, this.path);
         if (newVal === undefined) {
             console.log('Could not bind value: ' + this.path);
             return;
@@ -94,6 +106,37 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
         if (this.element.prop('checked') !== newVal) {
             this.element.prop('checked', newVal);
+        }
+    };
+
+    // Binding for the options of a 'select' element.
+    function OptionsBinding(element, model) {
+        this.element = element;
+        this.model = model;
+        this.path = element.attr('data-bind-options');
+    }
+    OptionsBinding.prototype.update = function (context) {
+        // Remember previous value.
+        var prevVal = this.element.val();
+
+        // Clear existing options.
+        this.element.children('option').remove();
+
+        var options = modelprop.get(context, this.model, this.path);
+        if (options === undefined) {
+            console.log('Could not bind options: ' + this.path);
+            return;
+        }
+        
+        options.forEach(function (option) {
+            $('<option value="' + option + '">')
+            .appendTo(this.element)
+            .text(option);
+        }, this);
+
+        // Reset previous value, if possible.
+        if (options.indexOf(prevVal) >= 0) {
+            this.element.val(prevVal);
         }
     };
 
@@ -106,7 +149,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
 
         // Click event handler.
         element.click(util.preventDefaultEvent(function (event) {
-            var action = getModelProp(self.context, self.path);
+            var action = modelprop.get(self.context, this.model, self.path);
             if (action === undefined) {
                 console.log('Failed to bind action: ' + self.path);
                 return;
@@ -126,7 +169,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         this.path = element.attr('data-bind-visibility');
     }
     VisibilityBinding.prototype.update = function (context) {
-        var visibility = getModelProp(context, this.path);
+        var visibility = modelprop.get(context, this.model, this.path);
         this.element.toggle(Boolean(visibility));
     };
 
@@ -146,7 +189,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
     }
     PropBinding.prototype.update = function (context) {
         if (this.prop && this.path) {
-            var value = getModelProp(context, this.path);
+            var value = modelprop.get(context, this.model, this.path);
             this.element.prop(this.prop, value);
         }
     };
@@ -168,7 +211,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         var childElements, i;
 
         // Bound object must be array-like.
-        var array = getModelProp(context, this.path);
+        var array = modelprop.get(context, this.model, this.path);
         if (array === undefined) {
             console.log('Could not bind each: ' + this.path);
             return;
@@ -216,7 +259,7 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
         appendBindings(element.children(), model, this.childBindings);
     }
     IfBinding.prototype.update = function (context) {
-        var condition = getModelProp(context, this.path);
+        var condition = modelprop.get(context, this.model, this.path);
         if (condition) {
             if (!this.attached) {
                 this.element.append(this.childElements);
@@ -272,6 +315,9 @@ define(['lib/util', 'lib/pathval'], function (util, pathval) {
             }
 
             // Bindings that any node can have.
+            if (element.hasAttr('data-bind-options')) {
+                bindings.push(new OptionsBinding(element, model));
+            }
             if (element.hasAttr('data-bind-click')) {
                 bindings.push(new ClickBinding(element, model));
             }

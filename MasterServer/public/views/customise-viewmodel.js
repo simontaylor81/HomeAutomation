@@ -22,6 +22,10 @@ define(['lib/util', 'lib/event'], function (util, Event) {
             }
         });
 
+        Object.defineProperty, this, 'devices', {
+            get: function () { return this.widgetData.devices; }
+        };
+
         // Events
         this.saveFired = new Event();
         this.widgetsChanged = new Event();
@@ -92,6 +96,7 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                                         newController.data[prop.property] = x;
                                         selfVM.widgetsChanged.fire();
                                     },
+                                    enumType: prop.enumType
                                 };
 
                                 result['is' + prop.type] = true;
@@ -108,6 +113,36 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                 }
             });
         })();
+
+        this.enums = {
+            get device() {
+                // Available devices are the keys of the devices hash.
+                return Object.keys(selfVM.widgetData.devices);
+            }
+        };
+
+        // Always have the option of not having an icon.
+        this.enums.icon = [''];
+
+        // Find all font awesome icons.
+        var faStylesheet = Array.prototype.find.call(
+            document.styleSheets, function (ss) { return ss.href.contains('font-awesome'); });
+        if (faStylesheet) {
+            // Chrome adds an extra ':' before ':before' for some reason.
+            var re = /^.fa-([a-z\-]+):?:before$/;
+            this.enums.icon = this.enums.icon.concat(
+                // Convert to array for simplicity.
+                util.toArray(faStylesheet.cssRules)
+                // Filter to only icon rules
+                .filter(function (rule) {
+                    return (rule instanceof CSSStyleRule) &&
+                        re.test(rule.selectorText);
+                })
+                .map(function (rule) {
+                    // Strip '.fa-' and ':before'
+                    return re.exec(rule.selectorText)[1];
+                }));
+        };
     }
 
     // Get the array that containers the given widget's data (either
