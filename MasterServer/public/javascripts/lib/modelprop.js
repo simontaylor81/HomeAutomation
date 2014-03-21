@@ -38,6 +38,8 @@ define(['jsep'], function (jsep) {
                 }
                 return fn.apply(context, args);
         }
+
+        throw new Error('Unsupported expression');
     }
 
     // Get the value of the expression, given context and root.
@@ -68,6 +70,10 @@ define(['jsep'], function (jsep) {
             case 'MemberExpression':
                 // Evaluate LHS
                 var lhs = evalNode(context, rootContext, parseTree.object);
+                if (!lhs) {
+                    // Fail silently on invalid access
+                    return;
+                }
 
                 // RHS can be 'computed' or just a member access.
                 var rhs;
@@ -83,6 +89,8 @@ define(['jsep'], function (jsep) {
             case 'CallExpression':
                 throw new Error('Cannot set the value of a function call');
         }
+
+        throw new Error('Unsupported expression');
     }
 
 
