@@ -1,11 +1,29 @@
 ﻿// View model for the customise page.
 define(['lib/util', 'lib/event'], function (util, Event) {
 
+    // View model for a device
+    function DeviceViewModel(name, data, parentVM) {
+        this.name = name;
+        this.parentVM = parentVM;
+        this.shown = false;
+    }
+    DeviceViewModel.prototype.toggleShown = function () {
+        this.shown = !this.shown;
+        this.parentVM.dataChanged.fire();
+    }
+
     // Constructor function
     function ViewModel() {
         var selfVM = this;
 
-        this.widgetData = {};
+        var _widgetData = {};
+        Object.defineProperty(this, 'widgetData', {
+            get: function () { return _widgetData; },
+            set: function (value) {
+                _widgetData = value;
+                regenerateDevices();
+            }
+        });
 
         var _widgetControllers = [];
         Object.defineProperty(this, 'widgetControllers', {
@@ -21,10 +39,6 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                 }
             }
         });
-
-        Object.defineProperty, this, 'devices', {
-            get: function () { return this.widgetData.devices; }
-        };
 
         // Events
         this.saveFired = new Event();
@@ -114,6 +128,22 @@ define(['lib/util', 'lib/event'], function (util, Event) {
             });
         })();
 
+        this.devicePanel = {
+            shown: false,
+            toggleShown: function () {
+                this.shown = !this.shown;
+                selfVM.dataChanged.fire();
+            },
+            get expandButtonIcon() { return this.shown ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'; },
+
+            devices: []
+        };
+
+        function regenerateDevices() {
+            selfVM.devicePanel.devices = Object.keys(selfVM.widgetData.devices)
+                .map(function (key) { return new DeviceViewModel(key, selfVM.widgetData.devices[key], selfVM); })
+        }
+
         this.enums = {
             get device() {
                 // Available devices are the keys of the devices hash.
@@ -142,13 +172,13 @@ define(['lib/util', 'lib/event'], function (util, Event) {
                     // Strip '.fa-' and ':before'
                     return re.exec(rule.selectorText)[1];
                 }));
-        };
+        }
     }
 
     // Get the array that containers the given widget's data (either
     // its parent's children array, or the top level widget array).
     function getContainingArray(controller, viewmodel) {
-        return controller.parent ? controller.parent.data.children : viewmodel.widgetData.widgets
+        return controller.parent ? controller.parent.data.children : viewmodel.widgetData.widgets;
     }
 
     // Clone widget data to a new object.
@@ -246,6 +276,10 @@ define(['lib/util', 'lib/event'], function (util, Event) {
     };
     ViewModel.prototype.getWidgetFromElementId = function (id) {
         return this.widgetControllers[this.getWidgetIdFromElementId(id)];
+    };
+
+    ViewModel.prototype.getExpandIcon = function (shown) {
+        return shown ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down';
     };
 
     return ViewModel;

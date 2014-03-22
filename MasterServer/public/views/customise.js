@@ -123,12 +123,12 @@ function (page, util, databind, html, renderwidgets, draganddrop, ViewModel) {
                 // Set logged in state (shows logout and customise buttons).
                 page.setLoggedIn(true);
 
+                viewmodel.widgetData = data;
+
                 // Set page content to the loaded html.
                 parentNode = pageContent;
                 pageContent.html(html);
                 initPage();
-
-                viewmodel.widgetData = data;
 
                 // Render initial widgets and add to page.
                 updatePreview();

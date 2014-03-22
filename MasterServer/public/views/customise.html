@@ -38,12 +38,7 @@
                                     <input type="checkbox" data-bind-checked="value">
                                 </div>
                                 <div data-bind-if="isenum">
-                                    <select data-bind-value="value" data-bind-options="$root.enums[enumType]">
-<!--                                        <option value="volvo">Volvo</option>
-                                        <option value="saab">Saab</option>
-                                        <option value="fiat">Fiat</option>
-                                        <option value="audi">Audi</option>-->
-                                    </select>
+                                    <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
                                 </div>
                             </td>
                         </tr>
@@ -51,7 +46,27 @@
                 </table>
             </div>
         </div>
-    </div>
+        <div class="panel panel-default" data-bind-with="devicePanel">
+            <div class="panel-heading">
+                Devices
+                <a href="#" class="pull-right" data-bind-click="toggleShown">
+                    <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
+                </a>
+            </div>
+            <div class="panel-body" data-bind-visibility="shown" data-bind-each="devices">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span data-bind-text="name"></span>
+                        <a href="#" class="pull-right" data-bind-click="toggleShown">
+                            <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
+                        </a>
+                    </div>
+                    <div class="panel-body" data-bind-visibility="shown">
+                        Hi there
+                    </div>
+                </div>
+            </div>
+        </div>
 </div>
 <div class="alert-footer" id="alerts">
     <div class="alert alert-success opacity-fade-hide" id="success-alert">
