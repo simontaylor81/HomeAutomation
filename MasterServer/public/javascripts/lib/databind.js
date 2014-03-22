@@ -121,13 +121,13 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
 
         // Click event handler.
         element.click(util.preventDefaultEvent(function (event) {
-            var action = modelprop.get(self.context, this.model, self.path);
-            if (action === undefined) {
+            var action = modelprop.getWithParent(self.context, this.model, self.path);
+            if (action.value === undefined) {
                 console.log('Failed to bind action: ' + self.path);
                 return;
             }
             
-            action(event);
+            action.value.call(action.parent, event);
         }));
     }
     ClickBinding.prototype.update = function (context) {
