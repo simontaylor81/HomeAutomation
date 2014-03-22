@@ -26,6 +26,12 @@ define(['./power', './xbmc'], function (mcs, xbmc) {
             for (var dt in deviceTypes) {
                 deviceTypes[dt].dispose();
             };
+        },
+        getTypes: function () {
+            return Object.keys(deviceTypes)
+        },
+        getCustomisableProperties: function (type) {
+            return deviceTypes[type].getCustomisableProperties();
         }
     };
 });

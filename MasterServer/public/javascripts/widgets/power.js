@@ -90,6 +90,21 @@ define(function () {
             if (intervalHandle !== undefined) {
                 clearInterval(intervalHandle);
             }
+        },
+
+        getCustomisableProperties: function () {
+            return [
+                {
+                    property: 'url',
+                    type: 'text',
+                    friendly: 'URL'
+                },
+                {
+                    property: 'mac',
+                    type: 'text',
+                    friendly: 'MAC'
+                }
+            ];
         }
     };
 });

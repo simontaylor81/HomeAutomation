@@ -116,6 +116,21 @@ define(function () {
             if (intervalHandle !== undefined) {
                 clearInterval(intervalHandle);
             }
+        },
+
+        getCustomisableProperties: function () {
+            return [
+                {
+                    property: 'url',
+                    type: 'text',
+                    friendly: 'URL'
+                },
+                {
+                    property: 'xbmcPath',
+                    type: 'text',
+                    friendly: 'XBMC path'
+                }
+            ];
         }
     };
 });

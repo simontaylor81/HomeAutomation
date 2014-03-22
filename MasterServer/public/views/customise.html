@@ -61,9 +61,30 @@
                             <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
                         </a>
                     </div>
-                    <div class="panel-body" data-bind-visibility="shown">
-                        Hi there
-                    </div>
+                    <table class="table" data-bind-visibility="shown">
+                        <thead>
+                            <tr>
+                                <th>Property</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody data-bind-each="props">
+                            <tr>
+                                <td data-bind-text="name"></td>
+                                <td>
+                                    <div data-bind-if="istext">
+                                        <input type="text" class="form-control" data-bind-value="value">
+                                    </div>
+                                    <div data-bind-if="isbool">
+                                        <input type="checkbox" data-bind-checked="value">
+                                    </div>
+                                    <div data-bind-if="isenum">
+                                        <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

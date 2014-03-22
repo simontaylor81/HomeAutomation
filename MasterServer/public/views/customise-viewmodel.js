@@ -1,11 +1,41 @@
 ﻿// View model for the customise page.
-define(['lib/util', 'lib/event'], function (util, Event) {
+define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devices) {
 
     // View model for a device
     function DeviceViewModel(name, data, parentVM) {
         this.name = name;
         this.parentVM = parentVM;
         this.shown = false;
+
+        Object.defineProperty(this, 'props', {
+            get: function () {
+                // Hardcode type property
+                return [
+                    {
+                        name: 'Type',
+                        isenum: true,
+                        enumType: 'deviceType',
+                        get value() { return data.type; },
+                        set value(val) {
+                            data.type = val;
+                        }
+                    }
+                ]
+                // Add type-specific properties
+                .concat(devices.getCustomisableProperties(data.type).map(function (prop) {
+                    var result = {
+                        name: prop.friendly,
+                        enumType: prop.enumType,
+                        get value() { return data[prop.property]; },
+                        set value(x) { data[prop.property] = x; },
+                    };
+
+                    result['is' + prop.type] = true;
+                    return result;
+                }));
+            }
+        });
+
     }
     DeviceViewModel.prototype.toggleShown = function () {
         this.shown = !this.shown;
@@ -148,7 +178,8 @@ define(['lib/util', 'lib/event'], function (util, Event) {
             get device() {
                 // Available devices are the keys of the devices hash.
                 return Object.keys(selfVM.widgetData.devices);
-            }
+            },
+            deviceType: devices.getTypes()
         };
 
         // Always have the option of not having an icon.
