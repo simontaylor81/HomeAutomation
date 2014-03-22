@@ -166,6 +166,25 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
         }
     };
 
+    // A binding that adds a class to an element.
+    function ClassBinding(element, model) {
+        this.element = element;
+        this.model = model;
+        this.path = element.attr('data-bind-class');
+    }
+    ClassBinding.prototype.update = function (context) {
+        // Remove any previously-set class.
+        if (this.prevClass) {
+            this.element.removeClass(this.prevClass);
+        }
+
+        var newClass = modelprop.get(context, this.model, this.path);
+        if (newClass) {
+            this.element.addClass(newClass);
+            this.prevClass = newClass;
+        }
+    };
+
     // A binding that generates its contents once for each item in an array.
     function EachBinding(element, model) {
         this.element = element;
@@ -298,6 +317,9 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
             }
             if (element.hasAttr('data-bind-prop')) {
                 bindings.push(new PropBinding(element, model));
+            }
+            if (element.hasAttr('data-bind-class')) {
+                bindings.push(new ClassBinding(element, model));
             }
 
             // Only recurse to children if they're not already handled/disallowed by a binding.
