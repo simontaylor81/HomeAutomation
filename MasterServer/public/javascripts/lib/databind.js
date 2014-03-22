@@ -1,34 +1,6 @@
 ﻿// HTML data binding support.
 define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
 
-    // TEMP TEST
-    (function () {
-        var context = { a: 1, b: 2, s:'a', sub: { c: 3 }, fn: function (x) { return x + 1; } };
-        var rootContext = { sub: { a: 'a', b: 'b', array: [10, 11, 12] } };
-
-        console.log(modelprop.get(context, rootContext, '17') === 17);
-        console.log(modelprop.get(context, rootContext, '"cheese"') === 'cheese');
-        console.log(modelprop.get(context, rootContext, 'a') === 1);
-        console.log(modelprop.get(context, rootContext, 's') === 'a');
-        console.log(modelprop.get(context, rootContext, '$root') === rootContext);
-        console.log(modelprop.get(context, rootContext, 'this') === context);
-        console.log(modelprop.get(context, rootContext, 'sub.c') === 3);
-        console.log(modelprop.get(context, rootContext, '$root.sub.a') === 'a');
-        console.log(modelprop.get(context, rootContext, 'this[$root.sub.a]') === 1);
-        console.log(modelprop.get(context, rootContext, '$root["sub"].array[a]') === 11);
-        console.log(modelprop.get(context, rootContext, '$root["sub"].array[this.b]') === 12);
-        console.log(modelprop.get(context, rootContext, 'fn(sub.c)') === 4);
-
-        modelprop.set(context, rootContext, 'a', 4);
-        console.log(context.a === 4);
-        modelprop.set(context, rootContext, 'sub.c', 5);
-        console.log(context.sub.c === 5);
-        modelprop.set(context, rootContext, '$root.sub.a', 'x');
-        console.log(rootContext.sub.a === 'x');
-        modelprop.set(context, rootContext, '$root.sub.array[fn(1)]', 23);
-        console.log(rootContext.sub.array[2] === 23);
-    })();
-
     // A binding that sets the text content of an element.
     function TextBinding(element, model) {
         this.element = element;
