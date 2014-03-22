@@ -269,6 +269,21 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
         }
     };
 
+    // A binding that changes the context of any sub elements.
+    function WithBinding(element, model) {
+        this.element = element;
+        this.model = model;
+        this.path = element.attr('data-bind-with');
+
+        // Manage our own children.
+        this.childBindings = [];
+        appendBindings(element.children(), model, this.childBindings);
+    }
+    WithBinding.prototype.update = function (context) {
+        var subContext = modelprop.get(context, this.model, this.path);
+        this.childBindings.forEach(function (child) { child.update(subContext); });
+    };
+
     // Handy helpers for determining if an element has an attribute/one of a list of attributes.
     $.fn.hasAttr = function (attr) {
         return this.attr(attr) !== undefined;
@@ -291,6 +306,11 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
                 bRecurseToChildren = false;
             } else if (element.hasAttr('data-bind-if')) {
                 bindings.push(new IfBinding(element, model));
+
+                // Don't recurse to children -- they're handled by the binding.
+                bRecurseToChildren = false;
+            } else if (element.hasAttr('data-bind-with')) {
+                bindings.push(new WithBinding(element, model));
 
                 // Don't recurse to children -- they're handled by the binding.
                 bRecurseToChildren = false;
