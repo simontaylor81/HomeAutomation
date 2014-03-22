@@ -48,18 +48,18 @@
         </div>
         <div class="panel panel-default" data-bind-with="devicePanel">
             <div class="panel-heading" data-bind-click="toggleShown">
+                <a href="#" class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></a>
+                &nbsp;
                 Devices
-                <a href="#" class="pull-right">
-                    <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
-                </a>
             </div>
             <div class="panel-body" data-bind-visibility="shown">
                 <div data-bind-each="devices">
                     <div class="panel panel-default">
                         <div class="panel-heading" data-bind-click="toggleShown">
+                            <a href="#" class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></a>
+                            &nbsp;
                             <span data-bind-text="name"></span>
-                            <a href="#" class="pull-right">
-                                <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
+                            <a href="#" class="pull-right glyphicon glyphicon-remove-circle text-danger" data-bind-click="remove">
                             </a>
                         </div>
                         <table class="table" data-bind-visibility="shown">

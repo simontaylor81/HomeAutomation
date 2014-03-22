@@ -56,7 +56,11 @@ define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devi
     DeviceViewModel.prototype.toggleShown = function () {
         this.shown = !this.shown;
         this.parentVM.dataChanged.fire();
-    }
+    };
+    DeviceViewModel.prototype.remove = function () {
+        delete this.parentVM.widgetData.devices[this.name];
+        this.parentVM.devicePanel.devices.removeItem(this);
+    };
 
     // Constructor function
     function ViewModel() {
