@@ -7,10 +7,26 @@ define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devi
         this.parentVM = parentVM;
         this.shown = false;
 
+        var self = this;
+
         Object.defineProperty(this, 'props', {
             get: function () {
-                // Hardcode type property
+                // Hardcoded name and type properties
                 return [
+                    {
+                        name: 'Name',
+                        istext: true,
+                        get value() { return self.name; },
+                        set value(val) {
+                            // Remove entry under old name
+                            delete parentVM.widgetData.devices[self.name];
+
+                            self.name = val;
+
+                            // Add back under new name
+                            parentVM.widgetData.devices[self.name] = data;
+                        }
+                    },
                     {
                         name: 'Type',
                         isenum: true,
