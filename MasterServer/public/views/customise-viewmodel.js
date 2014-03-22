@@ -166,12 +166,43 @@ define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devi
             },
             get expandButtonIcon() { return this.shown ? 'glyphicon-chevron-up' : 'glyphicon-chevron-down'; },
 
-            devices: []
+            devices: [],
+
+            addDevice: function () {
+                var name = getUniqueKey('new-device', selfVM.widgetData.devices);
+                var device = {
+                    type: devices.getTypes()[0]
+                };
+
+                // Add to widget data.
+                selfVM.widgetData.devices[name] = device;
+
+                // Add corresponding view model
+                this.devices.push(new DeviceViewModel(name, device, selfVM));
+
+                selfVM.dataChanged.fire();
+            }
         };
 
         function regenerateDevices() {
             selfVM.devicePanel.devices = Object.keys(selfVM.widgetData.devices)
                 .map(function (key) { return new DeviceViewModel(key, selfVM.widgetData.devices[key], selfVM); })
+        }
+
+        function getUniqueKey(baseName, obj) {
+            var name = baseName;
+            var re = /(.*-)([0-9]+)/;
+
+            while (obj[name] !== undefined) {
+                var match = re.exec(name);
+                if (match) {
+                    name = match[1] + (Number(match[2]) + 1);
+                } else {
+                    name = name + '-1';
+                }
+            }
+
+            return name;
         }
 
         this.enums = {

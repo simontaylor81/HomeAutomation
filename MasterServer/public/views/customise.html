@@ -53,39 +53,44 @@
                     <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
                 </a>
             </div>
-            <div class="panel-body" data-bind-visibility="shown" data-bind-each="devices">
-                <div class="panel panel-default">
-                    <div class="panel-heading" data-bind-click="toggleShown">
-                        <span data-bind-text="name"></span>
-                        <a href="#" class="pull-right">
-                            <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
-                        </a>
+            <div class="panel-body" data-bind-visibility="shown">
+                <div data-bind-each="devices">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" data-bind-click="toggleShown">
+                            <span data-bind-text="name"></span>
+                            <a href="#" class="pull-right">
+                                <span class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></span>
+                            </a>
+                        </div>
+                        <table class="table" data-bind-visibility="shown">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind-each="props">
+                                <tr>
+                                    <td data-bind-text="name"></td>
+                                    <td>
+                                        <div data-bind-if="istext">
+                                            <input type="text" class="form-control" data-bind-value="value">
+                                        </div>
+                                        <div data-bind-if="isbool">
+                                            <input type="checkbox" data-bind-checked="value">
+                                        </div>
+                                        <div data-bind-if="isenum">
+                                            <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <table class="table" data-bind-visibility="shown">
-                        <thead>
-                            <tr>
-                                <th>Property</th>
-                                <th>Value</th>
-                            </tr>
-                        </thead>
-                        <tbody data-bind-each="props">
-                            <tr>
-                                <td data-bind-text="name"></td>
-                                <td>
-                                    <div data-bind-if="istext">
-                                        <input type="text" class="form-control" data-bind-value="value">
-                                    </div>
-                                    <div data-bind-if="isbool">
-                                        <input type="checkbox" data-bind-checked="value">
-                                    </div>
-                                    <div data-bind-if="isenum">
-                                        <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
+                <button class="btn btn-primary btn-block" data-bind-click="addDevice">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;Add
+                </button>
             </div>
         </div>
 </div>
