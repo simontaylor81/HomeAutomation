@@ -26,7 +26,18 @@
 
 require(['QUnit', 'lib/modelprop'], function (QUnit, modelprop) {
 
-    function makeContext() { return { a: 1, b: 2, s:'a', sub: { c: 3 }, fn: function (x) { return x + 1; } }; }
+    function makeContext() {
+        return {
+            a: 1,
+            b: 2,
+            s:'a',
+            sub: {
+                c: 3,
+                thisFn: function () { return this; }
+            },
+            fn: function (x) { return x + 1; }
+        };
+    }
     function makeRootContext() { return { sub: { a: 'a', b: 'b', array: [10, 11, 12] } }; }
 
     // Test for valid gets
@@ -36,16 +47,17 @@ require(['QUnit', 'lib/modelprop'], function (QUnit, modelprop) {
 
         strictEqual(modelprop.get(context, rootContext, '17'), 17, 'Number literal');
         strictEqual(modelprop.get(context, rootContext, '"cheese"'), 'cheese', 'String literal');
-        strictEqual(modelprop.get(context, rootContext, 'a'), 1, 'Simple context member access (number)');
-        strictEqual(modelprop.get(context, rootContext, 's'), 'a', 'Simple context member access (string)');
+        strictEqual(modelprop.get(context, rootContext, 'a'), context.a, 'Simple context member access (number)');
+        strictEqual(modelprop.get(context, rootContext, 's'), context.s, 'Simple context member access (string)');
         strictEqual(modelprop.get(context, rootContext, '$root'), rootContext, 'root context access');
         strictEqual(modelprop.get(context, rootContext, 'this'), context, 'this equals context');
-        strictEqual(modelprop.get(context, rootContext, 'sub.c'), 3, 'sub-property access');
-        strictEqual(modelprop.get(context, rootContext, '$root.sub.a'), 'a', 'root context sub-property access');
-        strictEqual(modelprop.get(context, rootContext, 'this[$root.sub.a]'), 1, 'property key from variable');
-        strictEqual(modelprop.get(context, rootContext, '$root["sub"].array[a]'), 11, 'string literal property key, variable array access');
-        strictEqual(modelprop.get(context, rootContext, '$root["sub"].array[this.b]'), 12, 'explicit this within sub-expression');
-        strictEqual(modelprop.get(context, rootContext, 'fn(sub.c)'), 4, 'function call with single argument');
+        strictEqual(modelprop.get(context, rootContext, 'sub.c'), context.sub.c, 'sub-property access');
+        strictEqual(modelprop.get(context, rootContext, '$root.sub.a'), rootContext.sub.a, 'root context sub-property access');
+        strictEqual(modelprop.get(context, rootContext, 'this[$root.sub.a]'), context[rootContext.sub.a], 'property key from variable');
+        strictEqual(modelprop.get(context, rootContext, '$root["sub"].array[a]'), rootContext["sub"].array[context.a], 'string literal property key, variable array access');
+        strictEqual(modelprop.get(context, rootContext, '$root["sub"].array[this.b]'), rootContext["sub"].array[context.b], 'explicit this within sub-expression');
+        strictEqual(modelprop.get(context, rootContext, 'fn(sub.c)'), context.fn(context.sub.c), 'function call with single argument');
+        strictEqual(modelprop.get(context, rootContext, 'sub.thisFn()'), context.sub.thisFn(), 'function call with this access');
     });
 
     // Test for invalid gets
@@ -100,6 +112,48 @@ require(['QUnit', 'lib/modelprop'], function (QUnit, modelprop) {
         throws(function () { modelprop.set({}, {}, 'fn()', 5); }, 'cannot set function call');
         throws(function () { modelprop.set({}, {}, '1 === 1') }, 'unsupported operator');
         throws(function () { modelprop.set({}, {}, ')&`') }, 'invalid syntax');
+    });
+
+    // Test for getWithParent
+    test('modelprop valid getWithParent tests', function () {
+        var context = {
+            a: 1,
+            sub: {
+                b: 2,
+                sub_sub: { c: 3 }
+            },
+            fn: function () { return 0; }
+        };
+        var rootContext = {};
+        var result;
+
+        result = modelprop.getWithParent(context, {}, 'a');
+        strictEqual(result.value, context.a, "'a' returns context.a");
+        strictEqual(result.parent, context, "parent of 'a' is context");
+
+        result = modelprop.getWithParent(context, {}, 'sub.b');
+        strictEqual(result.value, context.sub.b, "'sub.b' returns context.sub.b");
+        strictEqual(result.parent, context.sub, "parent of 'sub.b' is context.sub");
+
+        result = modelprop.getWithParent(context, {}, 'sub.sub_sub.c');
+        strictEqual(result.value, context.sub.sub_sub.c, "'sub.sub_sub.c' returns context.sub.sub_sub.c");
+        strictEqual(result.parent, context.sub.sub_sub, "parent of 'sub.sub_sub.c' is context.sub.sub_sub");
+
+        result = modelprop.getWithParent(context, {}, '1');
+        strictEqual(result.value, 1, "'1' returns 1");
+        strictEqual(result.parent, undefined, "parent of literal is undefined");
+
+        result = modelprop.getWithParent(context, {}, 'this');
+        strictEqual(result.value, context, "'this' returns context");
+        strictEqual(result.parent, undefined, "parent of this is undefined");
+
+        result = modelprop.getWithParent(context, rootContext, '$root');
+        strictEqual(result.value, rootContext, "'$root' returns rootContext");
+        strictEqual(result.parent, undefined, "parent of $root is undefined");
+
+        result = modelprop.getWithParent(context, rootContext, 'fn()');
+        strictEqual(result.value, context.fn(), "'fn()' returns context.fn()");
+        strictEqual(result.parent, undefined, "parent of function call is undefined");
     });
 
     QUnit.load();

@@ -3,40 +3,43 @@ define(['jsep'], function (jsep) {
 
     // Evaluate a parse tree node.
     function evalNode(context, rootContext, node) {
+        // To save typing.
+        function result(value, parent) { return { value: value, parent: parent }; }
+
         switch (node.type) {
             case 'Literal':
-                return node.value;
+                return result(node.value);
 
             case 'Identifier':
-                return node.name === '$root' ? rootContext : context[node.name];
+                return node.name === '$root' ? result(rootContext) : result(context[node.name], context);
 
             case 'ThisExpression':
-                return context;
+                return result(context);
 
             case 'MemberExpression':
                 // Evaluate LHS
-                var lhs = evalNode(context, rootContext, node.object);
+                var lhs = evalNode(context, rootContext, node.object).value;
                 if (!lhs) {
-                    return undefined;
+                    return result();
                 }
 
                 // RHS can be 'computed' or just a member access.
                 var rhs;
                 if (node.computed) {
-                    rhs = evalNode(context, rootContext, node.property);
+                    rhs = evalNode(context, rootContext, node.property).value;
                 } else {
                     rhs = node.property.name;
                 }
 
-                return lhs[rhs];
+                return result(lhs[rhs], lhs);
 
             case 'CallExpression':
                 var fn = evalNode(context, rootContext, node.callee);
-                var args = node.arguments.map(function (arg) { return evalNode(context, rootContext, arg); });
-                if (typeof fn !== 'function') {
-                    return undefined;
+                var args = node.arguments.map(function (arg) { return evalNode(context, rootContext, arg).value; });
+                if (typeof fn.value !== 'function') {
+                    return result();
                 }
-                return fn.apply(context, args);
+                return result(fn.value.apply(fn.parent, args));
         }
 
         throw new Error('Unsupported expression');
@@ -44,6 +47,11 @@ define(['jsep'], function (jsep) {
 
     // Get the value of the expression, given context and root.
     function get(context, rootContext, expression) {
+        return getWithParent(context, rootContext, expression).value;
+    }
+
+    // Get the value of the expression, and its parent object, given context and root.
+    function getWithParent(context, rootContext, expression) {
         var parseTree = jsep(expression);
         return evalNode(context, rootContext, parseTree);
     }
@@ -69,7 +77,7 @@ define(['jsep'], function (jsep) {
 
             case 'MemberExpression':
                 // Evaluate LHS
-                var lhs = evalNode(context, rootContext, parseTree.object);
+                var lhs = evalNode(context, rootContext, parseTree.object).value;
                 if (!lhs) {
                     // Fail silently on invalid access
                     return;
@@ -78,7 +86,7 @@ define(['jsep'], function (jsep) {
                 // RHS can be 'computed' or just a member access.
                 var rhs;
                 if (parseTree.computed) {
-                    rhs = evalNode(context, rootContext, parseTree.property);
+                    rhs = evalNode(context, rootContext, parseTree.property).value;
                 } else {
                     rhs = parseTree.property.name;
                 }
@@ -96,6 +104,7 @@ define(['jsep'], function (jsep) {
 
     return {
         get: get,
+        getWithParent: getWithParent,
         set: set
     };
 });
