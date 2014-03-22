@@ -43,7 +43,6 @@
     <Compile Include="public\javascripts\lib\handlebars.runtime-v1.1.2.js" />
     <Compile Include="public\javascripts\lib\modelprop.js" />
     <Compile Include="public\javascripts\lib\page.js" />
-    <Compile Include="public\javascripts\lib\pathval.js" />
     <Compile Include="public\javascripts\lib\util.js" />
     <Compile Include="public\javascripts\main.js" />
     <Compile Include="public\javascripts\require.js" />
@@ -55,6 +54,7 @@
     <Compile Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.min.js" />
     <Compile Include="public\jquery\jquery-1.10.2.js" />
     <Compile Include="public\jquery\jquery-1.10.2.min.js" />
+    <Compile Include="public\test\unittestmain.js" />
     <Compile Include="public\views\createaccount.js" />
     <Compile Include="public\views\customise-draganddrop.js" />
     <Compile Include="public\views\customise.js" />
@@ -81,6 +81,7 @@
     <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
+    <Content Include="public\test\unittests.html" />
     <Content Include="public\views\createaccount.html" />
     <Content Include="public\views\customise.html" />
     <Content Include="public\views\login.html" />
