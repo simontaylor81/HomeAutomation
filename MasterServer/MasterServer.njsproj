@@ -37,6 +37,7 @@
     <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
+    <Compile Include="public\javascripts\Controllers\Widgets\textcontroller.js" />
     <Compile Include="public\javascripts\lib\databind.js" />
     <Compile Include="public\javascripts\lib\event.js" />
     <Compile Include="public\javascripts\lib\handlebars-v1.1.2.js" />
@@ -89,6 +90,7 @@
     <Content Include="views\widgetstemplate.hbs" />
     <Content Include="views\widgets\buttonView.hbs" />
     <Content Include="views\widgets\groupView.hbs" />
+    <Content Include="views\widgets\textView.hbs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="lib\" />

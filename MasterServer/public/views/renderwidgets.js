@@ -1,12 +1,21 @@
 ﻿// Module for handling the rendering and initialisation of the different widget types.
 define([
     'handlebars',
-    './widgets/groupview',
+    './widgets/groupView',
     'controllers/widgets/groupcontroller',
-    './widgets/buttonview',
+    './widgets/buttonView',
     'controllers/widgets/buttoncontroller',
+    './widgets/textView',
+    'controllers/widgets/textcontroller',
     './widgetstemplate.js'],
-function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonController, widgetstemplate) {
+function (Handlebars,
+          groupPartial,
+          GroupController,
+          buttonPartial,
+          ButtonController,
+          textPartial,
+          TextController,
+          widgetstemplate) {
 
     // Widget templates and controllers.
     var widgetTypes = {
@@ -17,6 +26,10 @@ function (Handlebars, groupPartial, GroupController, buttonPartial, ButtonContro
         group: {
             template: groupPartial,
             Controller: GroupController
+        },
+        text: {
+            template: textPartial,
+            Controller: TextController
         }
     };
 

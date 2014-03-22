@@ -64,9 +64,8 @@ define(function () {
             }
 
             function doLaunchAction(path) {
-                alert(path);
                 $.ajax({
-                    url: params.url + '/api/run?path=' + path,
+                    url: params.url + '/api/run?path=' + encodeURIComponent(path),
                     type: 'POST'
                 });
             }

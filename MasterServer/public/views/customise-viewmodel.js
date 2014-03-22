@@ -116,6 +116,13 @@ define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devi
                 }
             },
             {
+                action: function () { selfVM.addTextBox(selfVM.selected.controller); },
+                label: "Add Text Box",
+                get available() {
+                    return selfVM.selected.valid && selfVM.selected.type === 'group';
+                }
+            },
+            {
                 action: function () { selfVM.deleteSelected(); },
                 label: "Delete Selected",
                 get available() { return selfVM.selected.valid; }
@@ -288,6 +295,15 @@ define(['lib/util', 'lib/event', 'widgets/devices'], function (util, Event, devi
         parent.data.children.push({
             type: "button",
             caption: "New Button",
+        });
+
+        // Refresh preview.
+        this.widgetsChanged.fire();
+    };
+
+    ViewModel.prototype.addTextBox = function (parent) {
+        parent.data.children.push({
+            type: "text",
         });
 
         // Refresh preview.
