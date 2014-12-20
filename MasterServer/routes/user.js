@@ -155,8 +155,13 @@ function requireLogin(req, res, next) {
 // GET /user/widgets
 // Get the user's widget config.
 function getWidgets(req, res) {
+    var emptyWidgetConfig = {
+        widgets: [],
+        devices: {},
+    };
+
     // Send the user's widget list.
-    res.send(req.user.widgets || []);
+    res.send(req.user.widgets || emptyWidgetConfig);
 }
 
 // POST /user/widgets
