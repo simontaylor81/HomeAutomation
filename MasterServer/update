@@ -4,4 +4,5 @@ cd /home/pi/HomeAutomation/MasterServer
 forever stop /home/pi/HomeAutomation/MasterServer/server.js
 git pull
 git checkout
+npm install
 forever start -a /home/pi/HomeAutomation/MasterServer/server.js
