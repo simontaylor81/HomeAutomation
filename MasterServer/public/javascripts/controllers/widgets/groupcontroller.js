@@ -44,7 +44,13 @@ define(function () {
                 property: 'status',
                 type: 'bool',
                 friendly: 'Show Status'
-            }
+            },
+            {
+                property: 'device',
+                type: 'enum',
+                enumType: 'device',
+                friendly: 'Device'
+            },
         ];
     };
 
