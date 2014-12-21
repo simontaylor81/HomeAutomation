@@ -9,6 +9,9 @@ var path = require('path');
 var nconf = require('nconf');
 var MongoStore = require('connect-mongo')(express);
 
+// All paths are relative to the script root, so change the working directory to it.
+process.chdir(__dirname);
+
 // Set up config *before* loading sub-modules, so they can user it.
 nconf.argv()
      .env()
