@@ -99,7 +99,13 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
             console.log('Could not bind options: ' + this.path);
             return;
         }
-        
+
+        // Add a 'null' option to start on if the existing setting isn't valid.
+        // Otherwise, it looks like you got a valid value set, but you don't.
+        $('<option>')
+            .appendTo(this.element)
+            .text('');
+
         options.forEach(function (option) {
             $('<option value="' + option + '">')
             .appendTo(this.element)
@@ -126,7 +132,7 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
                 console.log('Failed to bind action: ' + self.path);
                 return;
             }
-            
+
             action.value.call(action.parent, event);
         }));
     }
@@ -327,7 +333,10 @@ define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
 
             // Bindings that any node can have.
             if (element.hasAttr('data-bind-options')) {
-                bindings.push(new OptionsBinding(element, model));
+                // Put options bindings at the front of the list, so the options are in place
+                // when we come to set the value (if we have a ValueBinding, of course). Otherwise
+                // the value is ignore because it's not one of the available options.
+                bindings.unshift(new OptionsBinding(element, model));
             }
             if (element.hasAttr('data-bind-click')) {
                 bindings.push(new ClickBinding(element, model));
