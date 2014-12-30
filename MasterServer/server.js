@@ -19,6 +19,7 @@ nconf.argv()
 
 var wol = require('./routes/wol.js');
 var userRoutes = require('./routes/user.js');
+var icon = require('./routes/icon.js');
 
 var app = express();
 
@@ -52,6 +53,9 @@ app.post('/api/wol/:mac', wol.post);
 
 // User stuff.
 userRoutes.addRoutes(app);
+
+// Icon image generator.
+app.get('/api/icon', icon.get);
 
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
