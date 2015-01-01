@@ -2,8 +2,8 @@
     baseUrl: '/javascripts',
     paths: {
         views: '/views',
-        handlebars: 'lib/handlebars-v1.1.2',
-        jsep: 'lib/jsep-0.2.8/jsep',
+        handlebars: '/lib/handlebars/js/handlebars.runtime.min',
+        jsep: '/lib/jsep/js/jsep.min',
         QUnit: 'http://code.jquery.com/qunit/qunit-1.14.0'
     },
     shim: {

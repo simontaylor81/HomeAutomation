@@ -1,0 +1,32 @@
+{
+    "name": "bower",
+    "license": "Apache-2.0",
+    "private": true,
+    "dependencies": {
+        "jquery": "^1.10.2",
+        "bootstrap": "^3.3.1",
+        "handlebars": "^2.0.0",
+        "jsep": "^0.3.0",
+        "components-font-awesome": "^4.2.0"
+    },
+    "exportsOverride": {
+        "bootstrap": {
+            "js": "dist/js/bootstrap*",
+            "css": "dist/css/*.*",
+            "fonts": "dist/fonts/*.*"
+        },
+        "jquery": {
+            "js": "dist/*"
+        },
+        "jsep": {
+            "js": "build/*"
+        },
+        "components-font-awesome": {
+            "css": "css/*",
+            "fonts": "fonts/*"
+        },
+        "handlebars": {
+            "js": "handlebars*.js"
+        }
+    }
+}

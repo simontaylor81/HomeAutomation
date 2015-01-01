@@ -63,13 +63,13 @@ exports.get = function (req, res) {
 
 // Kick off load the Font Awesome font file, returning a promise.
 function loadFont() {
-    return Q.nfcall(opentype.load, './public/font-awesome/fonts/FontAwesome.otf');
+    return Q.nfcall(opentype.load, './public/lib/components-font-awesome/fonts/FontAwesome.otf');
 }
 
 // Load available icons from Font Awesome CSS.
 function loadIcons() {
     // Load and parse Font Awesome CSS file.
-    var cssAst = css.parse(fs.readFileSync('./public/font-awesome/css/font-awesome.css', 'utf8'));
+    var cssAst = css.parse(fs.readFileSync('./public/lib/components-font-awesome/css/font-awesome.css', 'utf8'));
     var allRules = cssAst.stylesheet.rules;
 
     function unescapeChar(str) {

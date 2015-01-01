@@ -33,8 +33,6 @@
     <Compile Include="gruntfile.js" />
     <Compile Include="lib\MemoryAccountProvider.js" />
     <Compile Include="lib\MongoAccountProvider.js" />
-    <Compile Include="public\bootstrap\js\bootstrap.js" />
-    <Compile Include="public\bootstrap\js\bootstrap.min.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
     <Compile Include="public\javascripts\Controllers\Widgets\textcontroller.js" />
@@ -53,8 +51,6 @@
     <Compile Include="public\javascripts\widgets\xbmc.js" />
     <Compile Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.js" />
     <Compile Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.min.js" />
-    <Compile Include="public\jquery\jquery-1.10.2.js" />
-    <Compile Include="public\jquery\jquery-1.10.2.min.js" />
     <Compile Include="public\test\unittestmain.js" />
     <Compile Include="public\views\createaccount.js" />
     <Compile Include="public\views\customise-draganddrop.js" />
@@ -68,16 +64,9 @@
     <Compile Include="routes\user.js" />
     <Compile Include="routes\wol.js" />
     <Compile Include="server.js" />
+    <Content Include="bower.json" />
     <Content Include="config.json" />
     <Content Include="package.json" />
-    <Content Include="public\bootstrap\css\bootstrap-theme.css" />
-    <Content Include="public\bootstrap\css\bootstrap-theme.min.css" />
-    <Content Include="public\bootstrap\css\bootstrap.css" />
-    <Content Include="public\bootstrap\css\bootstrap.min.css" />
-    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.eot" />
-    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="public\bootstrap\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="public\font-awesome\css\font-awesome.css" />
     <Content Include="public\font-awesome\css\font-awesome.min.css" />
     <Content Include="public\font-awesome\fonts\fontawesome-webfont.eot" />
@@ -113,7 +102,6 @@
     <Content Include="public\font-awesome\scss\_variables.scss" />
     <Content Include="public\index.html" />
     <Content Include="public\JAVASC~1\lib\JSEP-0~1.8\jsep.min.js.map" />
-    <Content Include="public\jquery\jquery-1.10.2.min.map" />
     <Content Include="public\stylesheets\homeautomation.css" />
     <Content Include="public\test\controllist.json" />
     <Content Include="public\test\unittests.html" />
@@ -143,12 +131,7 @@
     <Folder Include="public\views\widgets\" />
     <Folder Include="views\" />
     <Folder Include="public\" />
-    <Folder Include="public\bootstrap\" />
-    <Folder Include="public\bootstrap\css\" />
-    <Folder Include="public\bootstrap\fonts\" />
-    <Folder Include="public\bootstrap\js\" />
     <Folder Include="public\javascripts\" />
-    <Folder Include="public\jquery\" />
     <Folder Include="public\test\" />
     <Folder Include="public\stylesheets\" />
     <Folder Include="views\widgets\" />

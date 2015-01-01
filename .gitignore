@@ -222,3 +222,6 @@ pip-log.txt
 
 # npm modules
 node_modules
+
+# Bower components
+bower_components

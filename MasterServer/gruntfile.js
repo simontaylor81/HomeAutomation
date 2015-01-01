@@ -20,6 +20,15 @@ module.exports = function(grunt) {
                 ]
             }
         },
+        bower: {
+            install: {
+                options: {
+                    targetDir: "public/lib",
+                    layout: "byComponent",
+                    cleanTargetDir: false
+                }
+            }
+        },
         watch: {
             files: ['views/**/*.hbs'],
             tasks: ['handlebars']
@@ -29,6 +38,7 @@ module.exports = function(grunt) {
     // Load plugins
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks("grunt-bower-task");
 
     // Run watch by default.
     grunt.registerTask('default', ['watch']);
