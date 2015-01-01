@@ -12,7 +12,7 @@ module.exports = function(grunt) {
                 files: [
                     {
                         expand: true,
-                        cwd: 'views/',
+                        cwd: 'client/views/',
                         src: ['**/*.hbs'],
                         dest: 'public/views/',
                         ext: '.js'

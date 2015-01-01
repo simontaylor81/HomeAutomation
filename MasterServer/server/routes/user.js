@@ -1,7 +1,7 @@
 ﻿// User-related routes.
 
-var MemoryAccountProvider = require('../lib/MemoryAccountProvider').MemoryAccountProvider;
-var MongoAccountProvider = require('../lib/MongoAccountProvider').MongoAccountProvider;
+var MemoryAccountProvider = require('../accounts/MemoryAccountProvider').MemoryAccountProvider;
+var MongoAccountProvider = require('../accounts/MongoAccountProvider').MongoAccountProvider;
 
 // Create dummy memory account provider.
 var accountProvider = new MongoAccountProvider();
@@ -11,7 +11,7 @@ var accountProvider = new MongoAccountProvider();
 //accountProvider.newAccount('simon', 'pass')
 //.done(function (user) {
 //    // Give the dummy account some dummy widgets.
-//    user.widgets = require('../public/test/controllist.json');
+//    user.widgets = require('../../public/test/controllist.json');
 //});
 
 

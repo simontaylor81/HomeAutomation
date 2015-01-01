@@ -17,9 +17,9 @@ nconf.argv()
      .env()
      .file('./config.json');
 
-var wol = require('./routes/wol.js');
-var userRoutes = require('./routes/user.js');
-var icon = require('./routes/icon.js');
+var wol = require('./server/routes/wol.js');
+var userRoutes = require('./server/routes/user.js');
+var icon = require('./server/routes/icon.js');
 
 var app = express();
 
