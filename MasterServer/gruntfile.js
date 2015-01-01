@@ -20,6 +20,15 @@ module.exports = function(grunt) {
                 ]
             }
         },
+        copy: {
+            // Copy client files that don't need processing to the public dir unmodified.
+            client: {
+                expand: true,
+                cwd: 'client/',
+                src: ['**/*.js', '**/*.html', '**/*.css'],
+                dest: 'public/'
+            },
+        },
         bower: {
             install: {
                 options: {
@@ -30,8 +39,14 @@ module.exports = function(grunt) {
             }
         },
         watch: {
-            files: ['views/**/*.hbs'],
-            tasks: ['handlebars']
+            client: {
+                files: ['client/**/*.js', 'client/**/*.html', 'client/**/*.css'],
+                tasks: ['copy:client']
+            },
+            handlebars: {
+                files: ['client/views/**/*.hbs'],
+                tasks: ['handlebars']
+            }
         }
     });
 
@@ -39,6 +54,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-handlebars');
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks("grunt-bower-task");
+    grunt.loadNpmTasks('grunt-contrib-copy');
 
     // Run watch by default.
     grunt.registerTask('default', ['watch']);

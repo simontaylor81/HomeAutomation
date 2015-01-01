@@ -1,5 +1,5 @@
 ﻿// Controller for text widgets.
-define(['lib/event'], function (Event) {
+define(['core/event'], function (Event) {
     // Constructor.
     function TextController(data) {
         this.data = data;

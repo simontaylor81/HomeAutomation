@@ -1,0 +1,101 @@
+﻿<div class="row">
+    <div id="widget-preview" class="col-sm-8 ha-widget-preview"></div>
+    <div id="edit-pane" class="col-sm-4">
+        <p class="text-center">
+            <button class="btn btn-primary btn-block btn-lg"
+                    data-bind-click="save.action" data-bind-text="save.text" data-bind-prop="disabled;save.inProgress">
+            </button>
+        </p>
+        <div class="panel panel-default">
+            <div class="panel-heading">Actions</div>
+            <div class="panel-body" data-bind-each="actions">
+                <div><a href="#" data-bind-click="action" data-bind-text="label" data-bind-visibility="available"></a></div>
+            </div>
+        </div>
+        <div data-bind-if="selected.valid">
+            <div id="selected-widget-panel" class="panel panel-default">
+                <div class="panel-heading">Selected Widget</div>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Property</th>
+                            <th>Value</th>
+                        </tr>
+                        <!-- Put this is the header so it doesn't get affected by the binding. -->
+                        <tr>
+                            <td>Type</td>
+                            <td data-bind-text="selected.type"></td>
+                        </tr>
+                    </thead>
+                    <tbody data-bind-each="selected.props">
+                        <tr>
+                            <td data-bind-text="name"></td>
+                            <td>
+                                <div data-bind-if="istext">
+                                    <input type="text" class="form-control" data-bind-value="value">
+                                </div>
+                                <div data-bind-if="isbool">
+                                    <input type="checkbox" data-bind-checked="value">
+                                </div>
+                                <div data-bind-if="isenum">
+                                    <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="panel panel-default" data-bind-with="devicePanel">
+            <div class="panel-heading" data-bind-click="toggleShown">
+                <a href="#" class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></a>
+                &nbsp;
+                Devices
+            </div>
+            <div class="panel-body" data-bind-visibility="shown">
+                <div data-bind-each="devices">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" data-bind-click="toggleShown">
+                            <a href="#" class="glyphicon" data-bind-class="$root.getExpandIcon(shown)"></a>
+                            &nbsp;
+                            <span data-bind-text="name"></span>
+                            <a href="#" class="pull-right glyphicon glyphicon-remove-circle text-danger" data-bind-click="remove">
+                            </a>
+                        </div>
+                        <table class="table" data-bind-visibility="shown">
+                            <thead>
+                                <tr>
+                                    <th>Property</th>
+                                    <th>Value</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind-each="props">
+                                <tr>
+                                    <td data-bind-text="name"></td>
+                                    <td>
+                                        <div data-bind-if="istext">
+                                            <input type="text" class="form-control" data-bind-value="value">
+                                        </div>
+                                        <div data-bind-if="isbool">
+                                            <input type="checkbox" data-bind-checked="value">
+                                        </div>
+                                        <div data-bind-if="isenum">
+                                            <select data-bind-value="value" data-bind-options="$root.enums[enumType]"></select>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <button class="btn btn-primary btn-block" data-bind-click="addDevice">
+                    <span class="glyphicon glyphicon-plus"></span>&nbsp;Add
+                </button>
+            </div>
+        </div>
+</div>
+<div class="alert-footer" id="alerts">
+    <div class="alert alert-success opacity-fade-hide" id="success-alert">
+    </div>
+</div>
+<div class="trashcan fa fa-trash-o"></div>

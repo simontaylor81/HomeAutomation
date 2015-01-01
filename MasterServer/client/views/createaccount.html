@@ -1,0 +1,12 @@
+﻿<form class="form-signin" role="form">
+    <h2 class="form-signin-heading">Create Account</h2>
+    <input type="text" class="form-control text-top" name="username" placeholder="Username" required autofocus
+           pattern="\w{3,}" title="Username must be at least 3 letters long, and can contain only letters, number and underscores">
+    <input type="password" class="form-control text-middle" name="password" placeholder="Password" required
+           pattern=".{4,}" title="Password must be at least 4 characters long">
+    <input type="password" class="form-control text-bottom" name="passwordRpt" placeholder="Repeat Password" required
+           title="Password confirmation must match password">
+    <button type="submit" class="btn btn-lg btn-default btn-block">Create</button>
+    <div class="form-signin-bottomlink"><a href="#" id="createaccount-loginlink">Login</a></div>
+    <div id="createaccount-error-msg" class="form-signin-error ha-hidden"></div>
+</form>

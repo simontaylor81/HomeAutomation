@@ -20,7 +20,7 @@
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <ProjectView>ProjectFiles</ProjectView>
+    <ProjectView>ShowAllFiles</ProjectView>
     <NodejsPort>1337</NodejsPort>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -33,29 +33,29 @@
     <Compile Include="gruntfile.js" />
     <Compile Include="server\accounts\MemoryAccountProvider.js" />
     <Compile Include="server\accounts\MongoAccountProvider.js" />
-    <Compile Include="public\javascripts\Controllers\Widgets\buttoncontroller.js" />
-    <Compile Include="public\javascripts\Controllers\Widgets\groupcontroller.js" />
-    <Compile Include="public\javascripts\Controllers\Widgets\textcontroller.js" />
-    <Compile Include="public\javascripts\lib\databind.js" />
-    <Compile Include="public\javascripts\lib\event.js" />
-    <Compile Include="public\javascripts\lib\modelprop.js" />
-    <Compile Include="public\javascripts\lib\page.js" />
-    <Compile Include="public\javascripts\lib\util.js" />
-    <Compile Include="public\javascripts\main.js" />
-    <Compile Include="public\javascripts\require.js" />
-    <Compile Include="public\javascripts\text.js" />
-    <Compile Include="public\javascripts\widgets\devices.js" />
-    <Compile Include="public\javascripts\widgets\power.js" />
-    <Compile Include="public\javascripts\widgets\xbmc.js" />
-    <Compile Include="public\test\unittestmain.js" />
-    <Compile Include="public\views\createaccount.js" />
-    <Compile Include="public\views\customise-draganddrop.js" />
-    <Compile Include="public\views\customise.js" />
-    <Compile Include="public\views\customise-viewmodel.js" />
-    <Compile Include="public\views\default.js" />
-    <Compile Include="public\views\login.js" />
-    <Compile Include="public\views\renderwidgets.js" />
-    <Compile Include="public\views\widgetstemplate.js" />
+    <Compile Include="client\controllers\widgets\buttoncontroller.js" />
+    <Compile Include="client\controllers\widgets\groupcontroller.js" />
+    <Compile Include="client\controllers\widgets\textcontroller.js" />
+    <Compile Include="client\core\databind.js" />
+    <Compile Include="client\core\event.js" />
+    <Compile Include="client\core\modelprop.js" />
+    <Compile Include="client\core\page.js" />
+    <Compile Include="client\core\util.js" />
+    <Compile Include="client\main.js" />
+    <Compile Include="client\require.js" />
+    <Compile Include="client\text.js" />
+    <Compile Include="client\devices\devices.js" />
+    <Compile Include="client\devices\power.js" />
+    <Compile Include="client\devices\xbmc.js" />
+    <Compile Include="client\test\unittestmain.js" />
+    <Compile Include="client\views\createaccount.js" />
+    <Compile Include="client\views\customise-draganddrop.js" />
+    <Compile Include="client\views\customise.js" />
+    <Compile Include="client\views\customise-viewmodel.js" />
+    <Compile Include="client\views\default.js" />
+    <Compile Include="client\views\login.js" />
+    <Compile Include="client\views\renderwidgets.js" />
+    <Compile Include="client\views\widgetstemplate.js" />
     <Compile Include="server\routes\icon.js" />
     <Compile Include="server\routes\user.js" />
     <Compile Include="server\routes\wol.js" />
@@ -63,13 +63,12 @@
     <Content Include="bower.json" />
     <Content Include="config.json" />
     <Content Include="package.json" />
-    <Content Include="public\index.html" />
-    <Content Include="public\stylesheets\homeautomation.css" />
-    <Content Include="public\test\controllist.json" />
-    <Content Include="public\test\unittests.html" />
-    <Content Include="public\views\createaccount.html" />
-    <Content Include="public\views\customise.html" />
-    <Content Include="public\views\login.html" />
+    <Content Include="client\index.html" />
+    <Content Include="client\stylesheets\homeautomation.css" />
+    <Content Include="client\test\unittests.html" />
+    <Content Include="client\views\createaccount.html" />
+    <Content Include="client\views\customise.html" />
+    <Content Include="client\views\login.html" />
     <Content Include="README.md" />
     <Content Include="client\views\widgetstemplate.hbs" />
     <Content Include="client\views\widgets\buttonView.hbs" />
@@ -81,18 +80,15 @@
     <Folder Include="client\" />
     <Folder Include="shared\" />
     <Folder Include="server\" />
-    <Folder Include="public\javascripts\Controllers\" />
-    <Folder Include="public\javascripts\Controllers\Widgets\" />
+    <Folder Include="client\controllers\" />
+    <Folder Include="client\controllers\widgets\" />
     <Folder Include="server\routes\" />
-    <Folder Include="public\javascripts\lib\" />
-    <Folder Include="public\javascripts\widgets\" />
-    <Folder Include="public\views\" />
-    <Folder Include="public\views\widgets\" />
+    <Folder Include="client\core\" />
+    <Folder Include="client\devices\" />
     <Folder Include="client\views\" />
     <Folder Include="public\" />
-    <Folder Include="public\javascripts\" />
-    <Folder Include="public\test\" />
-    <Folder Include="public\stylesheets\" />
+    <Folder Include="client\test\" />
+    <Folder Include="client\stylesheets\" />
     <Folder Include="client\views\widgets\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsTools.targets" />

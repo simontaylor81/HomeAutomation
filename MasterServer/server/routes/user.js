@@ -7,13 +7,6 @@ var MongoAccountProvider = require('../accounts/MongoAccountProvider').MongoAcco
 var accountProvider = new MongoAccountProvider();
 //var accountProvider = new MemoryAccountProvider();
 
-// Add a dummy account.
-//accountProvider.newAccount('simon', 'pass')
-//.done(function (user) {
-//    // Give the dummy account some dummy widgets.
-//    user.widgets = require('../../public/test/controllist.json');
-//});
-
 
 // Middleware for handling user sessions.
 function userSession(req, res, next) {

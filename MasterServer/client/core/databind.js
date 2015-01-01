@@ -1,5 +1,5 @@
 ﻿// HTML data binding support.
-define(['lib/util', 'lib/modelprop'], function (util, modelprop) {
+define(['core/util', 'core/modelprop'], function (util, modelprop) {
 
     // A binding that sets the text content of an element.
     function TextBinding(element, model) {

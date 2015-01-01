@@ -2,9 +2,9 @@
 
 // requirejs config.
 requirejs.config({
-    baseUrl: 'javascripts',
+    baseUrl: '',
     paths: {
-        views: '../views',
+        //views: '../views',
         handlebars: '/lib/handlebars/js/handlebars.runtime.min',
         jsep: '/lib/jsep/js/jsep.min',
     },
@@ -20,7 +20,7 @@ requirejs.config({
 });
 
 // Require necessary modules.
-require(['lib/page', 'lib/util'], function (page, util) {
+require(['core/page', 'core/util'], function (page, util) {
 
     $(document).ready(function () {
         // Navbar links
