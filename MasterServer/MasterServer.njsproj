@@ -86,7 +86,6 @@
     <Folder Include="client\core\" />
     <Folder Include="client\devices\" />
     <Folder Include="client\views\" />
-    <Folder Include="public\" />
     <Folder Include="client\test\" />
     <Folder Include="client\stylesheets\" />
     <Folder Include="client\views\widgets\" />

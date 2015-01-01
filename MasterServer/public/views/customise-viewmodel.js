@@ -1,5 +1,5 @@
 ﻿// View model for the customise page.
-define(['core/util', 'core/event', 'widgets/devices'], function (util, Event, devices) {
+define(['core/util', 'core/event', 'devices/devices'], function (util, Event, devices) {
 
     // View model for a device
     function DeviceViewModel(name, data, parentVM) {
