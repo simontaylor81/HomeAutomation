@@ -1,0 +1,3 @@
+# Exclude built client file directories.
+public/
+public-opt/

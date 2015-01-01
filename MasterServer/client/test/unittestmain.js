@@ -1,9 +1,8 @@
 ﻿require.config({
     baseUrl: '/',
     paths: {
-        views: '/views',
-        handlebars: '/lib/handlebars/js/handlebars.runtime.min',
-        jsep: '/lib/jsep/js/jsep.min',
+        handlebars: 'lib/handlebars/handlebars.runtime',
+        jsep: 'lib/jsep/jsep',
         QUnit: 'http://code.jquery.com/qunit/qunit-1.14.0'
     },
     shim: {

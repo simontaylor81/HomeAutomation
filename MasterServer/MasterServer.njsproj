@@ -6,6 +6,8 @@
     <Name>MasterServer</Name>
     <RootNamespace>MasterServer</RootNamespace>
     <NameOfLastUsedPublishProfile>squeezeplug</NameOfLastUsedPublishProfile>
+    <StartWebBrowser>True</StartWebBrowser>
+    <Environment>NODE_ENV=prod</Environment>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>

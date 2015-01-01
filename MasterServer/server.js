@@ -41,7 +41,10 @@ app.use(express.session({
         })
     }));
 app.use(app.router);
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Use optimised client files in production environment.
+var publicDir = ('development' === app.get('env')) ? 'public' : 'public-opt';
+app.use(express.static(path.join(__dirname, publicDir)));
 
 // development only
 if ('development' === app.get('env')) {

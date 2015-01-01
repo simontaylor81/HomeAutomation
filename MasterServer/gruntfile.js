@@ -38,6 +38,41 @@ module.exports = function(grunt) {
                 }
             }
         },
+        requirejs: {
+            compile: {
+                options: {
+                    baseUrl: "public",
+                    mainConfigFile: "public/main.js",
+                    dir: "public-opt",
+                    optimize: "uglify2",
+                    modules: [
+                        {
+                            name: "main",
+                            include: ["handlebars",
+                                      "views/renderwidgets",
+                                      "text",
+                                      "devices/devices"]
+                        },
+                        {
+                            name: "views/default",
+                            exclude: ["main"]
+                        },
+                        {
+                            name: "views/customise",
+                            exclude: ["main"]
+                        },
+                        {
+                            name: "views/login",
+                            exclude: ["main"]
+                        },
+                        {
+                            name: "views/createaccount",
+                            exclude: ["main"]
+                        }
+                    ]
+                }
+            }
+        },
         watch: {
             client: {
                 files: ['client/**/*.js', 'client/**/*.html', 'client/**/*.css'],
@@ -55,7 +90,11 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-watch');
     grunt.loadNpmTasks("grunt-bower-task");
     grunt.loadNpmTasks('grunt-contrib-copy');
+    grunt.loadNpmTasks('grunt-contrib-requirejs');
 
     // Run watch by default.
     grunt.registerTask('default', ['watch']);
+
+    // Prep for production environment.
+    grunt.registerTask('prod', ['bower', 'handlebars', 'copy', 'requirejs']);
 };

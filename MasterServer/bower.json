@@ -11,22 +11,19 @@
     },
     "exportsOverride": {
         "bootstrap": {
-            "js": "dist/js/bootstrap*",
+            "js": "dist/js/bootstrap.js",
             "css": "dist/css/*.*",
             "fonts": "dist/fonts/*.*"
         },
-        "jquery": {
-            "js": "dist/*"
-        },
         "jsep": {
-            "js": "build/*"
+            "": "build/jsep.js"
         },
         "components-font-awesome": {
             "css": "css/*",
             "fonts": "fonts/*"
         },
         "handlebars": {
-            "js": "handlebars*.js"
+            "": "handlebars.runtime.js"
         }
     }
 }
