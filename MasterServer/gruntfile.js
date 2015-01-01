@@ -95,6 +95,7 @@ module.exports = function(grunt) {
     // Run watch by default.
     grunt.registerTask('default', ['watch']);
 
-    // Prep for production environment.
+    // Prep for development or production environment.
+    grunt.registerTask('dev', ['bower', 'handlebars', 'copy']);
     grunt.registerTask('prod', ['bower', 'handlebars', 'copy', 'requirejs']);
 };
