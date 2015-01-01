@@ -5,4 +5,5 @@ forever stop /home/pi/HomeAutomation/MasterServer/server.js
 git pull
 git checkout
 npm install
-forever start -a /home/pi/HomeAutomation/MasterServer/server.js
+grunt prod
+NODE_ENV=production forever start -a /home/pi/HomeAutomation/MasterServer/server.js
