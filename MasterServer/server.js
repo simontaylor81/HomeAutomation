@@ -12,14 +12,17 @@ var MongoStore = require('connect-mongo')(express);
 // All paths are relative to the script root, so change the working directory to it.
 process.chdir(__dirname);
 
-// Set up config *before* loading sub-modules, so they can user it.
+// Set up config *before* loading sub-modules, so they can use it.
 nconf.argv()
      .env()
      .file('./config.json');
 
 var wol = require('./server/routes/wol.js');
 var userRoutes = require('./server/routes/user.js');
-var icon = require('./server/routes/icon.js');
+
+if (nconf.get('enableIcons')) {
+    var icon = require('./server/routes/icon.js');
+}
 
 var app = express();
 
@@ -58,7 +61,9 @@ app.post('/api/wol/:mac', wol.post);
 userRoutes.addRoutes(app);
 
 // Icon image generator.
-app.get('/api/icon', icon.get);
+if (icon) {
+    app.get('/api/icon', icon.get);
+}
 
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));
