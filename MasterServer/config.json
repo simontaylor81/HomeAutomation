@@ -4,6 +4,6 @@
   "databaseUrl": "mongodb://localhost:27017/ha",
   "databaseFile": "~/.HomeAutomation/data.json",
   "enableIcons": false,
-  "sessionStore": "mongo",
-  "accountProvider": "mongo"
+  "sessionStore": "memory",
+  "accountProvider": "file"
 }
