@@ -8,6 +8,7 @@ var path = require('path');
 var q = require('q');
 var nconf = require('nconf');
 var mkdirp = require('mkdirp');
+var pwd = require('pwd');
 
 var filename = nconf.get('databaseFile');
 
@@ -17,10 +18,8 @@ filename = filename.replace('~',  homeDir);
 
 var FileAccountProvider = exports.FileAccountProvider = function () {
     console.log('Loading user data from ' + filename);
-    this.data = load() || { users: [] };
-
-    //// Seed with a user for testing.
-    //this.newAccount('user', 'password');
+    this.data = load() || {};
+    this.data.users = this.data.users || [];
 };
 
 // Define array find method that's not in V8 yet.
@@ -47,33 +46,46 @@ if (Array.prototype.find === undefined) {
 FileAccountProvider.prototype.login = function (username, password) {
     // Find user with this username. ID is lower-case username
     var user = findUser(this.data.users, username.toLowerCase());
-
-    // Check the password matches.
-    if (user && user.password === password) {
-        return q(user);
+    if (!user) {
+        return q.reject(new Error('Unknown user'));
     }
-    
-    return q.reject('Login failed');
+
+    // Authenticate password hash.
+    return q.nfcall(pwd.hash, password, user.passwordSalt)
+    .then(function (hash) {
+        if (hash !== user.passwordHash) {
+            throw new Error('Incorrect password');
+        }
+        return user;
+    });
 }
 
 // Create a new account.
 FileAccountProvider.prototype.newAccount = function (username, password) {
+    var self = this;
+
     // Check that we don't already have a user with that name.
     if (findUser(this.data.users, username.toLowerCase())) {
         return q.reject("Username '" + username + "' already exists.");
     }
 
-    // Add a new user object to the array.
-    var newUser = {
-        _id: username.toLowerCase(),
-        username: username,
-        password: password
-    };
-    this.data.users.push(newUser);
-    
-    // Save.
-    return save(this.data)
-    .then(function () { return newUser; });
+    // Generate password hash and salt for the user.
+    return q.nfcall(pwd.hash, password)
+    .then(function (result) {
+        var newUser = {
+            _id: username.toLowerCase(),
+            username: username,
+            passwordSalt: result[0],
+            passwordHash: result[1]
+        };
+        
+        // Add a new user object to the array.
+        self.data.users.push(newUser);
+        
+        // Save.
+        return save(self.data)
+        .then(function () { return newUser; });
+    });
 }
 
 // Simple account accessor, assuming already authenticated.
