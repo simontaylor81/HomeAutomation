@@ -4,6 +4,7 @@ var nconf = require('nconf');
 var providers = {
     memory: require('../accounts/MemoryAccountProvider').MemoryAccountProvider,
     mongo: require('../accounts/MongoAccountProvider').MongoAccountProvider,
+    file: require('../accounts/FileAccountProvider').FileAccountProvider,
 };
 
 var providerName = nconf.get('accountProvider')

@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="gruntfile.js" />
+    <Compile Include="server\accounts\FileAccountProvider.js" />
     <Compile Include="server\accounts\MemoryAccountProvider.js" />
     <Compile Include="server\accounts\MongoAccountProvider.js" />
     <Compile Include="client\controllers\widgets\buttoncontroller.js" />
