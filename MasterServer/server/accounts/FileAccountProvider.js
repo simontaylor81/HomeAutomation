@@ -112,14 +112,12 @@ FileAccountProvider.prototype.saveAccount = function (user) {
     var self = this;
     
     return withWriteLock(this.lock, function () {
-        // TODO: Replace with modified version.
         return save(self.data);
     });
 };
 
 // Helper for searching finding a user with the given id. Returns undefined if not found.
 function findUser(users, id) {
-    // TODO: Clone
     return users.find(function (user) { return user._id == id; });
 }
 
