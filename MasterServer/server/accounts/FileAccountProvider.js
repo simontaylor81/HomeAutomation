@@ -10,9 +10,13 @@ var nconf = require('nconf');
 var mkdirp = require('mkdirp');
 
 var filename = nconf.get('databaseFile');
-filename = filename.replace('~', process.env.HOME || process.env.APPDATA);  // Put in AppData on Windows to avoid cluttering home dir
+
+// Put in AppData on Windows to avoid cluttering home dir
+var homeDir = process.platform === 'win32' ? process.env.APPDATA : process.env.HOME
+filename = filename.replace('~',  homeDir);
 
 var FileAccountProvider = exports.FileAccountProvider = function () {
+    console.log('Loading user data from ' + filename);
     this.data = load() || { users: [] };
 
     //// Seed with a user for testing.
