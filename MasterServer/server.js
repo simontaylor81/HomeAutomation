@@ -26,6 +26,16 @@ if (nconf.get('enableIcons')) {
 
 var app = express();
 
+// Choose session store. Default is built-in memory store (which isn't really
+// production ready, but we have a loose definition of 'production').
+var sessionStore;
+if (nconf.get('sessionStore') === 'mongo') {
+    sessionStore = new MongoStore({
+        url: nconf.get('databaseUrl'),
+        stringify: false    // Not stringifying makes things easier to debug in the mongo shell
+    });
+}
+
 // all environments
 app.set('port', process.env.PORT || nconf.get('port'));
 app.set('views', path.join(__dirname, 'views'));
@@ -38,10 +48,7 @@ app.use(express.cookieParser(nconf.get('cookieSecret')));
 app.use(express.session({
         secret: nconf.get('cookieSecret'),
         cookie: { maxAge: 60000 * 60 * 24 },    // 24 hour session timeout
-        store: new MongoStore({
-            url: nconf.get('databaseUrl'),
-            stringify: false    // Not stringifying makes things easier to debug in the mongo shell
-        })
+        store: sessionStore
     }));
 app.use(app.router);
 

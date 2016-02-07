@@ -1,11 +1,17 @@
 ﻿// User-related routes.
+var nconf = require('nconf');
 
-var MemoryAccountProvider = require('../accounts/MemoryAccountProvider').MemoryAccountProvider;
-var MongoAccountProvider = require('../accounts/MongoAccountProvider').MongoAccountProvider;
+var providers = {
+    memory: require('../accounts/MemoryAccountProvider').MemoryAccountProvider,
+    mongo: require('../accounts/MongoAccountProvider').MongoAccountProvider,
+};
 
-// Create dummy memory account provider.
-var accountProvider = new MongoAccountProvider();
-//var accountProvider = new MemoryAccountProvider();
+var providerName = nconf.get('accountProvider')
+var ProviderType = providers[providerName]
+if (!ProviderType) {
+    throw new Error("Could not find account provider '" + providerName +"'. Available providers: " + Object.keys(providers));
+}
+var accountProvider = new ProviderType();
 
 
 // Middleware for handling user sessions.
