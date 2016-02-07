@@ -19,7 +19,8 @@
     "pwd": "0.0.3",
     "q": "^0.9.7",
     "rwlock": "^5.0.0",
-    "wake_on_lan": "0.0.3"
+    "wake_on_lan": "0.0.3",
+    "write-file-atomic": "^1.1.4"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

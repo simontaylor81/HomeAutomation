@@ -4,6 +4,7 @@
 // It also does very little validation.
 
 var fs = require('fs');
+var writeFileAtomic = require('write-file-atomic');
 var path = require('path');
 var q = require('q');
 var nconf = require('nconf');
@@ -175,6 +176,6 @@ function save(data) {
     .then(function () {
         // Write file contents.
         var json = JSON.stringify(data, null, 2);
-        return q.nfcall(fs.writeFile, filename, json);
+        return q.nfcall(writeFileAtomic, filename, json);
     });
 }
