@@ -121,7 +121,7 @@ function save(data) {
     return q.nfcall(mkdirp, dir)
     .then(function () {
         // Write file contents.
-        var json = JSON.stringify(data);
+        var json = JSON.stringify(data, null, 2);
         return q.nfcall(fs.writeFile, filename, json);
     });
 }
