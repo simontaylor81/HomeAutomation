@@ -4,6 +4,9 @@ var q = require('q');
 
 var MemoryAccountProvider = exports.MemoryAccountProvider = function () {
     this.users = [];
+
+    // Seed with a user for testing.
+    this.newAccount('user', 'password');
 };
 
 // Define array find method that's not in V8 yet.
