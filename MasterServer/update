@@ -1,9 +1,10 @@
 #!/bin/bash
 
-cd /home/pi/HomeAutomation/MasterServer
-forever stop /home/pi/HomeAutomation/MasterServer/server.js
+cd "$( dirname $0 )"
+
+forever stop ./server.js
 git pull
 git checkout
 npm install
 grunt prod
-NODE_ENV=production forever start -a /home/pi/HomeAutomation/MasterServer/server.js
+NODE_ENV=production forever start -a ./server.js
