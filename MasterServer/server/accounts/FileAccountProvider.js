@@ -15,7 +15,7 @@ var ReadWriteLock = require('rwlock');
 var filename = nconf.get('databaseFile');
 
 // Put in AppData on Windows to avoid cluttering home dir
-var homeDir = process.platform === 'win32' ? process.env.APPDATA : process.env.HOME
+var homeDir = process.platform === 'win32' ? process.env.APPDATA : process.env.HOME;
 filename = filename.replace('~',  homeDir);
 
 var FileAccountProvider = exports.FileAccountProvider = function () {
