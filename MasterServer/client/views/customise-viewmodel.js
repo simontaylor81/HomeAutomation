@@ -248,7 +248,7 @@ define(['core/util', 'core/event', 'devices/devices'], function (util, Event, de
             document.styleSheets, function (ss) { return ss.href.contains('font-awesome'); });
         if (faStylesheet) {
             // Chrome adds an extra ':' before ':before' for some reason.
-            var re = /^.fa-([a-z\-]+):?:before$/;
+            var re = /^.fa-([a-z\-]+):?:before/;
             this.enums.icon = this.enums.icon.concat(
                 // Convert to array for simplicity.
                 util.toArray(faStylesheet.cssRules)
@@ -260,7 +260,8 @@ define(['core/util', 'core/event', 'devices/devices'], function (util, Event, de
                 .map(function (rule) {
                     // Strip '.fa-' and ':before'
                     return re.exec(rule.selectorText)[1];
-                }));
+                })
+                .sort());
         }
     }
 
