@@ -18,7 +18,7 @@ namespace MediaCentreServer
 				e.Cancel = true;
 			};
 
-			var url = $"http://localhost:{port}";
+			var url = $"http://*:{port}";
 			using (WebApp.Start<Startup>(url))
 			{
 				Console.WriteLine($"Listening on port {port}");
