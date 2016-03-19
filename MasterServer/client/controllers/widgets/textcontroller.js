@@ -32,8 +32,8 @@ define(['core/event'], function (Event) {
     };
 
     // Get the customisable settings for this widget type.
-    TextController.prototype.getCustomisableProperties = function () {
-        return [
+    TextController.prototype.getCustomisableProperties = function (deviceData) {
+        var props = [
             {
                 property: 'device',
                 type: 'enum',
@@ -41,17 +41,26 @@ define(['core/event'], function (Event) {
                 friendly: 'Device'
             },
             {
-                property: 'action',
-                type: 'text',
-                friendly: 'Action'
-            },
-            {
                 property: 'initialText',
                 type: 'text',
                 friendly: 'Initial Text'
             }
         ];
-    };
+        
+        if (this.device && deviceData[this.device]) {
+            var deviceType = deviceData[this.device].type;
+            
+            // Add action property with the appropriate enum for the device type.
+            props.push({
+                property: 'action',
+                type: 'enum',
+                enumType: 'action-' + deviceType,
+                friendly: 'Action'
+            });
+        }
+
+        return props;
+  };
 
     // Can widgets of this type have sub-widgets?
     TextController.prototype.canHaveChildren = false;
