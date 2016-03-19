@@ -266,7 +266,7 @@ define(['core/util', 'core/event', 'devices/devices'], function (util, Event, de
 
         // Add action enums for the various device types.
         devices.getTypes().forEach(function (type) {
-            selfVM.enums['action-' + type] = devices.getActions(type);
+            selfVM.enums['action-' + type] = Object.keys(devices.getActions(type));
         });
     }
 

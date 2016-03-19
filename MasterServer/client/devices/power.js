@@ -107,7 +107,10 @@ define(function () {
         },
 
         getActions: function () {
-            return [ 'power', 'launch' ];
+            return {
+                'power': { hasParam: false },
+                'launch': { hasParam: true },
+            };
         },
     };
 });

@@ -134,7 +134,10 @@ define(function () {
         },
 
         getActions: function () {
-            return ['power', 'killXbmc'];
+            return {
+                'power': { hasParam: false },
+                'killXbmc': { hasParam: false },
+            };
         },
     };
 });

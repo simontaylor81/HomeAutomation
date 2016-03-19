@@ -1,5 +1,5 @@
 ﻿// Controller for button widgets.
-define(function () {
+define(['devices/devices'], function (devices) {
     // Constructor.
     function ButtonController(data) {
         this.data = data;
@@ -69,7 +69,7 @@ define(function () {
     };
 
     // Get the customisable settings for this widget type.
-    ButtonController.prototype.getCustomisableProperties = function (devices) {
+    ButtonController.prototype.getCustomisableProperties = function (deviceData) {
         var props = [
             {
                 property: 'device',
@@ -90,19 +90,26 @@ define(function () {
             },
         ];
 
-        if (this.device && devices[this.device]) {
+        if (this.device && deviceData[this.device]) {
+            var deviceType = deviceData[this.device].type;
+            
+            // Add action property with the appropriate enum for the device type.
             props.push({
                 property: 'action',
                 type: 'enum',
-                enumType: 'action-' + devices[this.device].type,
+                enumType: 'action-' + deviceType,
                 friendly: 'Action'
             });
-
-            props.push({
-                property: 'param',
-                type: 'text',
-                friendly: 'Parameter'
-            });
+            
+            // Add param property if the selected action has one.
+            var action = devices.getActions(deviceType)[this.data.action]
+            if (action && action.hasParam) {
+                props.push({
+                    property: 'param',
+                    type: 'text',
+                    friendly: 'Parameter'
+                });
+            }
         }
 
         return props;
