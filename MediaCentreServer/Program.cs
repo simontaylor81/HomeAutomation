@@ -1,5 +1,6 @@
 using System;
 using Microsoft.Owin.Hosting;
+using System.Threading;
 
 namespace MediaCentreServer
 {
@@ -9,13 +10,22 @@ namespace MediaCentreServer
         
         static void Main(string[] args)
         {
-            var url = $"http://localhost:{port}";
-            using (WebApp.Start<Startup>(url))
-            {
-                Console.WriteLine($"Listening on port {port}");
-                Console.WriteLine("Press Enter to quit.");
-                Console.ReadLine();
-            }
-        }
-    }
+			// Fire event on Ctrl+C.
+			var quitEvent = new ManualResetEvent(false);
+			Console.CancelKeyPress += (o, e) =>
+			{
+				quitEvent.Set();
+				e.Cancel = true;
+			};
+
+			var url = $"http://localhost:{port}";
+			using (WebApp.Start<Startup>(url))
+			{
+				Console.WriteLine($"Listening on port {port}");
+
+				// Wait for Ctrl+C (which RunInTray uses to trigger exit).
+				quitEvent.WaitOne();
+			}
+		}
+	}
 }
