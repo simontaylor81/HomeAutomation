@@ -131,6 +131,10 @@ define(function () {
                     friendly: 'XBMC path'
                 }
             ];
-        }
+        },
+
+        getActions: function () {
+            return ['power', 'killXbmc'];
+        },
     };
 });

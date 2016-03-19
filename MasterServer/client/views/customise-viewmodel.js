@@ -159,7 +159,7 @@ define(['core/util', 'core/event', 'devices/devices'], function (util, Event, de
 
                         // Contruct props list.
                         if (newController) {
-                            this.props = newController.getCustomisableProperties().map(function (prop) {
+                            this.props = newController.getCustomisableProperties(selfVM.widgetData.devices).map(function (prop) {
                                 var result = {
                                     name: prop.friendly,
                                     get value() { return newController.data[prop.property]; },
@@ -263,6 +263,11 @@ define(['core/util', 'core/event', 'devices/devices'], function (util, Event, de
                 })
                 .sort());
         }
+
+        // Add action enums for the various device types.
+        devices.getTypes().forEach(function (type) {
+            selfVM.enums['action-' + type] = devices.getActions(type);
+        });
     }
 
     // Get the array that containers the given widget's data (either

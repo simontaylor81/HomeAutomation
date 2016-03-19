@@ -21,17 +21,24 @@ define(['./power', './xbmc'], function (mcs, xbmc) {
                 }
             }
         },
+
         dispose: function () {
             // Allow all devices to clean up after themselves.
             for (var dt in deviceTypes) {
                 deviceTypes[dt].dispose();
             };
         },
+
         getTypes: function () {
             return Object.keys(deviceTypes)
         },
+
         getCustomisableProperties: function (type) {
             return deviceTypes[type].getCustomisableProperties();
-        }
+        },
+
+        getActions: function (type) {
+            return deviceTypes[type].getActions();
+        },
     };
 });

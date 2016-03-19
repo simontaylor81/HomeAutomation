@@ -104,6 +104,10 @@ define(function () {
                     friendly: 'MAC'
                 }
             ];
-        }
+        },
+
+        getActions: function () {
+            return [ 'power', 'launch' ];
+        },
     };
 });

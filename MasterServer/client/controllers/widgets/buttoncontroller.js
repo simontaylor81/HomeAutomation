@@ -69,8 +69,8 @@ define(function () {
     };
 
     // Get the customisable settings for this widget type.
-    ButtonController.prototype.getCustomisableProperties = function () {
-        return [
+    ButtonController.prototype.getCustomisableProperties = function (devices) {
+        var props = [
             {
                 property: 'device',
                 type: 'enum',
@@ -88,17 +88,24 @@ define(function () {
                 enumType: 'icon',
                 friendly: 'Icon'
             },
-            {
+        ];
+
+        if (this.device && devices[this.device]) {
+            props.push({
                 property: 'action',
-                type: 'text',
+                type: 'enum',
+                enumType: 'action-' + devices[this.device].type,
                 friendly: 'Action'
-            },
-            {
+            });
+
+            props.push({
                 property: 'param',
                 type: 'text',
                 friendly: 'Parameter'
-            }
-        ];
+            });
+        }
+
+        return props;
     };
 
     // Can widgets of this type have sub-widgets?
