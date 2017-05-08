@@ -2,9 +2,9 @@
 var nconf = require('nconf');
 
 var providers = {
-    memory: require('../accounts/MemoryAccountProvider').MemoryAccountProvider,
-    mongo: require('../accounts/MongoAccountProvider').MongoAccountProvider,
-    file: require('../accounts/FileAccountProvider').FileAccountProvider,
+    memory: function () { return require('../accounts/MemoryAccountProvider').MemoryAccountProvider; },
+    mongo: function () { return require('../accounts/MongoAccountProvider').MongoAccountProvider; },
+    file: function () { return require('../accounts/FileAccountProvider').FileAccountProvider; },
 };
 
 var providerName = nconf.get('accountProvider')
@@ -12,7 +12,7 @@ var ProviderType = providers[providerName]
 if (!ProviderType) {
     throw new Error("Could not find account provider '" + providerName +"'. Available providers: " + Object.keys(providers));
 }
-var accountProvider = new ProviderType();
+var accountProvider = new (ProviderType())();
 
 
 // Middleware for handling user sessions.

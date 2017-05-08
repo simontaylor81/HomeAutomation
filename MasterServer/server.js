@@ -7,7 +7,6 @@ var express = require('express');
 var http = require('http');
 var path = require('path');
 var nconf = require('nconf');
-var MongoStore = require('connect-mongo')(express);
 
 // All paths are relative to the script root, so change the working directory to it.
 process.chdir(__dirname);
@@ -30,6 +29,7 @@ var app = express();
 // production ready, but we have a loose definition of 'production').
 var sessionStore;
 if (nconf.get('sessionStore') === 'mongo') {
+    var MongoStore = require('connect-mongo')(express);
     sessionStore = new MongoStore({
         url: nconf.get('databaseUrl'),
         stringify: false    // Not stringifying makes things easier to debug in the mongo shell
