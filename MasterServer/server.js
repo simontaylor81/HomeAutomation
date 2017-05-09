@@ -17,6 +17,7 @@ nconf.argv()
      .file('./config.json');
 
 var wol = require('./server/routes/wol.js');
+var onkyo = require('./server/routes/onkyo.js');
 var userRoutes = require('./server/routes/user.js');
 
 if (nconf.get('enableIcons')) {
@@ -63,6 +64,9 @@ if ('development' === app.get('env')) {
 
 // Wake-on-lan handler.
 app.post('/api/wol/:mac', wol.post);
+
+// Onkyo control handler.
+app.post('/api/onkyo/:command', onkyo.post);
 
 // User stuff.
 userRoutes.addRoutes(app);

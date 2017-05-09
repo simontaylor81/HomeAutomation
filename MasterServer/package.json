@@ -11,6 +11,7 @@
     "canvas": "^1.1.6",
     "connect-mongo": "~0.5.2",
     "css": "^2.1.0",
+    "eiscp": "https://github.com/simontaylor81/node-eiscp/tarball/master/",
     "express": "^3.4.8",
     "mkdirp": "^0.5.1",
     "mongodb": "^1.3.23",
