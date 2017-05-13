@@ -16,18 +16,9 @@ def is_connected(cast_status):
     return cast_status.session_id != None
 
 class Listener:
-    def __init__(self):
-        self.curr_is_casting = is_casting(livingroom.media_controller.status)
-        self.curr_is_connected = is_connected(livingroom.status)
-
-    def new_media_status(self, status):
-        new_is_casting = is_casting(status)
-        if not self.curr_is_casting and new_is_casting:
-            print "Casting Media"
-        elif self.curr_is_casting and not new_is_casting:
-            print "Media casting stopped"
-        
-        self.curr_is_casting = new_is_casting
+    def __init__(self, cast):
+        self.curr_is_connected = is_connected(cast.status)
+        cast.register_status_listener(self)
 
     def new_cast_status(self, status):
         new_is_connected = is_connected(status)
@@ -38,8 +29,6 @@ class Listener:
         
         self.curr_is_connected = new_is_connected
 
-listener = Listener()
-livingroom.media_controller.register_status_listener(listener)
-livingroom.register_status_listener(listener)
+listener = Listener(livingroom)
 
 livingroom.socket_client.join()
