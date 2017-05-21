@@ -3,11 +3,13 @@ var eiscp = require('eiscp');
 var connected = false;
 eiscp.on("connect", function () { connected = true; });
 eiscp.on("close", function () { connected = false; });
+eiscp.on("error", function (err) { console.log(err); });
 
 eiscp.connect();
 
 var commands = {
-    chromecast: ['system-power=on', 'input-selector=aux1']
+    chromecast: ['system-power=on', 'input-selector=aux1'],
+    off: ['system-power=standby']
 };
 
 // Onkyo receiver control handler.
