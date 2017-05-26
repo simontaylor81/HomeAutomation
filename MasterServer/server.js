@@ -20,10 +20,6 @@ var wol = require('./server/routes/wol.js');
 var onkyo = require('./server/routes/onkyo.js');
 var userRoutes = require('./server/routes/user.js');
 
-if (nconf.get('enableIcons')) {
-    var icon = require('./server/routes/icon.js');
-}
-
 var app = express();
 
 // We use the default built-in memory session store (which isn't really
@@ -61,11 +57,6 @@ app.post('/api/onkyo/:command', onkyo.post);
 
 // User stuff.
 userRoutes.addRoutes(app);
-
-// Icon image generator.
-if (icon) {
-    app.get('/api/icon', icon.get);
-}
 
 app.listen(app.get('port'), function () {
   console.log('Express server listening on port ' + app.get('port'));

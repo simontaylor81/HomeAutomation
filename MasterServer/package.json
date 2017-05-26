@@ -8,13 +8,10 @@
     "email": "simontaylor81@hotmail.com"
   },
   "dependencies": {
-    "canvas": "^1.1.6",
-    "css": "^2.1.0",
     "eiscp": "https://github.com/simontaylor81/node-eiscp/tarball/master/",
     "express": "^3.4.8",
     "mkdirp": "^0.5.1",
     "nconf": "^0.6.9",
-    "opentype.js": "^0.4.4",
     "pwd": "0.0.3",
     "q": "^0.9.7",
     "rwlock": "^5.0.0",

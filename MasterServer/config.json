@@ -2,7 +2,6 @@
   "port": 3000,
   "cookieSecret": "v1qgWb6G33MtwoXv",
   "databaseFile": "~/.HomeAutomation/data.json",
-  "enableIcons": false,
   "sessionStore": "memory",
   "accountProvider": "file"
 }
