@@ -3,7 +3,6 @@ var nconf = require('nconf');
 
 var providers = {
     memory: function () { return require('../accounts/MemoryAccountProvider').MemoryAccountProvider; },
-    mongo: function () { return require('../accounts/MongoAccountProvider').MongoAccountProvider; },
     file: function () { return require('../accounts/FileAccountProvider').FileAccountProvider; },
 };
 
